@@ -1,0 +1,20 @@
+/**
+ * Theme Manager presentation-engine entry point.
+ *
+ * Theme Manager owns the semantic presentation pipeline only. Consumer source
+ * discovery and reusable component CSS belong to consuming/composition and UI
+ * capabilities respectively and are deliberately absent here.
+ */
+@import 'tailwindcss';
+@import './theme/theme-default.css';
+@import './theme/theme-api.css';
+@import './tailwindcss/tailwind-config.css';
+
+@utility scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
