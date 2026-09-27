@@ -48,7 +48,7 @@ describe('TM-4 presentation engine', () => {
 
   it('preserves the recovered non-colour Tailwind vocabulary', () => {
     expect(declarations(tailwindCss, '--font-')).toHaveLength(10)
-    expect(declarations(tailwindCss, '--text-').filter(name => !name.startsWith('--text-shadow-'))).toHaveLength(7)
+    expect(declarations(tailwindCss, '--text-').filter(name => !name?.startsWith('--text-shadow-'))).toHaveLength(7)
     expect(declarations(tailwindCss, '--font-weight-')).toHaveLength(7)
     expect(declarations(tailwindCss, '--breakpoint-')).toHaveLength(8)
     expect(declarations(tailwindCss, '--container-')).toHaveLength(2)
