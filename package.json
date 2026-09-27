@@ -1,0 +1,38 @@
+{
+  "name": "@nuxt4-layers/theme-manager",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Nuxt 4 foundation capability for semantic presentation theme definition, resolution and management.",
+  "exports": {
+    ".": "./nuxt.config.ts",
+    "./contracts": "./contracts/index.ts",
+    "./capability": "./capability.json"
+  },
+  "files": [
+    "app",
+    "server",
+    "shared",
+    "contracts",
+    "capability.json",
+    "nuxt.config.ts",
+    "README.md"
+  ],
+  "scripts": {
+    "prepare": "nuxt prepare",
+    "typecheck": "nuxt typecheck",
+    "test": "vitest run",
+    "check": "pnpm typecheck && pnpm test"
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "nuxt": "^4.1.2",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4",
+    "vue-tsc": "^3.0.8"
+  },
+  "packageManager": "pnpm@10.17.1",
+  "engines": {
+    "node": ">=22"
+  }
+}
