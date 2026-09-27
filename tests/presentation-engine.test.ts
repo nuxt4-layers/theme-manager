@@ -11,7 +11,7 @@ const tailwindCss = read('assets/css/tailwindcss/tailwind-config.css')
 const mainCss = read('assets/css/main.css')
 
 const declarations = (css: string, prefix: string) =>
-  [...css.matchAll(new RegExp(`\\b(${prefix}[\\w-]+)\\s*:`, 'g'))].map(match => match[1])
+  [...css.matchAll(new RegExp(`(${prefix}[\\w-]+)\\s*:`, 'g'))].map(match => match[1])
 
 describe('TM-4 presentation engine', () => {
   it('preserves the recovered raw colour cardinality', () => {
