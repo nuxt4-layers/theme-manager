@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1",
+  "name": "@nuxt4-layers/theme-manager",
+  "version": "0.1.0",
+  "classification": "foundation",
+  "provides": [
+    {
+      "capability": "ThemeManagement",
+      "contractVersion": "1"
+    },
+    {
+      "capability": "SemanticPresentationTheme",
+      "contractVersion": "1"
+    }
+  ],
+  "requires": []
+}

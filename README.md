@@ -4,7 +4,7 @@ Theme Manager is the Nuxt 4 platform capability responsible for defining, valida
 
 It provides a stable presentation contract between theme definitions and consuming UI while keeping application components independent of concrete theme values. Tailwind CSS is the presentation mechanism through which the semantic theme vocabulary is exposed.
 
-> **Status:** Theme Manager is currently being re-baselined from the recovered legacy implementation. The target architecture is established by TM-0 through TM-2; implementation of the new repository foundation begins with TM-3.
+> **Status:** Theme Manager is being re-baselined from the recovered legacy implementation. TM-0 through TM-2 establish the recovered behaviour and target architecture; TM-3 establishes the new package-ready Nuxt 4 Layer foundation. Presentation-engine migration begins with TM-4.
 
 ## Architecture
 
@@ -166,8 +166,49 @@ docs/migration_plan/
 
 TM-0 records the recovered presentation architecture and assets. TM-1 records the recovered Theme Manager behaviour and functional surface. TM-2 defines the target architecture and contracts.
 
+## Installation and Composition
+
+The package identity is:
+
+```text
+@nuxt4-layers/theme-manager
+```
+
+During early independent development, a consuming application may install the repository as a pinned Git-backed package dependency. Stable releases are intended to be consumed as versioned packages.
+
+The Nuxt Layer is the package root export and is composed using Nuxt `extends` after installation. Production applications must pin and integration-test the exact dependency revision rather than follow a changing default branch.
+
+TM-3 does not yet expose consumer configuration. Configuration options will be documented when an authorised implementation stage introduces them.
+
+## Public Exports
+
+TM-3 establishes three deliberate package entry points:
+
+```text
+@nuxt4-layers/theme-manager
+@nuxt4-layers/theme-manager/contracts
+@nuxt4-layers/theme-manager/capability
+```
+
+The root is the Nuxt Layer entry point, `/contracts` is the supported TypeScript contract surface, and `/capability` exposes machine-readable capability metadata. Undocumented internal paths are not public contracts.
+
+## Development and Testing
+
+The repository uses pnpm.
+
+```sh
+pnpm install
+pnpm typecheck
+pnpm test
+pnpm check
+```
+
+`pnpm check` runs the complete TM-3 quality gate. Pull requests and pushes to `master` run the same quality checks in GitHub Actions.
+
+A minimal `playground/` application extends the repository root and provides the composition fixture for later integration work.
+
 ## Development Status
 
-The repository is at the transition from **TM-2 — Target Architecture and Contracts** to **TM-3 — New Repository Foundation**.
+**TM-3 — New Repository Foundation** establishes the package metadata, Nuxt Layer entry point, public contract export, capability manifest, provider-independent repository boundary, composition fixture, tests and CI foundation.
 
-Installation instructions, package exports, configuration APIs, development commands and the final repository structure are intentionally not documented here yet. They will be added once TM-3 establishes and verifies those implementation contracts.
+TM-3 intentionally does not migrate legacy presentation/runtime behaviour. The next authorised work package is **TM-4 — Presentation Engine Migration**.
