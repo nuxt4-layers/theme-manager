@@ -1,0 +1,87 @@
+import { describe, expect, it } from 'vitest'
+import type {
+  JsonValue,
+  ThemeActorContext,
+  ThemeAuthorizationRequest,
+  ThemeAuthorizationService,
+  ThemeDefinition,
+  ThemeRepository,
+} from '../contracts'
+import { serializeThemeDefinition } from '../shared/theme-definition'
+import { createThemeService } from '../server/utils/theme-service'
+import { ThemeAuthorizationError, type ThemeAccessIntegration } from '../server/utils/theme-access'
+
+const theme = (id: string, ownerId: string): ThemeDefinition => ({
+  id, name: id, version: '1', schemaVersion: '1',
+  ownership: { ownerType: 'user', ownerId },
+  visibility: 'private', lifecycle: 'draft',
+  presentation: { colour: {}, typography: {}, spacing: {}, radii: {}, effects: {}, responsive: {}, assets: {} },
+  modes: {},
+})
+
+function repository(initial: ThemeDefinition[]): ThemeRepository {
+  const values = new Map<string, JsonValue>(initial.map(t => [t.id, serializeThemeDefinition(t)]))
+  return {
+    findById: async id => values.get(id) ?? null,
+    list: async () => [...values.values()],
+    save: async value => { const id = (value as { id: string }).id; values.set(id, value) },
+    delete: async id => { values.delete(id) },
+  }
+}
+
+const actor: ThemeActorContext = { actorId: 'user-a', groupIds: ['group-a'], organisationIds: ['org-a'] }
+
+function access(allowed: (request: ThemeAuthorizationRequest) => boolean): ThemeAccessIntegration {
+  return {
+    actor: async () => actor,
+    async assert(action, resource) {
+      const request = { actor, action, resource }
+      if (!allowed(request)) throw new ThemeAuthorizationError(action, resource.resourceId)
+      return actor
+    },
+  }
+}
+
+describe('TM-8 Identity and Authorization integration', () => {
+  it('filters Theme library results through authoritative read decisions', async () => {
+    const service = createThemeService(repository([theme('mine', 'user-a'), theme('other', 'user-b')]),
+      access(req => req.resource.ownership?.ownerId === req.actor.actorId))
+    expect((await service.list()).map(t => t.id)).toEqual(['mine'])
+  })
+
+  it('enforces read authorization on resource lookup', async () => {
+    const service = createThemeService(repository([theme('other', 'user-b')]), access(() => false))
+    await expect(service.find('other')).rejects.toBeInstanceOf(ThemeAuthorizationError)
+  })
+
+  it('enforces create, edit and delete as distinct Theme actions', async () => {
+    const seen: string[] = []
+    const authorization: ThemeAuthorizationService = {
+      async isAllowed(request) { seen.push(request.action); return true },
+    }
+    const integrated: ThemeAccessIntegration = {
+      actor: async () => actor,
+      async assert(action, resource) {
+        const request = { actor, action, resource }
+        if (!await authorization.isAllowed(request)) throw new ThemeAuthorizationError(action, resource.resourceId)
+        return actor
+      },
+    }
+    const service = createThemeService(repository([theme('existing', 'user-a')]), integrated)
+    await service.create(theme('created', 'user-a'))
+    await service.update('existing', { ...theme('existing', 'user-a'), name: 'changed' })
+    await service.delete('existing')
+    expect(seen).toEqual(['theme.create', 'theme.edit', 'theme.delete'])
+  })
+
+  it('prevents ownership transfer through ordinary edit', async () => {
+    const service = createThemeService(repository([theme('owned', 'user-a')]), access(() => true))
+    await expect(service.update('owned', theme('owned', 'user-b'))).rejects.toThrow(/ownership/)
+  })
+
+  it('keeps group membership opaque to Theme Manager', () => {
+    expect(actor.groupIds).toEqual(['group-a'])
+    expect(actor).not.toHaveProperty('memberships')
+    expect(actor).not.toHaveProperty('roles')
+  })
+})
