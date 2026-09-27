@@ -1,4 +1,7 @@
-export type ThemeOwnerType = 'system' | 'public' | 'user' | 'group' | 'organisation'
+export type ThemeOwnerType = 'system' | 'user' | 'group' | 'organisation'
+
+export type JsonPrimitive = string | number | boolean | null
+export type JsonValue = JsonPrimitive | JsonValue[] | { [key: string]: JsonValue }
 
 export type ThemeVisibility =
   | 'private'
@@ -69,8 +72,8 @@ export interface ThemeSummary {
 }
 
 export interface ThemeRepository {
-  findById(id: string): Promise<unknown | null>
-  list(): Promise<readonly unknown[]>
-  save(serializedTheme: unknown): Promise<void>
+  findById(id: string): Promise<JsonValue | null>
+  list(): Promise<readonly JsonValue[]>
+  save(serializedTheme: JsonValue): Promise<void>
   delete(id: string): Promise<void>
 }
