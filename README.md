@@ -4,7 +4,7 @@ Theme Manager is the Nuxt 4 platform capability responsible for defining, valida
 
 It provides a stable presentation contract between theme definitions and consuming UI while keeping application components independent of concrete theme values. Tailwind CSS is the presentation mechanism through which the semantic theme vocabulary is exposed.
 
-> **Status:** Theme Manager is being re-baselined from the recovered legacy implementation. TM-0 through TM-2 establish the recovered behaviour and target architecture; TM-3 establishes the new package-ready Nuxt 4 Layer foundation. Presentation-engine migration begins with TM-4.
+> **Status:** Theme Manager is being re-baselined from the recovered legacy implementation. TM-0 through TM-3 establish the recovered behaviour, target architecture and repository foundation; TM-4 migrates the semantic presentation engine. Runtime-engine migration begins with TM-5.
 
 ## Architecture
 
@@ -209,6 +209,6 @@ A minimal `playground/` application extends the repository root and provides the
 
 ## Development Status
 
-**TM-3 — New Repository Foundation** establishes the package metadata, Nuxt Layer entry point, public contract export, capability manifest, provider-independent repository boundary, composition fixture, tests and CI foundation.
+**TM-4 — Presentation Engine Migration** establishes the recovered raw → semantic → Tailwind CSS v4 presentation pipeline in the new bounded capability while removing legacy UI/Auth/host source-topology coupling.
 
-TM-3 intentionally does not migrate legacy presentation/runtime behaviour. The next authorised work package is **TM-4 — Presentation Engine Migration**.
+The migrated presentation engine is protected by cardinality and mapping-equivalence tests. Runtime Theme application and switching remain deliberately outside TM-4. The next authorised work package is **TM-5 — Runtime Engine Migration**.
