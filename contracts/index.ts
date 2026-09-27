@@ -77,3 +77,20 @@ export interface ThemeRepository {
   save(serializedTheme: JsonValue): Promise<void>
   delete(id: string): Promise<void>
 }
+
+export type {
+  RuntimeTheme,
+  RuntimeThemeMode,
+  RuntimeInteractionState,
+  ThemeApplication,
+  ThemeStyleTarget,
+} from '../shared/theme-runtime'
+
+export {
+  THEME_MODES,
+  THEME_INTERACTION_STATES,
+  assertRuntimeTheme,
+  createThemeApplication,
+  legacyColourThemeToRuntime,
+  runtimeVariableName,
+} from '../shared/theme-runtime'
