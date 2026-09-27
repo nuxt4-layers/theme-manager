@@ -27,27 +27,36 @@ const saving = ref(false)
 const error = ref<string | null>(null)
 const theme = ref<ThemeDefinition | null>(null)
 
-function newTheme(): ThemeDefinition {
+async function newTheme(): Promise<ThemeDefinition> {
+  const config = useRuntimeConfig().public.themeManager as {
+    creationTemplateId?: string
+    creationOwnerType?: 'user' | 'group' | 'organisation'
+    creationOwnerId?: string
+  } | undefined
+
+  if (!config?.creationTemplateId || !config.creationOwnerType || !config.creationOwnerId) {
+    throw new Error('Theme creation requires composition-supplied template and owner context.')
+  }
+
+  const template = structuredClone(await management.loadTheme(config.creationTemplateId))
   const now = new Date().toISOString()
   return {
+    ...template,
     id: `theme-${crypto.randomUUID()}`,
     name: 'Untitled Theme',
     description: '',
     version: '1.0.0',
-    schemaVersion: '1',
     created: now,
     updated: now,
-    ownership: { ownerType: 'user', ownerId: 'unassigned' },
+    ownership: { ownerType: config.creationOwnerType, ownerId: config.creationOwnerId },
     visibility: 'private',
     lifecycle: 'draft',
-    presentation: { colour: {}, typography: {}, spacing: {}, radii: {}, effects: {}, responsive: {}, assets: {} },
-    modes: { light: {}, dark: {} },
   }
 }
 
 onMounted(async () => {
   try {
-    theme.value = isNew.value ? newTheme() : await management.loadTheme(id.value)
+    theme.value = isNew.value ? await newTheme() : await management.loadTheme(id.value)
   }
   catch (cause) {
     error.value = cause instanceof Error ? cause.message : 'Failed to load theme.'
