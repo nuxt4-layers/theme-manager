@@ -104,6 +104,8 @@ The **Effective Theme** is the canonical runtime result. Consumers do not need t
 
 Theme application and live preview use the **same Theme Application Engine**; preview supplies temporary state without changing the persisted effective-theme preference.
 
+Theme ownership, visibility and lifecycle are part of the Theme Manager domain. Identity supplies only opaque actor/scope references, while Authorization evaluates Theme Manager-defined actions against those resources.
+
 ---
 
 ## Theme Definition
@@ -170,7 +172,11 @@ Theme Manager must never require knowledge of `Button.vue`, `Card.vue`, `Sidebar
 
 Accordingly, the legacy Theme Manager `assets/css/components/` responsibility moves to UI.
 
-Theme Manager's own management interface remains legitimate Theme Manager functionality but must not create a circular Theme Manager ↔ UI architectural dependency.
+Theme Manager's own management interface remains legitimate Theme Manager functionality and is defined as an **optional self-contained management projection** within the Theme Manager repository. It may use Vue/Nuxt and Theme Manager's own Tailwind semantic presentation contract, but it MUST NOT depend on the reusable UI capability and must not create a circular Theme Manager ↔ UI dependency.
+
+The management projection owns Theme Manager-specific workflows and views, including the Theme Library and editors for colour, typography, spacing/radius, effects, responsive values, assets, raw Theme Definition data, import/export and preview. Consuming applications determine **where** these views are routed and exposed; they are not required to reconstruct Theme Manager workflows from insertable buttons or low-level controls.
+
+Theme Manager defines its authorization action vocabulary, including actions such as `theme.read`, `theme.create`, `theme.edit`, `theme.delete`, `theme.use`, `theme.publish`, `theme.share`, `theme.import`, `theme.export` and `theme.assign`. External Authorization determines whether an actor possesses those permissions. UI visibility is convenience only; server-side Theme Manager operations enforce the authorization decision independently.
 
 ---
 
@@ -203,6 +209,20 @@ The bundled default theme becomes a **canonical protected Theme Manager resource
 
 ---
 
+## Theme Import and Export
+
+Import/export is a first-class Theme Manager kernel capability rather than merely an administration-page feature.
+
+Imported JSON is treated as untrusted input and passes through size/type limits, safe JSON parsing, schema-version inspection, structural validation, semantic validation, asset-reference validation, authorization/ownership checks, normalisation and identifier/collision handling before persistence.
+
+Imported ownership, visibility or privileged lifecycle metadata is never trusted merely because it is present in the submitted document. Trusted Theme Manager operations assign or constrain those values according to the actor context and Authorization decision.
+
+The Theme Definition format must not permit arbitrary executable content to become trusted application behaviour. Asset imports use validated external asset references; embedding image binaries directly in Theme Definition JSON is not part of this contract.
+
+Export produces a valid versioned Theme Definition representation suitable for validation and subsequent import.
+
+---
+
 ## Validation and Public Contracts
 
 Theme Definitions crossing trust boundaries require runtime validation; TypeScript typing alone is insufficient.
@@ -221,7 +241,7 @@ The deliberate public contract should include, as applicable:
 
 Internal Pinia stores, DOM manipulation, Nitro handlers, persistence adapters and provider SDKs remain private implementation.
 
-The existing CRUD lifecycle, Theme Library, Theme Editor, visual editing, raw Theme Definition editing, live preview, apply/default behaviour and theme creation are retained and extended to the complete Theme Definition.
+The existing CRUD lifecycle, Theme Library, Theme Editor, visual editing, raw Theme Definition editing, live preview, apply/default behaviour and theme creation are retained and extended to the complete Theme Definition. The management projection also exposes import/export and the ownership/visibility/library operations permitted by the actor's authorization context.
 
 ---
 
@@ -229,7 +249,7 @@ The existing CRUD lifecycle, Theme Library, Theme Editor, visual editing, raw Th
 
 TM-2 establishes Theme Manager as:
 
-> **A bounded Nuxt 4 foundation capability that owns the definition, validation, resolution, persistence contracts, runtime application and management of semantic presentation themes, using TailwindCSS as its presentation mechanism while exposing a stable semantic vocabulary to UI consumers and remaining independent of UI implementation, identity, authorization, persistence technology and physical asset storage.**
+> **A bounded Nuxt 4 foundation capability that owns the definition, validation, ownership, visibility, sharing, lifecycle, resolution, persistence contracts, import/export, runtime application and management of semantic presentation themes, using TailwindCSS as its presentation mechanism while exposing a stable semantic vocabulary to UI consumers and remaining independent of reusable UI implementation, identity implementation, authorization policy, persistence technology and physical asset storage.**
 
 The recovered architecture is therefore preserved where strong, its historical coupling is removed, and its semantic presentation system is extended beyond colour without changing its fundamental design.
 
@@ -258,9 +278,11 @@ The next authorised objective is **TM-3 — New Repository Foundation**.
 | Effective-theme runtime model | **ADOPT** |
 | Common application/preview engine | **ADOPT** |
 | Storage-independent repository | **ADOPT** |
+| Canonical persisted Theme Definition JSON | **THEME MANAGER OWNS FORMAT + BIDIRECTIONAL VALIDATION** |
 | Implicit `getThemeRepository()` provider | **REPLACE** |
 | CRUD lifecycle | **ADOPT + HARDEN** |
 | Runtime Theme Definition validation | **REQUIRE** |
+| Theme Administration GUI | **ADOPT as optional self-contained Theme Manager projection; no UI capability dependency** |
 | Theme Library/Editor | **ADOPT + EXTEND** |
 | Raw editor | **ADOPT** |
 | Component CSS inside Theme Manager | **REMOVE** |
@@ -270,5 +292,4 @@ The next authorised objective is **TM-3 — New Repository Foundation**.
 | Authorization policy/enforcement service | **EXTERNAL CONTRACT** |
 | Physical asset storage | **EXTERNAL/ADAPTER** |
 | Application-specific routing/layout | **COMPOSITION ROOT** |
-
-I have kept the main narrative deliberately compact; the decisions table then preserves the complete TM-2 disposition record without consuming the two-page allowance.
+
