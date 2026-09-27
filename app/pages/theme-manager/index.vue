@@ -12,6 +12,7 @@
 
 <script setup lang="ts">
 import type { ThemeSummary } from '../../../contracts'
+import { legacyColourThemeToRuntime } from '../../../shared/theme-runtime'
 
 const management = useThemeManagement()
 const runtime = useThemeRuntime()
