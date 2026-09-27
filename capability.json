@@ -13,5 +13,15 @@
       "contractVersion": "1"
     }
   ],
-  "requires": []
+  "requires": [],
+  "publicExports": [
+    ".",
+    "./contracts",
+    "./capability",
+    "./presentation.css"
+  ],
+  "integration": {
+    "consumers": "consume SemanticPresentationTheme contract; do not import Theme Manager internals",
+    "composition": "compose Theme Manager before presentation consumers; no reverse Theme Manager dependency"
+  }
 }

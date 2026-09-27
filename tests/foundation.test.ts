@@ -13,11 +13,12 @@ describe('Theme Manager repository foundation', () => {
     expect(manifest.classification).toBe('foundation')
   })
 
-  it('publishes deliberate root, contracts and capability entry points', () => {
+  it('publishes deliberate root, contracts, capability and presentation entry points', () => {
     expect(pkg.exports).toEqual({
       '.': './nuxt.config.ts',
       './contracts': './contracts/index.ts',
       './capability': './capability.json',
+      './presentation.css': './assets/css/main.css',
     })
   })
 

@@ -4,7 +4,7 @@ Theme Manager is the Nuxt 4 platform capability responsible for defining, valida
 
 It provides a stable presentation contract between theme definitions and consuming UI while keeping application components independent of concrete theme values. Tailwind CSS is the presentation mechanism through which the semantic theme vocabulary is exposed.
 
-> **Status:** Theme Manager is being re-baselined from the recovered legacy implementation. TM-0 through TM-7 establish the recovered capability and management projection; TM-8 adds explicit external Identity/Authorization integration with authoritative server-side access enforcement. UI-layer integration begins with TM-9.
+> **Status:** Theme Manager is being re-baselined from the recovered legacy implementation. TM-0 through TM-8 establish the recovered capability, management projection and access integration; TM-9 publishes the stable semantic presentation consumer boundary without introducing a UI dependency. Composition and legacy retirement begins with TM-10.
 
 ## Architecture
 
@@ -209,6 +209,6 @@ A minimal `playground/` application extends the repository root and provides the
 
 ## Development Status
 
-**TM-8 — User and Group Integration** establishes opaque actor/group/organisation context, external Authorization decision contracts and authoritative server-side action enforcement while retaining Theme ownership inside Theme Manager.
+**TM-9 — UI-Layer Integration** publishes the versioned semantic presentation consumer boundary and a deliberate `@nuxt4-layers/theme-manager/presentation.css` entry point while proving Theme Manager remains independent of UI implementation and source topology.
 
-Identity membership and Authorization policy remain external. The next authorised work package is **TM-9 — UI-Layer Integration**.
+The live UI capability's provisional parallel token/application model is recorded as downstream UI migration work, not copied into Theme Manager. The next authorised work package is **TM-10 — Composition and Legacy Retirement**.
