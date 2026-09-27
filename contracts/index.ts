@@ -71,6 +71,33 @@ export interface ThemeSummary {
   lifecycle: ThemeLifecycle
 }
 
+export interface ThemeActorContext {
+  actorId: string | null
+  groupIds: readonly string[]
+  organisationIds: readonly string[]
+}
+
+export interface ThemeResourceRef {
+  resourceType: 'theme'
+  resourceId: string
+  ownership?: ThemeOwnership
+  visibility?: ThemeVisibility
+}
+
+export interface ThemeAuthorizationRequest {
+  actor: ThemeActorContext
+  action: ThemeAction
+  resource: ThemeResourceRef
+}
+
+export interface ThemeAuthorizationService {
+  isAllowed(request: ThemeAuthorizationRequest): Promise<boolean>
+}
+
+export interface ThemeActorContextProvider {
+  getActorContext(): Promise<ThemeActorContext>
+}
+
 export interface ThemeRepository {
   findById(id: string): Promise<JsonValue | null>
   list(): Promise<readonly JsonValue[]>
