@@ -94,3 +94,10 @@ export {
   legacyColourThemeToRuntime,
   runtimeVariableName,
 } from '../shared/theme-runtime'
+
+export {
+  parsePersistedTheme,
+  parseThemeDefinition,
+  serializeThemeDefinition,
+  summarizeTheme,
+} from '../shared/theme-definition'
