@@ -121,6 +121,23 @@ ThemeDefinition
 │   ├── version / schemaVersion
 │   └── created / updated
 │
+├── ownership
+│   ├── ownerType
+│   └── ownerId
+│
+├── visibility
+│   ├── private
+│   ├── group
+│   ├── organisation
+│   ├── shared
+│   ├── public
+│   └── system
+│
+├── lifecycle
+│   ├── draft
+│   ├── published
+│   └── archived
+│
 ├── presentation
 │   ├── colour
 │   │   ├── fill
