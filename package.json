@@ -7,7 +7,8 @@
   "exports": {
     ".": "./nuxt.config.ts",
     "./contracts": "./contracts/index.ts",
-    "./capability": "./capability.json"
+    "./capability": "./capability.json",
+    "./presentation.css": "./assets/css/main.css"
   },
   "files": [
     "app",
@@ -16,7 +17,8 @@
     "contracts",
     "capability.json",
     "nuxt.config.ts",
-    "README.md"
+    "README.md",
+    "assets"
   ],
   "scripts": {
     "prepare": "nuxt prepare",
