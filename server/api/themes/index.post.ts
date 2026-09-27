@@ -2,10 +2,11 @@ import { readBody } from 'h3'
 import { createThemeService } from '../../utils/theme-service'
 import { themeHttpError } from '../../utils/theme-http'
 import { useThemeRepository } from '../../utils/theme-repository'
+import { useThemeAccessIntegration } from '../../utils/theme-access'
 
 export default defineEventHandler(async (event) => {
   try {
-    const theme = await createThemeService(useThemeRepository()).create(await readBody(event))
+    const theme = await createThemeService(useThemeRepository(), useThemeAccessIntegration()).create(await readBody(event))
     return { success: true, id: theme.id }
   }
   catch (error) {
