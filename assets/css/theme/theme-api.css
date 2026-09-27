@@ -1,0 +1,792 @@
+/**
+ * ================================================================================
+ *
+ * @project-manager    @monorepo/theme-manager
+ * @file       ~/layers/theme-manager/assets/css/theme/theme-api.css
+ * @version    1.8.0
+ * @createDate 2025 Jun 12
+ * @createTime 16:34
+ * @author     Steve R Lewis
+ *
+ * ================================================================================
+ *
+ * @description:
+ * This file acts as the semantic API layer for the theme. It is responsible
+ * for mapping the raw, mode-specific color variables (e.g., `--color-surface-00-light`)
+ * defined in `theme-default.css` or injected by the theme manager to a stable
+ * set of semantic variables (e.g., `--ui-surface-00`).
+ *
+ * Components should ONLY consume the `--ui-*` variables, ensuring they are
+ * automatically theme-aware.
+ *
+ * This structure cleanly separates the semantic meaning of a color from its
+ * actual value, allowing for robust and flexible theming.
+
+ * ================================================================================
+ *
+ * @notes
+ * Revision History
+ *
+ * v1.8.0 - 2025-06-18
+ * - Implemented the final descriptive naming convention from `types/theme.ts v1.8.0`.
+ * - Added comprehensive JSDoc documentation and a full revision history.
+ *
+ * v1.7.0 - 2025-06-18
+ * - Mapped variables for the previous descriptive naming scheme.
+ *
+ * v1.5.0 - 2025-06-18
+ * - Expanded to map the full four-state model for components.
+ *
+ * v1.4.0 - 2025-06-16
+ * - Refactored to support separate light/dark palettes by defining all
+ * variables within both `:root` and `html.dark` selectors.
+ *
+ * v1.1.0 - 2025-06-16: Refactored to properly support light and dark modes by
+ * defining all --ui-* variables within both :root and
+ * html.dark selectors. This ensures the entire theme
+ * adapts correctly when the mode changes.
+ *
+ * v1.0.0 - 2025-06-12
+ * - Initial version with a basic set of semantic variables.
+ * ================================================================================
+ */
+
+:root {
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ [LIGHT] MODE VARIANTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ 1. FILL (Backgrounds & Shadows) ~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  /* --- 'base' fill --- */
+  --api-fill-base-default: var(--ui-fill-base-default-light);
+  --api-fill-base-hover: var(--ui-fill-base-hover-light);
+  --api-fill-base-active: var(--ui-fill-base-active-light);
+  --api-fill-base-selected: var(--ui-fill-base-selected-light);
+  --api-fill-base-visited: var(--ui-fill-base-visited-light);
+  --api-fill-base-disabled: var(--ui-fill-base-disabled-light);
+  --api-fill-base-shadow: var(--ui-fill-base-shadow-light);
+
+  /* --- 'primary' (Primary fill --- */
+  --api-fill-primary-default: var(--ui-fill-primary-default-light);
+  --api-fill-primary-hover: var(--ui-fill-primary-hover-light);
+  --api-fill-primary-active: var(--ui-fill-primary-active-light);
+  --api-fill-primary-selected: var(--ui-fill-primary-selected-light);
+  --api-fill-primary-visited: var(--ui-fill-primary-visited-light);
+  --api-fill-primary-disabled: var(--ui-fill-primary-disabled-light);
+  --api-fill-primary-shadow: var(--ui-fill-primary-shadow-light);
+
+  /* --- 'secondary' fill --- */
+  --api-fill-secondary-default: var(--ui-fill-secondary-default-light);
+  --api-fill-secondary-hover: var(--ui-fill-secondary-hover-light);
+  --api-fill-secondary-active: var(--ui-fill-secondary-active-light);
+  --api-fill-secondary-selected: var(--ui-fill-secondary-selected-light);
+  --api-fill-secondary-visited: var(--ui-fill-secondary-visited-light);
+  --api-fill-secondary-disabled: var(--ui-fill-secondary-disabled-light);
+  --api-fill-secondary-shadow: var(--ui-fill-secondary-shadow-light);
+
+  /* --- 'tertiary'  fill --- */
+  --api-fill-tertiary-default: var(--ui-fill-tertiary-default-light);
+  --api-fill-tertiary-hover: var(--ui-fill-tertiary-hover-light);
+  --api-fill-tertiary-active: var(--ui-fill-tertiary-active-light);
+  --api-fill-tertiary-selected: var(--ui-fill-tertiary-selected-light);
+  --api-fill-tertiary-visited: var(--ui-fill-tertiary-visited-light);
+  --api-fill-tertiary-disabled: var(--ui-fill-tertiary-disabled-light);
+  --api-fill-tertiary-shadow: var(--ui-fill-tertiary-shadow-light);
+
+  /* --- 'accent' (Special highlights, on - component items) --- */
+  --api-fill-accent-default: var(--ui-fill-accent-default-light);
+  --api-fill-accent-hover: var(--ui-fill-accent-hover-light);
+  --api-fill-accent-active: var(--ui-fill-accent-active-light);
+  --api-fill-accent-selected: var(--ui-fill-accent-selected-light);
+  --api-fill-accent-visited: var(--ui-fill-accent-visited-light);
+  --api-fill-accent-disabled: var(--ui-fill-accent-disabled-light);
+  --api-fill-accent-shadow: var(--ui-fill-accent-shadow-light);
+
+  /* --- 'muted' (For placeholders fill) --- */
+  --api-fill-muted-default: var(--ui-fill-muted-default-light);
+  --api-fill-muted-hover: var(--ui-fill-muted-hover-light);
+  --api-fill-muted-active: var(--ui-fill-muted-active-light);
+  --api-fill-muted-selected: var(--ui-fill-muted-selected-light);
+  --api-fill-muted-visited: var(--ui-fill-muted-visited-light);
+  --api-fill-muted-disabled: var(--ui-fill-muted-disabled-light);
+  --api-fill-muted-shadow: var(--ui-fill-muted-shadow-light);
+
+  /* --- 'floor' (The very bottom layer, behind 'base') --- */
+  --api-fill-floor-default: var(--ui-fill-floor-default-light);
+  --api-fill-floor-hover: var(--ui-fill-floor-hover-light);
+  --api-fill-floor-active: var(--ui-fill-floor-active-light);
+  --api-fill-floor-selected: var(--ui-fill-floor-selected-light);
+  --api-fill-floor-visited: var(--ui-fill-floor-visited-light);
+  --api-fill-floor-disabled: var(--ui-fill-floor-disabled-light);
+  --api-fill-floor-shadow: var(--ui-fill-floor-shadow-light);
+
+  /* --- 'input' (For form inputs, textareas etc.) --- */
+  --api-fill-input-default: var(--ui-fill-input-default-light);
+  --api-fill-input-hover: var(--ui-fill-input-hover-light);
+  --api-fill-input-active: var(--ui-fill-input-active-light);
+  --api-fill-input-selected: var(--ui-fill-input-selected-light);
+  --api-fill-input-visited: var(--ui-fill-input-visited-light);
+  --api-fill-input-disabled: var(--ui-fill-input-disabled-light);
+  --api-fill-input-shadow: var(--ui-fill-input-shadow-light);
+
+  /* --- 'link' text/icons --- */
+  --api-fill-link-default: var(--ui-fill-link-default-light);
+  --api-fill-link-hover: var(--ui-fill-link-hover-light);
+  --api-fill-link-active: var(--ui-fill-link-active-light);
+  --api-fill-link-selected: var(--ui-fill-link-selected-light);
+  --api-fill-link-visited: var(--ui-fill-link-visited-light);
+  --api-fill-link-disabled: var(--ui-fill-link-disabled-light);
+  --api-fill-link-shadow: var(--ui-fill-link-shadow-light);
+
+  /* --- Status Fills --- */
+  --api-fill-success-default: var(--ui-fill-success-default-light);
+  --api-fill-success-hover: var(--ui-fill-success-hover-light);
+  --api-fill-success-active: var(--ui-fill-success-active-light);
+  --api-fill-success-selected: var(--ui-fill-success-selected-light);
+  --api-fill-success-visited: var(--ui-fill-success-visited-light);
+  --api-fill-success-disabled: var(--ui-fill-success-disabled-light);
+  --api-fill-success-shadow: var(--ui-fill-success-shadow-light);
+
+  --api-fill-info-default: var(--ui-fill-info-default-light);
+  --api-fill-info-hover: var(--ui-fill-info-hover-light);
+  --api-fill-info-active: var(--ui-fill-info-active-light);
+  --api-fill-info-selected: var(--ui-fill-info-selected-light);
+  --api-fill-info-visited: var(--ui-fill-info-visited-light);
+  --api-fill-info-disabled: var(--ui-fill-info-disabled-light);
+  --api-fill-info-shadow: var(--ui-fill-info-shadow-light);
+
+  --api-fill-warning-default: var(--ui-fill-warning-default-light);
+  --api-fill-warning-hover: var(--ui-fill-warning-hover-light);
+  --api-fill-warning-active: var(--ui-fill-warning-active-light);
+  --api-fill-warning-selected: var(--ui-fill-warning-selected-light);
+  --api-fill-warning-visited: var(--ui-fill-warning-visited-light);
+  --api-fill-warning-disabled: var(--ui-fill-warning-disabled-light);
+  --api-fill-warning-shadow: var(--ui-fill-warning-shadow-light);
+
+  --api-fill-error-default: var(--ui-fill-error-default-light);
+  --api-fill-error-hover: var(--ui-fill-error-hover-light);
+  --api-fill-error-active: var(--ui-fill-error-active-light);
+  --api-fill-error-selected: var(--ui-fill-error-selected-light);
+  --api-fill-error-visited: var(--ui-fill-error-visited-light);
+  --api-fill-error-disabled: var(--ui-fill-error-disabled-light);
+  --api-fill-error-shadow: var(--ui-fill-error-shadow-light);
+
+  --api-fill-notification-default: var(--ui-fill-notification-default-light);
+  --api-fill-notification-hover: var(--ui-fill-notification-hover-light);
+  --api-fill-notification-active: var(--ui-fill-notification-active-light);
+  --api-fill-notification-selected: var(--ui-fill-notification-selected-light);
+  --api-fill-notification-visited: var(--ui-fill-notification-visited-light);
+  --api-fill-notification-disabled: var(--ui-fill-notification-disabled-light);
+  --api-fill-notification-shadow: var(--ui-fill-notification-shadow-light);
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ 2. PEN (Text, Icons & Shadows) ~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  /* --- 'base' text/icons --- */
+  --api-pen-base-default: var(--ui-pen-base-default-light);
+  --api-pen-base-hover: var(--ui-pen-base-hover-light);
+  --api-pen-base-active: var(--ui-pen-base-active-light);
+  --api-pen-base-selected: var(--ui-pen-base-selected-light);
+  --api-pen-base-visited: var(--ui-pen-base-visited-light);
+  --api-pen-base-disabled: var(--ui-pen-base-disabled-light);
+  --api-pen-base-shadow: var(--ui-pen-base-shadow-light);
+
+  /* --- 'primary' (Primary text/icons --- */
+  --api-pen-primary-default: var(--ui-pen-primary-default-light);
+  --api-pen-primary-hover: var(--ui-pen-primary-hover-light);
+  --api-pen-primary-active: var(--ui-pen-primary-active-light);
+  --api-pen-primary-selected: var(--ui-pen-primary-selected-light);
+  --api-pen-primary-visited: var(--ui-pen-primary-visited-light);
+  --api-pen-primary-disabled: var(--ui-pen-primary-disabled-light);
+  --api-pen-primary-shadow: var(--ui-pen-primary-shadow-light);
+
+  /* --- 'secondary' text/icons --- */
+  --api-pen-secondary-default: var(--ui-pen-secondary-default-light);
+  --api-pen-secondary-hover: var(--ui-pen-secondary-hover-light);
+  --api-pen-secondary-active: var(--ui-pen-secondary-active-light);
+  --api-pen-secondary-selected: var(--ui-pen-secondary-selected-light);
+  --api-pen-secondary-visited: var(--ui-pen-secondary-visited-light);
+  --api-pen-secondary-disabled: var(--ui-pen-secondary-disabled-light);
+  --api-pen-secondary-shadow: var(--ui-pen-secondary-shadow-light);
+
+  /* --- 'tertiary'  text/icons --- */
+  --api-pen-tertiary-default: var(--ui-pen-tertiary-default-light);
+  --api-pen-tertiary-hover: var(--ui-pen-tertiary-hover-light);
+  --api-pen-tertiary-active: var(--ui-pen-tertiary-active-light);
+  --api-pen-tertiary-selected: var(--ui-pen-tertiary-selected-light);
+  --api-pen-tertiary-visited: var(--ui-pen-tertiary-visited-light);
+  --api-pen-tertiary-disabled: var(--ui-pen-tertiary-disabled-light);
+  --api-pen-tertiary-shadow: var(--ui-pen-tertiary-shadow-light);
+
+  /* --- 'accent' (Special highlights, on - component items) --- */
+  --api-pen-accent-default: var(--ui-pen-accent-default-light);
+  --api-pen-accent-hover: var(--ui-pen-accent-hover-light);
+  --api-pen-accent-active: var(--ui-pen-accent-active-light);
+  --api-pen-accent-selected: var(--ui-pen-accent-selected-light);
+  --api-pen-accent-visited: var(--ui-pen-accent-visited-light);
+  --api-pen-accent-disabled: var(--ui-pen-accent-disabled-light);
+  --api-pen-accent-shadow: var(--ui-pen-accent-shadow-light);
+
+  /* --- 'muted' (For placeholders text/icons) --- */
+  --api-pen-muted-default: var(--ui-pen-muted-default-light);
+  --api-pen-muted-hover: var(--ui-pen-muted-hover-light);
+  --api-pen-muted-active: var(--ui-pen-muted-active-light);
+  --api-pen-muted-selected: var(--ui-pen-muted-selected-light);
+  --api-pen-muted-visited: var(--ui-pen-muted-visited-light);
+  --api-pen-muted-disabled: var(--ui-pen-muted-disabled-light);
+  --api-pen-muted-shadow: var(--ui-pen-muted-shadow-light);
+
+  /* --- 'floor' (The very bottom layer, behind 'base') --- */
+  --api-pen-floor-default: var(--ui-pen-floor-default-light);
+  --api-pen-floor-hover: var(--ui-pen-floor-hover-light);
+  --api-pen-floor-active: var(--ui-pen-floor-active-light);
+  --api-pen-floor-selected: var(--ui-pen-floor-selected-light);
+  --api-pen-floor-visited: var(--ui-pen-floor-visited-light);
+  --api-pen-floor-disabled: var(--ui-pen-floor-disabled-light);
+  --api-pen-floor-shadow: var(--ui-pen-floor-shadow-light);
+
+  /* --- 'input' (For form inputs, textareas etc.) --- */
+  --api-pen-input-default: var(--ui-pen-input-default-light);
+  --api-pen-input-hover: var(--ui-pen-input-hover-light);
+  --api-pen-input-active: var(--ui-pen-input-active-light);
+  --api-pen-input-selected: var(--ui-pen-input-selected-light);
+  --api-pen-input-visited: var(--ui-pen-input-visited-light);
+  --api-pen-input-disabled: var(--ui-pen-input-disabled-light);
+  --api-pen-input-shadow: var(--ui-pen-input-shadow-light);
+
+  /* --- 'link' text/icons --- */
+  --api-pen-link-default: var(--ui-pen-link-default-light);
+  --api-pen-link-hover: var(--ui-pen-link-hover-light);
+  --api-pen-link-active: var(--ui-pen-link-active-light);
+  --api-pen-link-selected: var(--ui-pen-link-selected-light);
+  --api-pen-link-visited: var(--ui-pen-link-visited-light);
+  --api-pen-link-disabled: var(--ui-pen-link-disabled-light);
+  --api-pen-link-shadow: var(--ui-pen-link-shadow-light);
+
+  /* --- Status Pens --- */
+  --api-pen-success-default: var(--ui-pen-success-default-light);
+  --api-pen-success-hover: var(--ui-pen-success-hover-light);
+  --api-pen-success-active: var(--ui-pen-success-active-light);
+  --api-pen-success-selected: var(--ui-pen-success-selected-light);
+  --api-pen-success-visited: var(--ui-pen-success-visited-light);
+  --api-pen-success-disabled: var(--ui-pen-success-disabled-light);
+  --api-pen-success-shadow: var(--ui-pen-success-shadow-light);
+
+  --api-pen-info-default: var(--ui-pen-info-default-light);
+  --api-pen-info-hover: var(--ui-pen-info-hover-light);
+  --api-pen-info-active: var(--ui-pen-info-active-light);
+  --api-pen-info-selected: var(--ui-pen-info-selected-light);
+  --api-pen-info-visited: var(--ui-pen-info-visited-light);
+  --api-pen-info-disabled: var(--ui-pen-info-disabled-light);
+  --api-pen-info-shadow: var(--ui-pen-info-shadow-light);
+
+  --api-pen-warning-default: var(--ui-pen-warning-default-light);
+  --api-pen-warning-hover: var(--ui-pen-warning-hover-light);
+  --api-pen-warning-active: var(--ui-pen-warning-active-light);
+  --api-pen-warning-selected: var(--ui-pen-warning-selected-light);
+  --api-pen-warning-visited: var(--ui-pen-warning-visited-light);
+  --api-pen-warning-disabled: var(--ui-pen-warning-disabled-light);
+  --api-pen-warning-shadow: var(--ui-pen-warning-shadow-light);
+
+  --api-pen-error-default: var(--ui-pen-error-default-light);
+  --api-pen-error-hover: var(--ui-pen-error-hover-light);
+  --api-pen-error-active: var(--ui-pen-error-active-light);
+  --api-pen-error-selected: var(--ui-pen-error-selected-light);
+  --api-pen-error-visited: var(--ui-pen-error-visited-light);
+  --api-pen-error-disabled: var(--ui-pen-error-disabled-light);
+  --api-pen-error-shadow: var(--ui-pen-error-shadow-light);
+
+  --api-pen-notification-default: var(--ui-pen-notification-default-light);
+  --api-pen-notification-hover: var(--ui-pen-notification-hover-light);
+  --api-pen-notification-active: var(--ui-pen-notification-active-light);
+  --api-pen-notification-selected: var(--ui-pen-notification-selected-light);
+  --api-pen-notification-visited: var(--ui-pen-notification-visited-light);
+  --api-pen-notification-disabled: var(--ui-pen-notification-disabled-light);
+  --api-pen-notification-shadow: var(--ui-pen-notification-shadow-light);
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ 3. EDGE (Borders) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  /* --- 'base' edge --- */
+  --api-edge-base-default: var(--ui-edge-base-default-light);
+  --api-edge-base-hover: var(--ui-edge-base-hover-light);
+  --api-edge-base-active: var(--ui-edge-base-active-light);
+  --api-edge-base-selected: var(--ui-edge-base-selected-light);
+  --api-edge-base-visited: var(--ui-edge-base-visited-light);
+  --api-edge-base-disabled: var(--ui-edge-base-disabled-light);
+
+  /* --- 'primary' (Primary edge --- */
+  --api-edge-primary-default: var(--ui-edge-primary-default-light);
+  --api-edge-primary-hover: var(--ui-edge-primary-hover-light);
+  --api-edge-primary-active: var(--ui-edge-primary-active-light);
+  --api-edge-primary-selected: var(--ui-edge-primary-selected-light);
+  --api-edge-primary-visited: var(--ui-edge-primary-visited-light);
+  --api-edge-primary-disabled: var(--ui-edge-primary-disabled-light);
+
+  /* --- 'secondary' edge --- */
+  --api-edge-secondary-default: var(--ui-edge-secondary-default-light);
+  --api-edge-secondary-hover: var(--ui-edge-secondary-hover-light);
+  --api-edge-secondary-active: var(--ui-edge-secondary-active-light);
+  --api-edge-secondary-selected: var(--ui-edge-secondary-selected-light);
+  --api-edge-secondary-visited: var(--ui-edge-secondary-visited-light);
+  --api-edge-secondary-disabled: var(--ui-edge-secondary-disabled-light);
+
+  /* --- 'tertiary'  edge --- */
+  --api-edge-tertiary-default: var(--ui-edge-tertiary-default-light);
+  --api-edge-tertiary-hover: var(--ui-edge-tertiary-hover-light);
+  --api-edge-tertiary-active: var(--ui-edge-tertiary-active-light);
+  --api-edge-tertiary-selected: var(--ui-edge-tertiary-selected-light);
+  --api-edge-tertiary-visited: var(--ui-edge-tertiary-visited-light);
+  --api-edge-tertiary-disabled: var(--ui-edge-tertiary-disabled-light);
+
+  /* --- 'accent' (Special highlights, on - component items) --- */
+  --api-edge-accent-default: var(--ui-edge-accent-default-light);
+  --api-edge-accent-hover: var(--ui-edge-accent-hover-light);
+  --api-edge-accent-active: var(--ui-edge-accent-active-light);
+  --api-edge-accent-selected: var(--ui-edge-accent-selected-light);
+  --api-edge-accent-visited: var(--ui-edge-accent-visited-light);
+  --api-edge-accent-disabled: var(--ui-edge-accent-disabled-light);
+
+  /* --- 'muted' (For placeholders edge) --- */
+  --api-edge-muted-default: var(--ui-edge-muted-default-light);
+  --api-edge-muted-hover: var(--ui-edge-muted-hover-light);
+  --api-edge-muted-active: var(--ui-edge-muted-active-light);
+  --api-edge-muted-selected: var(--ui-edge-muted-selected-light);
+  --api-edge-muted-visited: var(--ui-edge-muted-visited-light);
+  --api-edge-muted-disabled: var(--ui-edge-muted-disabled-light);
+
+  /* --- 'floor' (The very bottom layer, behind 'base') --- */
+  --api-edge-floor-default: var(--ui-edge-floor-default-light);
+  --api-edge-floor-hover: var(--ui-edge-floor-hover-light);
+  --api-edge-floor-active: var(--ui-edge-floor-active-light);
+  --api-edge-floor-selected: var(--ui-edge-floor-selected-light);
+  --api-edge-floor-visited: var(--ui-edge-floor-visited-light);
+  --api-edge-floor-disabled: var(--ui-edge-floor-disabled-light);
+
+  /* --- 'input' (For form inputs, textareas etc.) --- */
+  --api-edge-input-default: var(--ui-edge-input-default-light);
+  --api-edge-input-hover: var(--ui-edge-input-hover-light);
+  --api-edge-input-active: var(--ui-edge-input-active-light);
+  --api-edge-input-selected: var(--ui-edge-input-selected-light);
+  --api-edge-input-visited: var(--ui-edge-input-visited-light);
+  --api-edge-input-disabled: var(--ui-edge-input-disabled-light);
+
+  /* --- 'link' text/icons --- */
+  --api-edge-link-default: var(--ui-edge-link-default-light);
+  --api-edge-link-hover: var(--ui-edge-link-hover-light);
+  --api-edge-link-active: var(--ui-edge-link-active-light);
+  --api-edge-link-selected: var(--ui-edge-link-selected-light);
+  --api-edge-link-visited: var(--ui-edge-link-visited-light);
+  --api-edge-link-disabled: var(--ui-edge-link-disabled-light);
+
+  /* --- Status for Edges --- */
+  --api-edge-success-default: var(--ui-edge-success-default-light);
+  --api-edge-success-hover: var(--ui-edge-success-hover-light);
+  --api-edge-success-active: var(--ui-edge-success-active-light);
+  --api-edge-success-selected: var(--ui-edge-success-selected-light);
+  --api-edge-success-visited: var(--ui-edge-success-visited-light);
+  --api-edge-success-disabled: var(--ui-edge-success-disabled-light);
+
+  --api-edge-info-default: var(--ui-edge-info-default-light);
+  --api-edge-info-hover: var(--ui-edge-info-hover-light);
+  --api-edge-info-active: var(--ui-edge-info-active-light);
+  --api-edge-info-selected: var(--ui-edge-info-selected-light);
+  --api-edge-info-visited: var(--ui-edge-info-visited-light);
+  --api-edge-info-disabled: var(--ui-edge-info-disabled-light);
+
+  --api-edge-warning-default: var(--ui-edge-warning-default-light);
+  --api-edge-warning-hover: var(--ui-edge-warning-hover-light);
+  --api-edge-warning-active: var(--ui-edge-warning-active-light);
+  --api-edge-warning-selected: var(--ui-edge-warning-selected-light);
+  --api-edge-warning-visited: var(--ui-edge-warning-visited-light);
+  --api-edge-warning-disabled: var(--ui-edge-warning-disabled-light);
+
+  --api-edge-error-default: var(--ui-edge-error-default-light);
+  --api-edge-error-hover: var(--ui-edge-error-hover-light);
+  --api-edge-error-active: var(--ui-edge-error-active-light);
+  --api-edge-error-selected: var(--ui-edge-error-selected-light);
+  --api-edge-error-visited: var(--ui-edge-error-visited-light);
+  --api-edge-error-disabled: var(--ui-edge-error-disabled-light);
+
+  --api-edge-notification-default: var(--ui-edge-notification-default-light);
+  --api-edge-notification-hover: var(--ui-edge-notification-hover-light);
+  --api-edge-notification-active: var(--ui-edge-notification-active-light);
+  --api-edge-notification-selected: var(--ui-edge-notification-selected-light);
+  --api-edge-notification-visited: var(--ui-edge-notification-visited-light);
+  --api-edge-notification-disabled: var(--ui-edge-notification-disabled-light);
+}
+
+html.dark {
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ [DARK] MODE VARIANTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ 1. FILL (Backgrounds & Shadows) ~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  /* --- 'base' fill --- */
+  --api-fill-base-default: var(--ui-fill-base-default-dark);
+  --api-fill-base-hover: var(--ui-fill-base-hover-dark);
+  --api-fill-base-active: var(--ui-fill-base-active-dark);
+  --api-fill-base-selected: var(--ui-fill-base-selected-dark);
+  --api-fill-base-visited: var(--ui-fill-base-visited-dark);
+  --api-fill-base-disabled: var(--ui-fill-base-disabled-dark);
+  --api-fill-base-shadow: var(--ui-fill-base-shadow-dark);
+
+  /* --- 'primary' (Primary fill --- */
+  --api-fill-primary-default: var(--ui-fill-primary-default-dark);
+  --api-fill-primary-hover: var(--ui-fill-primary-hover-dark);
+  --api-fill-primary-active: var(--ui-fill-primary-active-dark);
+  --api-fill-primary-selected: var(--ui-fill-primary-selected-dark);
+  --api-fill-primary-visited: var(--ui-fill-primary-visited-dark);
+  --api-fill-primary-disabled: var(--ui-fill-primary-disabled-dark);
+  --api-fill-primary-shadow: var(--ui-fill-primary-shadow-dark);
+
+  /* --- 'secondary' fill --- */
+  --api-fill-secondary-default: var(--ui-fill-secondary-default-dark);
+  --api-fill-secondary-hover: var(--ui-fill-secondary-hover-dark);
+  --api-fill-secondary-active: var(--ui-fill-secondary-active-dark);
+  --api-fill-secondary-selected: var(--ui-fill-secondary-selected-dark);
+  --api-fill-secondary-visited: var(--ui-fill-secondary-visited-dark);
+  --api-fill-secondary-disabled: var(--ui-fill-secondary-disabled-dark);
+  --api-fill-secondary-shadow: var(--ui-fill-secondary-shadow-dark);
+
+  /* --- 'tertiary'  fill --- */
+  --api-fill-tertiary-default: var(--ui-fill-tertiary-default-dark);
+  --api-fill-tertiary-hover: var(--ui-fill-tertiary-hover-dark);
+  --api-fill-tertiary-active: var(--ui-fill-tertiary-active-dark);
+  --api-fill-tertiary-selected: var(--ui-fill-tertiary-selected-dark);
+  --api-fill-tertiary-visited: var(--ui-fill-tertiary-visited-dark);
+  --api-fill-tertiary-disabled: var(--ui-fill-tertiary-disabled-dark);
+  --api-fill-tertiary-shadow: var(--ui-fill-tertiary-shadow-dark);
+
+  /* --- 'accent' (Special highlights, on - component items) --- */
+  --api-fill-accent-default: var(--ui-fill-accent-default-dark);
+  --api-fill-accent-hover: var(--ui-fill-accent-hover-dark);
+  --api-fill-accent-active: var(--ui-fill-accent-active-dark);
+  --api-fill-accent-selected: var(--ui-fill-accent-selected-dark);
+  --api-fill-accent-visited: var(--ui-fill-accent-visited-dark);
+  --api-fill-accent-disabled: var(--ui-fill-accent-disabled-dark);
+  --api-fill-accent-shadow: var(--ui-fill-accent-shadow-dark);
+
+  /* --- 'muted' (For placeholders fill) --- */
+  --api-fill-muted-default: var(--ui-fill-muted-default-dark);
+  --api-fill-muted-hover: var(--ui-fill-muted-hover-dark);
+  --api-fill-muted-active: var(--ui-fill-muted-active-dark);
+  --api-fill-muted-selected: var(--ui-fill-muted-selected-dark);
+  --api-fill-muted-visited: var(--ui-fill-muted-visited-dark);
+  --api-fill-muted-disabled: var(--ui-fill-muted-disabled-dark);
+  --api-fill-muted-shadow: var(--ui-fill-muted-shadow-dark);
+
+  /* --- 'floor' (The very bottom layer, behind 'base') --- */
+  --api-fill-floor-default: var(--ui-fill-floor-default-dark);
+  --api-fill-floor-hover: var(--ui-fill-floor-hover-dark);
+  --api-fill-floor-active: var(--ui-fill-floor-active-dark);
+  --api-fill-floor-selected: var(--ui-fill-floor-selected-dark);
+  --api-fill-floor-visited: var(--ui-fill-floor-visited-dark);
+  --api-fill-floor-disabled: var(--ui-fill-floor-disabled-dark);
+  --api-fill-floor-shadow: var(--ui-fill-floor-shadow-dark);
+
+  /* --- 'input' (For form inputs, textareas etc.) --- */
+  --api-fill-input-default: var(--ui-fill-input-default-dark);
+  --api-fill-input-hover: var(--ui-fill-input-hover-dark);
+  --api-fill-input-active: var(--ui-fill-input-active-dark);
+  --api-fill-input-selected: var(--ui-fill-input-selected-dark);
+  --api-fill-input-visited: var(--ui-fill-input-visited-dark);
+  --api-fill-input-disabled: var(--ui-fill-input-disabled-dark);
+  --api-fill-input-shadow: var(--ui-fill-input-shadow-dark);
+
+  /* --- 'link' text/icons --- */
+  --api-fill-link-default: var(--ui-fill-link-default-dark);
+  --api-fill-link-hover: var(--ui-fill-link-hover-dark);
+  --api-fill-link-active: var(--ui-fill-link-active-dark);
+  --api-fill-link-selected: var(--ui-fill-link-selected-dark);
+  --api-fill-link-visited: var(--ui-fill-link-visited-dark);
+  --api-fill-link-disabled: var(--ui-fill-link-disabled-dark);
+  --api-fill-link-shadow: var(--ui-fill-link-shadow-dark);
+
+  /* --- Status Fills --- */
+  --api-fill-success-default: var(--ui-fill-success-default-dark);
+  --api-fill-success-hover: var(--ui-fill-success-hover-dark);
+  --api-fill-success-active: var(--ui-fill-success-active-dark);
+  --api-fill-success-selected: var(--ui-fill-success-selected-dark);
+  --api-fill-success-visited: var(--ui-fill-success-visited-dark);
+  --api-fill-success-disabled: var(--ui-fill-success-disabled-dark);
+  --api-fill-success-shadow: var(--ui-fill-success-shadow-dark);
+
+  --api-fill-info-default: var(--ui-fill-info-default-dark);
+  --api-fill-info-hover: var(--ui-fill-info-hover-dark);
+  --api-fill-info-active: var(--ui-fill-info-active-dark);
+  --api-fill-info-selected: var(--ui-fill-info-selected-dark);
+  --api-fill-info-visited: var(--ui-fill-info-visited-dark);
+  --api-fill-info-disabled: var(--ui-fill-info-disabled-dark);
+  --api-fill-info-shadow: var(--ui-fill-info-shadow-dark);
+
+  --api-fill-warning-default: var(--ui-fill-warning-default-dark);
+  --api-fill-warning-hover: var(--ui-fill-warning-hover-dark);
+  --api-fill-warning-active: var(--ui-fill-warning-active-dark);
+  --api-fill-warning-selected: var(--ui-fill-warning-selected-dark);
+  --api-fill-warning-visited: var(--ui-fill-warning-visited-dark);
+  --api-fill-warning-disabled: var(--ui-fill-warning-disabled-dark);
+  --api-fill-warning-shadow: var(--ui-fill-warning-shadow-dark);
+
+  --api-fill-error-default: var(--ui-fill-error-default-dark);
+  --api-fill-error-hover: var(--ui-fill-error-hover-dark);
+  --api-fill-error-active: var(--ui-fill-error-active-dark);
+  --api-fill-error-selected: var(--ui-fill-error-selected-dark);
+  --api-fill-error-visited: var(--ui-fill-error-visited-dark);
+  --api-fill-error-disabled: var(--ui-fill-error-disabled-dark);
+  --api-fill-error-shadow: var(--ui-fill-error-shadow-dark);
+
+  --api-fill-notification-default: var(--ui-fill-notification-default-dark);
+  --api-fill-notification-hover: var(--ui-fill-notification-hover-dark);
+  --api-fill-notification-active: var(--ui-fill-notification-active-dark);
+  --api-fill-notification-selected: var(--ui-fill-notification-selected-dark);
+  --api-fill-notification-visited: var(--ui-fill-notification-visited-dark);
+  --api-fill-notification-disabled: var(--ui-fill-notification-disabled-dark);
+  --api-fill-notification-shadow: var(--ui-fill-notification-shadow-dark);
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ 2. PEN (Text, Icons & Shadows) ~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  /* --- 'base' text/icons --- */
+  --api-pen-base-default: var(--ui-pen-base-default-dark);
+  --api-pen-base-hover: var(--ui-pen-base-hover-dark);
+  --api-pen-base-active: var(--ui-pen-base-active-dark);
+  --api-pen-base-selected: var(--ui-pen-base-selected-dark);
+  --api-pen-base-visited: var(--ui-pen-base-visited-dark);
+  --api-pen-base-disabled: var(--ui-pen-base-disabled-dark);
+  --api-pen-base-shadow: var(--ui-pen-base-shadow-dark);
+
+  /* --- 'primary' (Primary text/icons --- */
+  --api-pen-primary-default: var(--ui-pen-primary-default-dark);
+  --api-pen-primary-hover: var(--ui-pen-primary-hover-dark);
+  --api-pen-primary-active: var(--ui-pen-primary-active-dark);
+  --api-pen-primary-selected: var(--ui-pen-primary-selected-dark);
+  --api-pen-primary-visited: var(--ui-pen-primary-visited-dark);
+  --api-pen-primary-disabled: var(--ui-pen-primary-disabled-dark);
+  --api-pen-primary-shadow: var(--ui-pen-primary-shadow-dark);
+
+  /* --- 'secondary' text/icons --- */
+  --api-pen-secondary-default: var(--ui-pen-secondary-default-dark);
+  --api-pen-secondary-hover: var(--ui-pen-secondary-hover-dark);
+  --api-pen-secondary-active: var(--ui-pen-secondary-active-dark);
+  --api-pen-secondary-selected: var(--ui-pen-secondary-selected-dark);
+  --api-pen-secondary-visited: var(--ui-pen-secondary-visited-dark);
+  --api-pen-secondary-disabled: var(--ui-pen-secondary-disabled-dark);
+  --api-pen-secondary-shadow: var(--ui-pen-secondary-shadow-dark);
+
+  /* --- 'tertiary'  text/icons --- */
+  --api-pen-tertiary-default: var(--ui-pen-tertiary-default-dark);
+  --api-pen-tertiary-hover: var(--ui-pen-tertiary-hover-dark);
+  --api-pen-tertiary-active: var(--ui-pen-tertiary-active-dark);
+  --api-pen-tertiary-selected: var(--ui-pen-tertiary-selected-dark);
+  --api-pen-tertiary-visited: var(--ui-pen-tertiary-visited-dark);
+  --api-pen-tertiary-disabled: var(--ui-pen-tertiary-disabled-dark);
+  --api-pen-tertiary-shadow: var(--ui-pen-tertiary-shadow-dark);
+
+  /* --- 'accent' (Special highlights, on - component items) --- */
+  --api-pen-accent-default: var(--ui-pen-accent-default-dark);
+  --api-pen-accent-hover: var(--ui-pen-accent-hover-dark);
+  --api-pen-accent-active: var(--ui-pen-accent-active-dark);
+  --api-pen-accent-selected: var(--ui-pen-accent-selected-dark);
+  --api-pen-accent-visited: var(--ui-pen-accent-visited-dark);
+  --api-pen-accent-disabled: var(--ui-pen-accent-disabled-dark);
+  --api-pen-accent-shadow: var(--ui-pen-accent-shadow-dark);
+
+  /* --- 'muted' (For placeholders text/icons) --- */
+  --api-pen-muted-default: var(--ui-pen-muted-default-dark);
+  --api-pen-muted-hover: var(--ui-pen-muted-hover-dark);
+  --api-pen-muted-active: var(--ui-pen-muted-active-dark);
+  --api-pen-muted-selected: var(--ui-pen-muted-selected-dark);
+  --api-pen-muted-visited: var(--ui-pen-muted-visited-dark);
+  --api-pen-muted-disabled: var(--ui-pen-muted-disabled-dark);
+  --api-pen-muted-shadow: var(--ui-pen-muted-shadow-dark);
+
+  /* --- 'floor' (The very bottom layer, behind 'base') --- */
+  --api-pen-floor-default: var(--ui-pen-floor-default-dark);
+  --api-pen-floor-hover: var(--ui-pen-floor-hover-dark);
+  --api-pen-floor-active: var(--ui-pen-floor-active-dark);
+  --api-pen-floor-selected: var(--ui-pen-floor-selected-dark);
+  --api-pen-floor-visited: var(--ui-pen-floor-visited-dark);
+  --api-pen-floor-disabled: var(--ui-pen-floor-disabled-dark);
+  --api-pen-floor-shadow: var(--ui-pen-floor-shadow-dark);
+
+  /* --- 'input' (For form inputs, textareas etc.) --- */
+  --api-pen-input-default: var(--ui-pen-input-default-dark);
+  --api-pen-input-hover: var(--ui-pen-input-hover-dark);
+  --api-pen-input-active: var(--ui-pen-input-active-dark);
+  --api-pen-input-selected: var(--ui-pen-input-selected-dark);
+  --api-pen-input-visited: var(--ui-pen-input-visited-dark);
+  --api-pen-input-disabled: var(--ui-pen-input-disabled-dark);
+  --api-pen-input-shadow: var(--ui-pen-input-shadow-dark);
+
+  /* --- 'link' text/icons --- */
+  --api-pen-link-default: var(--ui-pen-link-default-dark);
+  --api-pen-link-hover: var(--ui-pen-link-hover-dark);
+  --api-pen-link-active: var(--ui-pen-link-active-dark);
+  --api-pen-link-selected: var(--ui-pen-link-selected-dark);
+  --api-pen-link-visited: var(--ui-pen-link-visited-dark);
+  --api-pen-link-disabled: var(--ui-pen-link-disabled-dark);
+  --api-pen-link-shadow: var(--ui-pen-link-shadow-dark);
+
+  /* --- Status Pens --- */
+  --api-pen-success-default: var(--ui-pen-success-default-dark);
+  --api-pen-success-hover: var(--ui-pen-success-hover-dark);
+  --api-pen-success-active: var(--ui-pen-success-active-dark);
+  --api-pen-success-selected: var(--ui-pen-success-selected-dark);
+  --api-pen-success-visited: var(--ui-pen-success-visited-dark);
+  --api-pen-success-disabled: var(--ui-pen-success-disabled-dark);
+  --api-pen-success-shadow: var(--ui-pen-success-shadow-dark);
+
+  --api-pen-info-default: var(--ui-pen-info-default-dark);
+  --api-pen-info-hover: var(--ui-pen-info-hover-dark);
+  --api-pen-info-active: var(--ui-pen-info-active-dark);
+  --api-pen-info-selected: var(--ui-pen-info-selected-dark);
+  --api-pen-info-visited: var(--ui-pen-info-visited-dark);
+  --api-pen-info-disabled: var(--ui-pen-info-disabled-dark);
+  --api-pen-info-shadow: var(--ui-pen-info-shadow-dark);
+
+  --api-pen-warning-default: var(--ui-pen-warning-default-dark);
+  --api-pen-warning-hover: var(--ui-pen-warning-hover-dark);
+  --api-pen-warning-active: var(--ui-pen-warning-active-dark);
+  --api-pen-warning-selected: var(--ui-pen-warning-selected-dark);
+  --api-pen-warning-visited: var(--ui-pen-warning-visited-dark);
+  --api-pen-warning-disabled: var(--ui-pen-warning-disabled-dark);
+  --api-pen-warning-shadow: var(--ui-pen-warning-shadow-dark);
+
+  --api-pen-error-default: var(--ui-pen-error-default-dark);
+  --api-pen-error-hover: var(--ui-pen-error-hover-dark);
+  --api-pen-error-active: var(--ui-pen-error-active-dark);
+  --api-pen-error-selected: var(--ui-pen-error-selected-dark);
+  --api-pen-error-visited: var(--ui-pen-error-visited-dark);
+  --api-pen-error-disabled: var(--ui-pen-error-disabled-dark);
+  --api-pen-error-shadow: var(--ui-pen-error-shadow-dark);
+
+  --api-pen-notification-default: var(--ui-pen-notification-default-dark);
+  --api-pen-notification-hover: var(--ui-pen-notification-hover-dark);
+  --api-pen-notification-active: var(--ui-pen-notification-active-dark);
+  --api-pen-notification-selected: var(--ui-pen-notification-selected-dark);
+  --api-pen-notification-visited: var(--ui-pen-notification-visited-dark);
+  --api-pen-notification-disabled: var(--ui-pen-notification-disabled-dark);
+  --api-pen-notification-shadow: var(--ui-pen-notification-shadow-dark);
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ 3. EDGE (Borders) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  /* --- 'base' edge --- */
+  --api-edge-base-default: var(--ui-edge-base-default-dark);
+  --api-edge-base-hover: var(--ui-edge-base-hover-dark);
+  --api-edge-base-active: var(--ui-edge-base-active-dark);
+  --api-edge-base-selected: var(--ui-edge-base-selected-dark);
+  --api-edge-base-visited: var(--ui-edge-base-visited-dark);
+  --api-edge-base-disabled: var(--ui-edge-base-disabled-dark);
+
+  /* --- 'primary' (Primary edge --- */
+  --api-edge-primary-default: var(--ui-edge-primary-default-dark);
+  --api-edge-primary-hover: var(--ui-edge-primary-hover-dark);
+  --api-edge-primary-active: var(--ui-edge-primary-active-dark);
+  --api-edge-primary-selected: var(--ui-edge-primary-selected-dark);
+  --api-edge-primary-visited: var(--ui-edge-primary-visited-dark);
+  --api-edge-primary-disabled: var(--ui-edge-primary-disabled-dark);
+
+  /* --- 'secondary' edge --- */
+  --api-edge-secondary-default: var(--ui-edge-secondary-default-dark);
+  --api-edge-secondary-hover: var(--ui-edge-secondary-hover-dark);
+  --api-edge-secondary-active: var(--ui-edge-secondary-active-dark);
+  --api-edge-secondary-selected: var(--ui-edge-secondary-selected-dark);
+  --api-edge-secondary-visited: var(--ui-edge-secondary-visited-dark);
+  --api-edge-secondary-disabled: var(--ui-edge-secondary-disabled-dark);
+
+  /* --- 'tertiary'  edge --- */
+  --api-edge-tertiary-default: var(--ui-edge-tertiary-default-dark);
+  --api-edge-tertiary-hover: var(--ui-edge-tertiary-hover-dark);
+  --api-edge-tertiary-active: var(--ui-edge-tertiary-active-dark);
+  --api-edge-tertiary-selected: var(--ui-edge-tertiary-selected-dark);
+  --api-edge-tertiary-visited: var(--ui-edge-tertiary-visited-dark);
+  --api-edge-tertiary-disabled: var(--ui-edge-tertiary-disabled-dark);
+
+  /* --- 'accent' (Special highlights, on - component items) --- */
+  --api-edge-accent-default: var(--ui-edge-accent-default-dark);
+  --api-edge-accent-hover: var(--ui-edge-accent-hover-dark);
+  --api-edge-accent-active: var(--ui-edge-accent-active-dark);
+  --api-edge-accent-selected: var(--ui-edge-accent-selected-dark);
+  --api-edge-accent-visited: var(--ui-edge-accent-visited-dark);
+  --api-edge-accent-disabled: var(--ui-edge-accent-disabled-dark);
+
+  /* --- 'muted' (For placeholders edge) --- */
+  --api-edge-muted-default: var(--ui-edge-muted-default-dark);
+  --api-edge-muted-hover: var(--ui-edge-muted-hover-dark);
+  --api-edge-muted-active: var(--ui-edge-muted-active-dark);
+  --api-edge-muted-selected: var(--ui-edge-muted-selected-dark);
+  --api-edge-muted-visited: var(--ui-edge-muted-visited-dark);
+  --api-edge-muted-disabled: var(--ui-edge-muted-disabled-dark);
+
+  /* --- 'floor' (The very bottom layer, behind 'base') --- */
+  --api-edge-floor-default: var(--ui-edge-floor-default-dark);
+  --api-edge-floor-hover: var(--ui-edge-floor-hover-dark);
+  --api-edge-floor-active: var(--ui-edge-floor-active-dark);
+  --api-edge-floor-selected: var(--ui-edge-floor-selected-dark);
+  --api-edge-floor-visited: var(--ui-edge-floor-visited-dark);
+  --api-edge-floor-disabled: var(--ui-edge-floor-disabled-dark);
+
+  /* --- 'input' (For form inputs, textareas etc.) --- */
+  --api-edge-input-default: var(--ui-edge-input-default-dark);
+  --api-edge-input-hover: var(--ui-edge-input-hover-dark);
+  --api-edge-input-active: var(--ui-edge-input-active-dark);
+  --api-edge-input-selected: var(--ui-edge-input-selected-dark);
+  --api-edge-input-visited: var(--ui-edge-input-visited-dark);
+  --api-edge-input-disabled: var(--ui-edge-input-disabled-dark);
+
+  /* --- 'link' text/icons --- */
+  --api-edge-link-default: var(--ui-edge-link-default-dark);
+  --api-edge-link-hover: var(--ui-edge-link-hover-dark);
+  --api-edge-link-active: var(--ui-edge-link-active-dark);
+  --api-edge-link-selected: var(--ui-edge-link-selected-dark);
+  --api-edge-link-visited: var(--ui-edge-link-visited-dark);
+  --api-edge-link-disabled: var(--ui-edge-link-disabled-dark);
+
+  /* --- Status for Edges --- */
+  --api-edge-success-default: var(--ui-edge-success-default-dark);
+  --api-edge-success-hover: var(--ui-edge-success-hover-dark);
+  --api-edge-success-active: var(--ui-edge-success-active-dark);
+  --api-edge-success-selected: var(--ui-edge-success-selected-dark);
+  --api-edge-success-visited: var(--ui-edge-success-visited-dark);
+  --api-edge-success-disabled: var(--ui-edge-success-disabled-dark);
+
+  --api-edge-info-default: var(--ui-edge-info-default-dark);
+  --api-edge-info-hover: var(--ui-edge-info-hover-dark);
+  --api-edge-info-active: var(--ui-edge-info-active-dark);
+  --api-edge-info-selected: var(--ui-edge-info-selected-dark);
+  --api-edge-info-visited: var(--ui-edge-info-visited-dark);
+  --api-edge-info-disabled: var(--ui-edge-info-disabled-dark);
+
+  --api-edge-warning-default: var(--ui-edge-warning-default-dark);
+  --api-edge-warning-hover: var(--ui-edge-warning-hover-dark);
+  --api-edge-warning-active: var(--ui-edge-warning-active-dark);
+  --api-edge-warning-selected: var(--ui-edge-warning-selected-dark);
+  --api-edge-warning-visited: var(--ui-edge-warning-visited-dark);
+  --api-edge-warning-disabled: var(--ui-edge-warning-disabled-dark);
+
+  --api-edge-error-default: var(--ui-edge-error-default-dark);
+  --api-edge-error-hover: var(--ui-edge-error-hover-dark);
+  --api-edge-error-active: var(--ui-edge-error-active-dark);
+  --api-edge-error-selected: var(--ui-edge-error-selected-dark);
+  --api-edge-error-visited: var(--ui-edge-error-visited-dark);
+  --api-edge-error-disabled: var(--ui-edge-error-disabled-dark);
+
+  --api-edge-notification-default: var(--ui-edge-notification-default-dark);
+  --api-edge-notification-hover: var(--ui-edge-notification-hover-dark);
+  --api-edge-notification-active: var(--ui-edge-notification-active-dark);
+  --api-edge-notification-selected: var(--ui-edge-notification-selected-dark);
+  --api-edge-notification-visited: var(--ui-edge-notification-visited-dark);
+  --api-edge-notification-disabled: var(--ui-edge-notification-disabled-dark);
+}

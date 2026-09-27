@@ -29,7 +29,9 @@
     "nuxt": "^4.1.2",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4",
-    "vue-tsc": "^3.0.8"
+    "vue-tsc": "^3.0.8",
+    "@tailwindcss/vite": "^4.1.13",
+    "tailwindcss": "^4.1.13"
   },
   "packageManager": "pnpm@10.17.1",
   "engines": {

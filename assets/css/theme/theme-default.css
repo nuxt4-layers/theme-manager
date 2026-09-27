@@ -1,0 +1,810 @@
+/**
+ * ================================================================================
+ *
+ * @project:   @monorepo/theme-manager
+ * @file:      ~/layers/theme-manager/assets/css/theme/theme-default.css
+ * @version    4.0.0
+ * @createDate 2025 Nov 06
+ * @createTime 02:18
+ * @author     Steve R Lewis
+ *
+ * ================================================================================
+ *
+ * @description
+ * This file provides a complete, self-contained "Default" theme that acts as a
+ * fallback for the application. If the JavaScript-based theme manager fails
+ * or does not set a theme, these variables will be used by default. It fully
+ * implements the structure defined in `types/theme.ts v1.8.0`.
+ *
+ * This version implements a "Blue" theme with light (sky/navy) and
+ * dark (navy/sky) modes.
+ *
+ * ================================================================================
+ *
+ * @notes
+ * Revision History
+ *
+ * v1.0.0 - 2025-06-12
+ * - Initial version with a simple list of color tokens.
+ *
+ * v1.1.0 - 2025-06-16:
+ * - Updated variable names to be mode-specific
+ * - (e.g., --color-brand-primary-light) to align with the
+ * - new theme-api.css structure. Added a full dark palette.
+ *
+ * v1.4.0 - 2025-06-16
+ * - Refactored to define separate palettes for light and dark modes.
+ *
+ * v1.5.0 - 2025-06-18
+ * - Implemented a four-state model for components.
+ *
+ * v1.7.0 - 2025-06-18
+ * - Implemented the previous descriptive naming scheme.
+ *
+ * v1.8.0 - 2025-06-18
+ * - Implemented the final descriptive naming convention from `types/theme.ts
+ * v1.8.0`.
+ * - Added comprehensive JSDoc documentation and a full revision history.
+ *
+ * v2.0.0 - 2025-10-22
+ * - Changed the naming convention for the `color-` variables to be more
+ * descriptive.
+ *
+ * v2.1.0 - 2025-10-22
+ * - Re-themed entire file from green to a new "Blue" theme.
+ * - Light Mode: Sky Blue, Mid Navy, Greys, and White.
+ * - Dark Mode: Dark Navy, Bright Sky Blue, and Light Greys.
+ * - Corrected button/list states to be functional (e.g., hover, active).
+ *
+ * v3.0.0 - 2025-11-06
+ * - Created a new lexicon and grammar for the theme manager colour palette base.
+ *
+ * v4.0.0 - 2025-11-06
+ * - Implemented the final "WET Recipe Book" (Path B) architecture.
+ * - Removed all internal aliases to ensure 100% theme flexibility.
+ * - Pruned all dead tokens and abstracted form inputs into "Form Patterns".
+ * - Populated with the new "Fresh" theme (Muted Green & Dusty Lavender).
+ *
+ * v5.0.0 - 2025-11-06
+ * - Implemented the final "WET Recipe Book" (Path C) architecture.
+ * - Removed all internal aliases to ensure 100% theme flexibility.
+ * ================================================================================
+ */
+
+:root {
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ [LIGHT] MODE VARIANTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ 1. FILL (Backgrounds & Shadows) ~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  /* --- 'base' fill (White) --- */
+  --ui-fill-base-default-light: #ffffff;
+  --ui-fill-base-hover-light: #f5f5f5; /* Neutral 100 */
+  --ui-fill-base-active-light: #e5e5e5; /* Neutral 200 */
+  --ui-fill-base-selected-light: #e5e5e5; /* Neutral 200 */
+  --ui-fill-base-visited-light: #ffffff;
+  --ui-fill-base-disabled-light: #f5f5f5;
+  --ui-fill-base-shadow-light: #a3a3a3; /* Neutral 400 */
+
+  /* --- 'primary' fill (Muted Green) --- */
+  --ui-fill-primary-default-light: #94b99d;
+  --ui-fill-primary-hover-light: #83a78d; /* Darker */
+  --ui-fill-primary-active-light: #6b9075; /* Darkest */
+  --ui-fill-primary-selected-light: #6b9075; /* Darkest */
+  --ui-fill-primary-visited-light: #94b99d;
+  --ui-fill-primary-disabled-light: #e5e5e5; /* Neutral 200 */
+  --ui-fill-primary-shadow-light: #a3a3a3; /* Neutral 400 */
+
+  /* --- 'secondary' fill (Dusty Lavender) --- */
+  --ui-fill-secondary-default-light: #caa7d9;
+  --ui-fill-secondary-hover-light: #b996c6; /* Darker */
+  --ui-fill-secondary-active-light: #a883b3; /* Darkest */
+  --ui-fill-secondary-selected-light: #a883b3; /* Darkest */
+  --ui-fill-secondary-visited-light: #caa7d9;
+  --ui-fill-secondary-disabled-light: #e5e5e5; /* Neutral 200 */
+  --ui-fill-secondary-shadow-light: #a3a3a3; /* Neutral 400 */
+
+  /* --- 'tertiary'  fill (Neutral Grey) --- */
+  --ui-fill-tertiary-default-light: #e5e5e5; /* Neutral 200 */
+  --ui-fill-tertiary-hover-light: #d4d4d4; /* Neutral 300 */
+  --ui-fill-tertiary-active-light: #a3a3a3; /* Neutral 400 */
+  --ui-fill-tertiary-selected-light: #a3a3a3; /* Neutral 400 */
+  --ui-fill-tertiary-visited-light: #e5e5e5;
+  --ui-fill-tertiary-disabled-light: #f5f5f5; /* Neutral 100 */
+  --ui-fill-tertiary-shadow-light: #a3a3a3; /* Neutral 400 */
+
+  /* --- 'accent' (A brighter green) --- */
+  --ui-fill-accent-default-light: #a5c6ad;
+  --ui-fill-accent-hover-light: #94b99d;
+  --ui-fill-accent-active-light: #83a78d;
+  --ui-fill-accent-selected-light: #83a78d;
+  --ui-fill-accent-visited-light: #a5c6ad;
+  --ui-fill-accent-disabled-light: #e5e5e5;
+  --ui-fill-accent-shadow-light: #a3a3a3;
+
+  /* --- 'muted' (For placeholders etc.) --- */
+  --ui-fill-muted-default-light: #e5e5e5; /* Neutral 200 */
+  --ui-fill-muted-hover-light: #d4d4d4;
+  --ui-fill-muted-active-light: #a3a3a3;
+  --ui-fill-muted-selected-light: #a3a3a3;
+  --ui-fill-muted-visited-light: #e5e5e5;
+  --ui-fill-muted-disabled-light: #f5f5f5;
+  --ui-fill-muted-shadow-light: #a3a3a3;
+
+  /* --- 'floor' (The very bottom layer, light grey) --- */
+  --ui-fill-floor-default-light: #f5f5f5; /* Neutral 100 */
+  --ui-fill-floor-hover-light: #f5f5f5;
+  --ui-fill-floor-active-light: #f5f5f5;
+  --ui-fill-floor-selected-light: #f5f5f5;
+  --ui-fill-floor-visited-light: #f5f5f5;
+  --ui-fill-floor-disabled-light: #f5f5f5;
+  --ui-fill-floor-shadow-light: #a3a3a3;
+
+  /* --- 'input' (For form inputs, textareas etc.) --- */
+  --ui-fill-input-default-light: #fafafa; /* Neutral 50 */
+  --ui-fill-input-hover-light: #ffffff;
+  --ui-fill-input-active-light: #fafafa;
+  --ui-fill-input-selected-light: #fafafa;
+  --ui-fill-input-visited-light: #fafafa;
+  --ui-fill-input-disabled-light: #e5e5e5;
+  --ui-fill-input-shadow-light: #00000000;
+
+  /* --- 'link' (Muted Green) --- */
+  --ui-fill-link-default-light: #94b99d;
+  --ui-fill-link-hover-light: #83a78d;
+  --ui-fill-link-active-light: #6b9075;
+  --ui-fill-link-selected-light: #6b9075;
+  --ui-fill-link-visited-light: #94b99d;
+  --ui-fill-link-disabled-light: #e5e5e5;
+  --ui-fill-link-shadow-light: #a3a3a3;
+
+  /* --- Status Fills (Light, pastel backgrounds) --- */
+  --ui-fill-success-default-light: #dcfce7; /* Green 100 */
+  --ui-fill-success-hover-light: #bbf7d0; /* Green 200 */
+  --ui-fill-success-active-light: #86efac; /* Green 300 */
+  --ui-fill-success-selected-light: #86efac; /* Green 300 */
+  --ui-fill-success-visited-light: #dcfce7;
+  --ui-fill-success-disabled-light: #f5f5f5;
+  --ui-fill-success-shadow-light: #a3a3a3;
+
+  --ui-fill-info-default-light: #dbeafe; /* Blue 100 */
+  --ui-fill-info-hover-light: #bfdbfe;
+  --ui-fill-info-active-light: #93c5fd;
+  --ui-fill-info-selected-light: #93c5fd;
+  --ui-fill-info-visited-light: #dbeafe;
+  --ui-fill-info-disabled-light: #f5f5f5;
+  --ui-fill-info-shadow-light: #a3a3a3;
+
+  --ui-fill-warning-default-light: #fef9c3; /* Yellow 100 */
+  --ui-fill-warning-hover-light: #fef08a;
+  --ui-fill-warning-active-light: #fde047;
+  --ui-fill-warning-selected-light: #fde047;
+  --ui-fill-warning-visited-light: #fef9c3;
+  --ui-fill-warning-disabled-light: #f5f5f5;
+  --ui-fill-warning-shadow-light: #a3a3a3;
+
+  --ui-fill-error-default-light: #fee2e2; /* Red 100 */
+  --ui-fill-error-hover-light: #fecaca;
+  --ui-fill-error-active-light: #fca5a5;
+  --ui-fill-error-selected-light: #fca5a5;
+  --ui-fill-error-visited-light: #fee2e2;
+  --ui-fill-error-disabled-light: #f5f5f5;
+  --ui-fill-error-shadow-light: #a3a3a3;
+
+  --ui-fill-notification-default-light: #ede9fe; /* Violet 100 */
+  --ui-fill-notification-hover-light: #ddd6fe;
+  --ui-fill-notification-active-light: #c4b5fd;
+  --ui-fill-notification-selected-light: #c4b5fd;
+  --ui-fill-notification-visited-light: #ede9fe;
+  --ui-fill-notification-disabled-light: #f5f5f5;
+  --ui-fill-notification-shadow-light: #a3a3a3;
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ 2. PEN (Text, Icons & Shadows) ~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  /* --- 'base' pen (High contrast dark text) --- */
+  --ui-pen-base-default-light: #262626; /* Neutral 800 */
+  --ui-pen-base-hover-light: #000000;
+  --ui-pen-base-active-light: #000000;
+  --ui-pen-base-selected-light: #000000;
+  --ui-pen-base-visited-light: #262626;
+  --ui-pen-base-disabled-light: #a3a3a3; /* Neutral 400 */
+  --ui-pen-base-shadow-light: #a3a3a3;
+
+  /* --- 'primary' pen (Dark green for text) --- */
+  --ui-pen-primary-default-light: #405546;
+  --ui-pen-primary-hover-light: #2c3a30;
+  --ui-pen-primary-active-light: #1a201c;
+  --ui-pen-primary-selected-light: #1a201c;
+  --ui-pen-primary-visited-light: #405546;
+  --ui-pen-primary-disabled-light: #a3a3a3;
+  --ui-pen-primary-shadow-light: #a3a3a3;
+
+  /* --- 'secondary' pen (Dark lavender for text) --- */
+  --ui-pen-secondary-default-light: #704a77;
+  --ui-pen-secondary-hover-light: #59395f;
+  --ui-pen-secondary-active-light: #422946;
+  --ui-pen-secondary-selected-light: #422946;
+  --ui-pen-secondary-visited-light: #704a77;
+  --ui-pen-secondary-disabled-light: #a3a3a3;
+  --ui-pen-secondary-shadow-light: #a3a3a3;
+
+  /* --- 'tertiary'  pen (Grey text) --- */
+  --ui-pen-tertiary-default-light: #737373; /* Neutral 500 */
+  --ui-pen-tertiary-hover-light: #525252; /* Neutral 600 */
+  --ui-pen-tertiary-active-light: #262626; /* Neutral 800 */
+  --ui-pen-tertiary-selected-light: #262626; /* Neutral 800 */
+  --ui-pen-tertiary-visited-light: #737373;
+  --ui-pen-tertiary-disabled-light: #a3a3a3;
+  --ui-pen-tertiary-shadow-light: #a3a3a3;
+
+  /* --- 'accent' pen --- */
+  --ui-pen-accent-default-light: #587460;
+  --ui-pen-accent-hover-light: #405546;
+  --ui-pen-accent-active-light: #2c3a30;
+  --ui-pen-accent-selected-light: #2c3a30;
+  --ui-pen-accent-visited-light: #587460;
+  --ui-pen-accent-disabled-light: #a3a3a3;
+  --ui-pen-accent-shadow-light: #a3a3a3;
+
+  /* --- 'muted' (For placeholders text/icons) --- */
+  --ui-pen-muted-default-light: #737373; /* Neutral 500 */
+  --ui-pen-muted-hover-light: #525252;
+  --ui-pen-muted-active-light: #262626;
+  --ui-pen-muted-selected-light: #262626;
+  --ui-pen-muted-visited-light: #737373;
+  --ui-pen-muted-disabled-light: #a3a3a3;
+  --ui-pen-muted-shadow-light: #a3a3a3;
+
+  /* --- 'floor' pen --- */
+  --ui-pen-floor-default-light: #525252; /* Neutral 600 */
+  --ui-pen-floor-hover-light: #262626;
+  --ui-pen-floor-active-light: #000000;
+  --ui-pen-floor-selected-light: #000000;
+  --ui-pen-floor-visited-light: #525252;
+  --ui-pen-floor-disabled-light: #a3a3a3;
+  --ui-pen-floor-shadow-light: #a3a3a3;
+
+  /* --- 'input' pen (Text inside inputs) --- */
+  --ui-pen-input-default-light: #262626; /* Neutral 800 */
+  --ui-pen-input-hover-light: #000000;
+  --ui-pen-input-active-light: #000000;
+  --ui-pen-input-selected-light: #000000;
+  --ui-pen-input-visited-light: #262626;
+  --ui-pen-input-disabled-light: #a3a3a3;
+  --ui-pen-input-shadow-light: #a3a3a3;
+
+  /* --- 'link' text/icons --- */
+  --ui-pen-link-default-light: #405546; /* Dark Green */
+  --ui-pen-link-hover-light: #2c3a30;
+  --ui-pen-link-active-light: #262626; /* Dark Grey */
+  --ui-pen-link-selected-light: #262626; /* Dark Grey */
+  --ui-pen-link-visited-light: #405546;
+  --ui-pen-link-disabled-light: #a3a3a3;
+  --ui-pen-link-shadow-light: #a3a3a3;
+
+  /* --- Status Pens (Dark, high-contrast text) --- */
+  --ui-pen-success-default-light: #166534; /* Green 800 */
+  --ui-pen-success-hover-light: #14532d; /* Green 900 */
+  --ui-pen-success-active-light: #052e16; /* Green 950 */
+  --ui-pen-success-selected-light: #052e16; /* Green 950 */
+  --ui-pen-success-visited-light: #166534;
+  --ui-pen-success-disabled-light: #a3a3a3;
+  --ui-pen-success-shadow-light: #a3a3a3;
+
+  --ui-pen-info-default-light: #1e40af; /* Blue 800 */
+  --ui-pen-info-hover-light: #1e3a8a;
+  --ui-pen-info-active-light: #172554;
+  --ui-pen-info-selected-light: #172554;
+  --ui-pen-info-visited-light: #1e40af;
+  --ui-pen-info-disabled-light: #a3a3a3;
+  --ui-pen-info-shadow-light: #a3a3a3;
+
+  --ui-pen-warning-default-light: #854d0e; /* Yellow 800 */
+  --ui-pen-warning-hover-light: #713f12;
+  --ui-pen-warning-active-light: #422006;
+  --ui-pen-warning-selected-light: #422006;
+  --ui-pen-warning-visited-light: #854d0e;
+  --ui-pen-warning-disabled-light: #a3a3a3;
+  --ui-pen-warning-shadow-light: #a3a3a3;
+
+  --ui-pen-error-default-light: #991b1b; /* Red 800 */
+  --ui-pen-error-hover-light: #7f1d1d;
+  --ui-pen-error-active-light: #450a0a;
+  --ui-pen-error-selected-light: #450a0a;
+  --ui-pen-error-visited-light: #991b1b;
+  --ui-pen-error-disabled-light: #a3a3a3;
+  --ui-pen-error-shadow-light: #a3a3a3;
+
+  --ui-pen-notification-default-light: #581c87; /* Violet 900 */
+  --ui-pen-notification-hover-light: #4c1d95;
+  --ui-pen-notification-active-light: #3b0764;
+  --ui-pen-notification-selected-light: #3b0764;
+  --ui-pen-notification-visited-light: #581c87;
+  --ui-pen-notification-disabled-light: #a3a3a3;
+  --ui-pen-notification-shadow-light: #a3a3a3;
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ 3. EDGE (Borders) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  /* --- 'base' edge --- */
+  --ui-edge-base-default-light: #d4d4d4; /* Neutral 300 */
+  --ui-edge-base-hover-light: #94b99d; /* Primary Green */
+  --ui-edge-base-active-light: #6b9075; /* Dark Green */
+  --ui-edge-base-selected-light: #6b9075; /* Dark Green */
+  --ui-edge-base-visited-light: #d4d4d4;
+  --ui-edge-base-disabled-light: #e5e5e5;
+
+  /* --- 'primary' edge --- */
+  --ui-edge-primary-default-light: #83a78d;
+  --ui-edge-primary-hover-light: #6b9075;
+  --ui-edge-primary-active-light: #587460;
+  --ui-edge-primary-selected-light: #587460;
+  --ui-edge-primary-visited-light: #83a78d;
+  --ui-edge-primary-disabled-light: #e5e5e5;
+
+  /* --- 'secondary' edge --- */
+  --ui-edge-secondary-default-light: #b996c6;
+  --ui-edge-secondary-hover-light: #a883b3;
+  --ui-edge-secondary-active-light: #9770a1;
+  --ui-edge-secondary-selected-light: #9770a1;
+  --ui-edge-secondary-visited-light: #b996c6;
+  --ui-edge-secondary-disabled-light: #e5e5e5;
+
+  /* --- 'tertiary'  edge --- */
+  --ui-edge-tertiary-default-light: #d4d4d4; /* Neutral 300 */
+  --ui-edge-tertiary-hover-light: #a3a3a3;
+  --ui-edge-tertiary-active-light: #737373;
+  --ui-edge-tertiary-selected-light: #737373;
+  --ui-edge-tertiary-visited-light: #d4d4d4;
+  --ui-edge-tertiary-disabled-light: #e5e5e5;
+
+  /* --- 'accent' edge --- */
+  --ui-edge-accent-default-light: #94b99d;
+  --ui-edge-accent-hover-light: #83a78d;
+  --ui-edge-accent-active-light: #6b9075;
+  --ui-edge-accent-selected-light: #6b9075;
+  --ui-edge-accent-visited-light: #94b99d;
+  --ui-edge-accent-disabled-light: #e5e5e5;
+
+  /* --- 'muted' edge --- */
+  --ui-edge-muted-default-light: #d4d4d4;
+  --ui-edge-muted-hover-light: #a3a3a3;
+  --ui-edge-muted-active-light: #737373;
+  --ui-edge-muted-selected-light: #737373;
+  --ui-edge-muted-visited-light: #d4d4d4;
+  --ui-edge-muted-disabled-light: #e5e5e5;
+
+  /* --- 'floor' edge --- */
+  --ui-edge-floor-default-light: #e5e5e5; /* Neutral 200 */
+  --ui-edge-floor-hover-light: #d4d4d4;
+  --ui-edge-floor-active-light: #a3a3a3;
+  --ui-edge-floor-selected-light: #a3a3a3;
+  --ui-edge-floor-visited-light: #e5e5e5;
+  --ui-edge-floor-disabled-light: #f5f5f5;
+
+  /* --- 'input' edge --- */
+  --ui-edge-input-default-light: #d4d4d4; /* Neutral 300 */
+  --ui-edge-input-hover-light: #94b99d; /* Primary Green */
+  --ui-edge-input-active-light: #6b9075; /* Dark Green */
+  --ui-edge-input-selected-light: #6b9075; /* Dark Green */
+  --ui-edge-input-visited-light: #d4d4d4;
+  --ui-edge-input-disabled-light: #e5e5e5;
+
+  /* --- 'link' edge --- */
+  --ui-edge-link-default-light: #83a78d;
+  --ui-edge-link-hover-light: #6b9075;
+  --ui-edge-link-active-light: #587460;
+  --ui-edge-link-selected-light: #587460;
+  --ui-edge-link-visited-light: #83a78d;
+  --ui-edge-link-disabled-light: #e5e5e5;
+
+  /* --- Status for Edges (Mid-tone, vibrant) --- */
+  --ui-edge-success-default-light: #86efac; /* Green 300 */
+  --ui-edge-success-hover-light: #4ade80;
+  --ui-edge-success-active-light: #22c55e;
+  --ui-edge-success-selected-light: #22c55e;
+  --ui-edge-success-visited-light: #86efac;
+  --ui-edge-success-disabled-light: #e5e5e5;
+
+  --ui-edge-info-default-light: #93c5fd; /* Blue 300 */
+  --ui-edge-info-hover-light: #60a5fa;
+  --ui-edge-info-active-light: #3b82f6;
+  --ui-edge-info-selected-light: #3b82f6;
+  --ui-edge-info-visited-light: #93c5fd;
+  --ui-edge-info-disabled-light: #e5e5e5;
+
+  --ui-edge-warning-default-light: #fde047; /* Yellow 300 */
+  --ui-edge-warning-hover-light: #facc15;
+  --ui-edge-warning-active-light: #eab308;
+  --ui-edge-warning-selected-light: #eab308;
+  --ui-edge-warning-visited-light: #fde047;
+  --ui-edge-warning-disabled-light: #e5e5e5;
+
+  --ui-edge-error-default-light: #fca5a5; /* Red 300 */
+  --ui-edge-error-hover-light: #f87171;
+  --ui-edge-error-active-light: #ef4444;
+  --ui-edge-error-selected-light: #ef4444;
+  --ui-edge-error-visited-light: #fca5a5;
+  --ui-edge-error-disabled-light: #e5e5e5;
+
+  --ui-edge-notification-default-light: #c4b5fd; /* Violet 300 */
+  --ui-edge-notification-hover-light: #a78bfa;
+  --ui-edge-notification-active-light: #8b5cf6;
+  --ui-edge-notification-selected-light: #8b5cf6;
+  --ui-edge-notification-visited-light: #c4b5fd;
+  --ui-edge-notification-disabled-light: #e5e5e5;
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ [DARK] MODE VARIANTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ 1. FILL (Backgrounds & Shadows) ~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  /* --- 'base' fill (Dark Grey/Black) --- */
+  --ui-fill-base-default-dark: #171717; /* Neutral 900 */
+  --ui-fill-base-hover-dark: #262626; /* Neutral 800 */
+  --ui-fill-base-active-dark: #404040; /* Neutral 700 */
+  --ui-fill-base-selected-dark: #404040; /* Neutral 700 */
+  --ui-fill-base-visited-dark: #171717;
+  --ui-fill-base-disabled-dark: #262626;
+  --ui-fill-base-shadow-dark: #000000;
+
+  /* --- 'primary' fill (Muted Green) --- */
+  --ui-fill-primary-default-dark: #94b99d;
+  --ui-fill-primary-hover-dark: #a5c6ad; /* Lighter */
+  --ui-fill-primary-active-dark: #b6d3bd; /* Lightest */
+  --ui-fill-primary-selected-dark: #b6d3bd; /* Lightest */
+  --ui-fill-primary-visited-dark: #94b99d;
+  --ui-fill-primary-disabled-dark: #404040;
+  --ui-fill-primary-shadow-dark: #000000;
+
+  /* --- 'secondary' fill (Dusty Lavender) --- */
+  --ui-fill-secondary-default-dark: #caa7d9;
+  --ui-fill-secondary-hover-dark: #d2b8e0; /* Lighter */
+  --ui-fill-secondary-active-dark: #dbc9e7; /* Lightest */
+  --ui-fill-secondary-selected-dark: #dbc9e7; /* Lightest */
+  --ui-fill-secondary-visited-dark: #caa7d9;
+  --ui-fill-secondary-disabled-dark: #404040;
+  --ui-fill-secondary-shadow-dark: #000000;
+
+  /* --- 'tertiary'  fill (Mid-Dark Grey) --- */
+  --ui-fill-tertiary-default-dark: #404040; /* Neutral 700 */
+  --ui-fill-tertiary-hover-dark: #525252; /* Neutral 600 */
+  --ui-fill-tertiary-active-dark: #737373; /* Neutral 500 */
+  --ui-fill-tertiary-selected-dark: #737373; /* Neutral 500 */
+  --ui-fill-tertiary-visited-dark: #404040;
+  --ui-fill-tertiary-disabled-dark: #262626;
+  --ui-fill-tertiary-shadow-dark: #000000;
+
+  /* --- 'accent' fill --- */
+  --ui-fill-accent-default-dark: #a5c6ad;
+  --ui-fill-accent-hover-dark: #b6d3bd;
+  --ui-fill-accent-active-dark: #c7dfce;
+  --ui-fill-accent-selected-dark: #c7dfce;
+  --ui-fill-accent-visited-dark: #a5c6ad;
+  --ui-fill-accent-disabled-dark: #404040;
+  --ui-fill-accent-shadow-dark: #000000;
+
+  /* --- 'muted' fill --- */
+  --ui-fill-muted-default-dark: #404040;
+  --ui-fill-muted-hover-dark: #525252;
+  --ui-fill-muted-active-dark: #737373;
+  --ui-fill-muted-selected-dark: #737373;
+  --ui-fill-muted-visited-dark: #404040;
+  --ui-fill-muted-disabled-dark: #262626;
+  --ui-fill-muted-shadow-dark: #000000;
+
+  /* --- 'floor' fill --- */
+  --ui-fill-floor-default-dark: #0a0a0a; /* Neutral 950 */
+  --ui-fill-floor-hover-dark: #0a0a0a;
+  --ui-fill-floor-active-dark: #0a0a0a;
+  --ui-fill-floor-selected-dark: #0a0a0a;
+  --ui-fill-floor-visited-dark: #0a0a0a;
+  --ui-fill-floor-disabled-dark: #0a0a0a;
+  --ui-fill-floor-shadow-dark: #000000;
+
+  /* --- 'input' fill --- */
+  --ui-fill-input-default-dark: #262626; /* Neutral 800 */
+  --ui-fill-input-hover-dark: #404040;
+  --ui-fill-input-active-dark: #262626;
+  --ui-fill-input-selected-dark: #262626;
+  --ui-fill-input-visited-dark: #262626;
+  --ui-fill-input-disabled-dark: #404040;
+  --ui-fill-input-shadow-dark: #00000000;
+
+  /* --- 'link' fill --- */
+  --ui-fill-link-default-dark: #94b99d;
+  --ui-fill-link-hover-dark: #a5c6ad;
+  --ui-fill-link-active-dark: #b6d3bd;
+  --ui-fill-link-selected-dark: #b6d3bd;
+  --ui-fill-link-visited-dark: #94b99d;
+  --ui-fill-link-disabled-dark: #404040;
+  --ui-fill-link-shadow-dark: #000000;
+
+  /* --- Status Fills (Dark, rich backgrounds) --- */
+  --ui-fill-success-default-dark: #14532d; /* Green 900 */
+  --ui-fill-success-hover-dark: #166534;
+  --ui-fill-success-active-dark: #15803d;
+  --ui-fill-success-selected-dark: #15803d;
+  --ui-fill-success-visited-dark: #14532d;
+  --ui-fill-success-disabled-dark: #262626;
+  --ui-fill-success-shadow-dark: #000000;
+
+  --ui-fill-info-default-dark: #1e3a8a; /* Blue 900 */
+  --ui-fill-info-hover-dark: #1e40af;
+  --ui-fill-info-active-dark: #1d4ed8;
+  --ui-fill-info-selected-dark: #1d4ed8;
+  --ui-fill-info-visited-dark: #1e3a8a;
+  --ui-fill-info-disabled-dark: #262626;
+  --ui-fill-info-shadow-dark: #000000;
+
+  --ui-fill-warning-default-dark: #78350f; /* Yellow 900 */
+  --ui-fill-warning-hover-dark: #854d0e;
+  --ui-fill-warning-active-dark: #a16207;
+  --ui-fill-warning-selected-dark: #a16207;
+  --ui-fill-warning-visited-dark: #78350f;
+  --ui-fill-warning-disabled-dark: #262626;
+  --ui-fill-warning-shadow-dark: #000000;
+
+  --ui-fill-error-default-dark: #7f1d1d; /* Red 900 */
+  --ui-fill-error-hover-dark: #991b1b;
+  --ui-fill-error-active-dark: #b91c1c;
+  --ui-fill-error-selected-dark: #b91c1c;
+  --ui-fill-error-visited-dark: #7f1d1d;
+  --ui-fill-error-disabled-dark: #262626;
+  --ui-fill-error-shadow-dark: #000000;
+
+  --ui-fill-notification-default-dark: #4a044e; /* Purple 950 */
+  --ui-fill-notification-hover-dark: #581c87;
+  --ui-fill-notification-active-dark: #6b21a8;
+  --ui-fill-notification-selected-dark: #6b21a8;
+  --ui-fill-notification-visited-dark: #4a044e;
+  --ui-fill-notification-disabled-dark: #262626;
+  --ui-fill-notification-shadow-dark: #000000;
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ 2. PEN (Text, Icons & Shadows) ~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  /* --- 'base' pen (High contrast light text) --- */
+  --ui-pen-base-default-dark: #f5f5f5; /* Neutral 100 */
+  --ui-pen-base-hover-dark: #ffffff;
+  --ui-pen-base-active-dark: #ffffff;
+  --ui-pen-base-selected-dark: #ffffff;
+  --ui-pen-base-visited-dark: #f5f5f5;
+  --ui-pen-base-disabled-dark: #737373; /* Neutral 500 */
+  --ui-pen-base-shadow-dark: #000000;
+
+  /* --- 'primary' pen (Bright green text) --- */
+  --ui-pen-primary-default-dark: #a5c6ad;
+  --ui-pen-primary-hover-dark: #b6d3bd;
+  --ui-pen-primary-active-dark: #c7dfce;
+  --ui-pen-primary-selected-dark: #c7dfce;
+  --ui-pen-primary-visited-dark: #a5c6ad;
+  --ui-pen-primary-disabled-dark: #737373;
+  --ui-pen-primary-shadow-dark: #000000;
+
+  /* --- 'secondary' pen (Bright lavender text) --- */
+  --ui-pen-secondary-default-dark: #d2b8e0;
+  --ui-pen-secondary-hover-dark: #dbc9e7;
+  --ui-pen-secondary-active-dark: #e8dbf1;
+  --ui-pen-secondary-selected-dark: #e8dbf1;
+  --ui-pen-secondary-visited-dark: #d2b8e0;
+  --ui-pen-secondary-disabled-dark: #737373;
+  --ui-pen-secondary-shadow-dark: #000000;
+
+  /* --- 'tertiary'  pen (Light grey text) --- */
+  --ui-pen-tertiary-default-dark: #a3a3a3; /* Neutral 400 */
+  --ui-pen-tertiary-hover-dark: #d4d4d4; /* Neutral 300 */
+  --ui-pen-tertiary-active-dark: #f5f5f5; /* Neutral 100 */
+  --ui-pen-tertiary-selected-dark: #f5f5f5; /* Neutral 100 */
+  --ui-pen-tertiary-visited-dark: #a3a3a3;
+  --ui-pen-tertiary-disabled-dark: #737373;
+  --ui-pen-tertiary-shadow-dark: #000000;
+
+  /* --- 'accent' pen --- */
+  --ui-pen-accent-default-dark: #b6d3bd;
+  --ui-pen-accent-hover-dark: #c7dfce;
+  --ui-pen-accent-active-dark: #daebde;
+  --ui-pen-accent-selected-dark: #daebde;
+  --ui-pen-accent-visited-dark: #b6d3bd;
+  --ui-pen-accent-disabled-dark: #737373;
+  --ui-pen-accent-shadow-dark: #000000;
+
+  /* --- 'muted' (For placeholders text/icons) --- */
+  --ui-pen-muted-default-dark: #737373; /* Neutral 500 */
+  --ui-pen-muted-hover-dark: #a3a3a3;
+  --ui-pen-muted-active-dark: #d4d4d4;
+  --ui-pen-muted-selected-dark: #d4d4d4;
+  --ui-pen-muted-visited-dark: #737373;
+  --ui-pen-muted-disabled-dark: #525252;
+  --ui-pen-muted-shadow-dark: #000000;
+
+  /* --- 'floor' pen --- */
+  --ui-pen-floor-default-dark: #a3a3a3; /* Neutral 400 */
+  --ui-pen-floor-hover-dark: #d4d4d4;
+  --ui-pen-floor-active-dark: #f5f5f5;
+  --ui-pen-floor-selected-dark: #f5f5f5;
+  --ui-pen-floor-visited-dark: #a3a3a3;
+  --ui-pen-floor-disabled-dark: #737373;
+  --ui-pen-floor-shadow-dark: #000000;
+
+  /* --- 'input' pen (Text inside inputs) --- */
+  --ui-pen-input-default-dark: #f5f5f5; /* Neutral 100 */
+  --ui-pen-input-hover-dark: #ffffff;
+  --ui-pen-input-active-dark: #ffffff;
+  --ui-pen-input-selected-dark: #ffffff;
+  --ui-pen-input-visited-dark: #f5f5f5;
+  --ui-pen-input-disabled-dark: #737373;
+  --ui-pen-input-shadow-dark: #000000;
+
+  /* --- 'link' text/icons --- */
+  --ui-pen-link-default-dark: #a5c6ad; /* Light Green */
+  --ui-pen-link-hover-dark: #b6d3bd;
+  --ui-pen-link-active-dark: #f5f5f5; /* White */
+  --ui-pen-link-selected-dark: #f5f5f5; /* White */
+  --ui-pen-link-visited-dark: #a5c6ad;
+  --ui-pen-link-disabled-dark: #737373;
+  --ui-pen-link-shadow-dark: #000000;
+
+  /* --- Status Pens (Light, pastel text) --- */
+  --ui-pen-success-default-dark: #bbf7d0; /* Green 200 */
+  --ui-pen-success-hover-dark: #dcfce7;
+  --ui-pen-success-active-dark: #f0fdf4;
+  --ui-pen-success-selected-dark: #f0fdf4;
+  --ui-pen-success-visited-dark: #bbf7d0;
+  --ui-pen-success-disabled-dark: #737373;
+  --ui-pen-success-shadow-dark: #000000;
+
+  --ui-pen-info-default-dark: #bfdbfe; /* Blue 200 */
+  --ui-pen-info-hover-dark: #dbeafe;
+  --ui-pen-info-active-dark: #eff6ff;
+  --ui-pen-info-selected-dark: #eff6ff;
+  --ui-pen-info-visited-dark: #bfdbfe;
+  --ui-pen-info-disabled-dark: #737373;
+  --ui-pen-info-shadow-dark: #000000;
+
+  --ui-pen-warning-default-dark: #fef08a; /* Yellow 200 */
+  --ui-pen-warning-hover-dark: #fef9c3;
+  --ui-pen-warning-active-dark: #fefce8;
+  --ui-pen-warning-selected-dark: #fefce8;
+  --ui-pen-warning-visited-dark: #fef08a;
+  --ui-pen-warning-disabled-dark: #737373;
+  --ui-pen-warning-shadow-dark: #000000;
+
+  --ui-pen-error-default-dark: #fecaca; /* Red 200 */
+  --ui-pen-error-hover-dark: #fee2e2;
+  --ui-pen-error-active-dark: #fef2f2;
+  --ui-pen-error-selected-dark: #fef2f2;
+  --ui-pen-error-visited-dark: #fecaca;
+  --ui-pen-error-disabled-dark: #737373;
+  --ui-pen-error-shadow-dark: #000000;
+
+  --ui-pen-notification-default-dark: #ddd6fe; /* Violet 200 */
+  --ui-pen-notification-hover-dark: #ede9fe;
+  --ui-pen-notification-active-dark: #f5f3ff;
+  --ui-pen-notification-selected-dark: #f5f3ff;
+  --ui-pen-notification-visited-dark: #ddd6fe;
+  --ui-pen-notification-disabled-dark: #737373;
+  --ui-pen-notification-shadow-dark: #000000;
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ 3. EDGE (Borders) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  /* --- 'base' edge --- */
+  --ui-edge-base-default-dark: #525252; /* Neutral 600 */
+  --ui-edge-base-hover-dark: #94b99d; /* Primary Green */
+  --ui-edge-base-active-dark: #a5c6ad; /* Light Green */
+  --ui-edge-base-selected-dark: #a5c6ad; /* Light Green */
+  --ui-edge-base-visited-dark: #525252;
+  --ui-edge-base-disabled-dark: #404040;
+
+  /* --- 'primary' edge --- */
+  --ui-edge-primary-default-dark: #83a78d;
+  --ui-edge-primary-hover-dark: #94b99d;
+  --ui-edge-primary-active-dark: #a5c6ad;
+  --ui-edge-primary-selected-dark: #a5c6ad;
+  --ui-edge-primary-visited-dark: #83a78d;
+  --ui-edge-primary-disabled-dark: #525252;
+
+  /* --- 'secondary' edge --- */
+  --ui-edge-secondary-default-dark: #b996c6;
+  --ui-edge-secondary-hover-dark: #caa7d9;
+  --ui-edge-secondary-active-dark: #d2b8e0;
+  --ui-edge-secondary-selected-dark: #d2b8e0;
+  --ui-edge-secondary-visited-dark: #b996c6;
+  --ui-edge-secondary-disabled-dark: #525252;
+
+  /* --- 'tertiary'  edge --- */
+  --ui-edge-tertiary-default-dark: #525252; /* Neutral 600 */
+  --ui-edge-tertiary-hover-dark: #737373;
+  --ui-edge-tertiary-active-dark: #a3a3a3;
+  --ui-edge-tertiary-selected-dark: #a3a3a3;
+  --ui-edge-tertiary-visited-dark: #525252;
+  --ui-edge-tertiary-disabled-dark: #404040;
+
+  /* --- 'accent' edge --- */
+  --ui-edge-accent-default-dark: #94b99d;
+  --ui-edge-accent-hover-dark: #a5c6ad;
+  --ui-edge-accent-active-dark: #b6d3bd;
+  --ui-edge-accent-selected-dark: #b6d3bd;
+  --ui-edge-accent-visited-dark: #94b99d;
+  --ui-edge-accent-disabled-dark: #525252;
+
+  /* --- 'muted' edge --- */
+  --ui-edge-muted-default-dark: #525252;
+  --ui-edge-muted-hover-dark: #737373;
+  --ui-edge-muted-active-dark: #a3a3a3;
+  --ui-edge-muted-selected-dark: #a3a3a3;
+  --ui-edge-muted-visited-dark: #525252;
+  --ui-edge-muted-disabled-dark: #404040;
+
+  /* --- 'floor' edge --- */
+  --ui-edge-floor-default-dark: #404040; /* Neutral 700 */
+  --ui-edge-floor-hover-dark: #525252;
+  --ui-edge-floor-active-dark: #737373;
+  --ui-edge-floor-selected-dark: #737373;
+  --ui-edge-floor-visited-dark: #404040;
+  --ui-edge-floor-disabled-dark: #262626;
+
+  /* --- 'input' edge --- */
+  --ui-edge-input-default-dark: #525252; /* Neutral 600 */
+  --ui-edge-input-hover-dark: #94b99d; /* Primary Green */
+  --ui-edge-input-active-dark: #a5c6ad; /* Light Green */
+  --ui-edge-input-selected-dark: #a5c6ad; /* Light Green */
+  --ui-edge-input-visited-dark: #525252;
+  --ui-edge-input-disabled-dark: #404040;
+
+  /* --- 'link' edge --- */
+  --ui-edge-link-default-dark: #94b99d;
+  --ui-edge-link-hover-dark: #a5c6ad;
+  --ui-edge-link-active-dark: #b6d3bd;
+  --ui-edge-link-selected-dark: #b6d3bd;
+  --ui-edge-link-visited-dark: #94b99d;
+  --ui-edge-link-disabled-dark: #525252;
+
+  /* --- Status for Edges (Mid-tone, vibrant) --- */
+  --ui-edge-success-default-dark: #22c55e; /* Green 500 */
+  --ui-edge-success-hover-dark: #4ade80;
+  --ui-edge-success-active-dark: #86efac;
+  --ui-edge-success-selected-dark: #86efac;
+  --ui-edge-success-visited-dark: #22c55e;
+  --ui-edge-success-disabled-dark: #525252;
+
+  --ui-edge-info-default-dark: #3b82f6; /* Blue 500 */
+  --ui-edge-info-hover-dark: #60a5fa;
+  --ui-edge-info-active-dark: #93c5fd;
+  --ui-edge-info-selected-dark: #93c5fd;
+  --ui-edge-info-visited-dark: #3b82f6;
+  --ui-edge-info-disabled-dark: #525252;
+
+  --ui-edge-warning-default-dark: #eab308; /* Yellow 500 */
+  --ui-edge-warning-hover-dark: #facc15;
+  --ui-edge-warning-active-dark: #fde047;
+  --ui-edge-warning-selected-dark: #fde047;
+  --ui-edge-warning-visited-dark: #eab308;
+  --ui-edge-warning-disabled-dark: #525252;
+
+  --ui-edge-error-default-dark: #ef4444; /* Red 500 */
+  --ui-edge-error-hover-dark: #f87171;
+  --ui-edge-error-active-dark: #fca5a5;
+  --ui-edge-error-selected-dark: #fca5a5;
+  --ui-edge-error-visited-dark: #ef4444;
+  --ui-edge-error-disabled-dark: #525252;
+
+  --ui-edge-notification-default-dark: #8b5cf6; /* Violet 500 */
+  --ui-edge-notification-hover-dark: #a78bfa;
+  --ui-edge-notification-active-dark: #c4b5fd;
+  --ui-edge-notification-selected-dark: #c4b5fd;
+  --ui-edge-notification-visited-dark: #8b5cf6;
+  --ui-edge-notification-disabled-dark: #525252;
+}
