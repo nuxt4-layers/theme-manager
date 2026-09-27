@@ -1,0 +1,56 @@
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+import { describe, expect, it } from 'vitest'
+
+const root = resolve(import.meta.dirname, '..')
+const read = (path: string) => readFileSync(resolve(root, path), 'utf8')
+
+describe('TM-7 management UI boundary', () => {
+  const library = read('app/components/theme-manager/ThemeLibrary.vue')
+  const editor = read('app/components/theme-manager/ThemeEditor.vue')
+  const indexPage = read('app/pages/theme-manager/index.vue')
+  const editorPage = read('app/pages/theme-manager/[id].vue')
+
+  it('ships Theme Manager-owned library and editor projections', () => {
+    expect(library).toContain('Theme Library')
+    expect(editor).toContain('Raw JSON')
+    expect(editor).toContain('Preview')
+    expect(editor).toContain('Delete Theme')
+  })
+
+  it('uses the common TM-5 preview engine rather than direct CSS mutation', () => {
+    expect(editor).not.toContain('style.setProperty')
+    expect(editor).toContain("emit('preview'")
+    expect(editorPage).toContain('@preview="management.previewTheme"')
+  })
+
+  it('does not inherit legacy account/authentication composition assumptions', () => {
+    const all = [library, editor, indexPage, editorPage].join('\n')
+    expect(all).not.toContain("layout: 'account'")
+    expect(all).not.toContain("middleware: 'authentication'")
+    expect(all).not.toContain('/account/themes')
+  })
+
+  it('does not depend on a UI capability implementation', () => {
+    const all = [library, editor, indexPage, editorPage].join('\n').toLowerCase()
+    expect(all).not.toContain('ui-library')
+    expect(all).not.toContain('@nuxt4-layers/ui')
+  })
+
+  it('does not revive a magic default Theme identifier or fabricate an owner', () => {
+    expect(editorPage).not.toContain('default-fresh')
+    expect(editorPage).not.toContain('dJKnu457dh387dgasdjgysaH')
+    expect(editorPage).not.toContain("ownerId: 'unassigned'")
+    expect(editorPage).toContain('creationTemplateId')
+    expect(editorPage).toContain('creationOwnerId')
+  })
+
+  it('preserves the recovered management workflows', () => {
+    expect(indexPage).toContain('@create=')
+    expect(indexPage).toContain('@edit=')
+    expect(indexPage).toContain('@select=')
+    expect(editorPage).toContain('@save=')
+    expect(editorPage).toContain('@delete=')
+    expect(editor).toContain('type="color"')
+  })
+})
