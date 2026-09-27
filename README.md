@@ -4,7 +4,7 @@ Theme Manager is the Nuxt 4 platform capability responsible for defining, valida
 
 It provides a stable presentation contract between theme definitions and consuming UI while keeping application components independent of concrete theme values. Tailwind CSS is the presentation mechanism through which the semantic theme vocabulary is exposed.
 
-> **Status:** Theme Manager is being re-baselined from the recovered legacy implementation. TM-0 through TM-6 establish the recovered behaviour, target architecture, presentation/runtime foundations and persistence kernel; TM-7 migrates the self-contained Theme Management UI. User and Group integration begins with TM-8.
+> **Status:** Theme Manager is being re-baselined from the recovered legacy implementation. TM-0 through TM-7 establish the recovered capability and management projection; TM-8 adds explicit external Identity/Authorization integration with authoritative server-side access enforcement. UI-layer integration begins with TM-9.
 
 ## Architecture
 
@@ -209,6 +209,6 @@ A minimal `playground/` application extends the repository root and provides the
 
 ## Development Status
 
-**TM-7 — Theme Management UI** restores the Theme Library and Theme Editor as a self-contained Theme Manager projection, including visual colour editing, raw JSON, common-engine live preview and create/update/delete workflows.
+**TM-8 — User and Group Integration** establishes opaque actor/group/organisation context, external Authorization decision contracts and authoritative server-side action enforcement while retaining Theme ownership inside Theme Manager.
 
-The management projection has no UI-Library or legacy account/authentication dependency. The next authorised work package is **TM-8 — User and Group Integration**.
+Identity membership and Authorization policy remain external. The next authorised work package is **TM-9 — UI-Layer Integration**.
