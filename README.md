@@ -4,7 +4,7 @@ Theme Manager is the Nuxt 4 platform capability responsible for defining, valida
 
 It provides a stable presentation contract between theme definitions and consuming UI while keeping application components independent of concrete theme values. Tailwind CSS is the presentation mechanism through which the semantic theme vocabulary is exposed.
 
-> **Status:** Theme Manager is being re-baselined from the recovered legacy implementation. TM-0 through TM-8 establish the recovered capability, management projection and access integration; TM-9 publishes the stable semantic presentation consumer boundary without introducing a UI dependency. Composition and legacy retirement begins with TM-10.
+> **Status:** The Theme Manager re-baselining programme **TM-0 through TM-10 is complete**. This repository is the implementation baseline for future composition. The legacy Theme Manager remains unchanged as immutable migration evidence.
 
 ## Architecture
 
@@ -160,11 +160,11 @@ Theme Manager migration and target-architecture records are maintained under:
 ```text
 docs/migration_plan/
 ├── tm-0-legacy-assets-architecture-audit.md
-├── tm-1-legacy-theme-manager-functional-audit.md
-└── tm-2-target-architecture-and-contracts.md
+├── ...
+└── tm-10-composition-legacy-retirement.md
 ```
 
-TM-0 records the recovered presentation architecture and assets. TM-1 records the recovered Theme Manager behaviour and functional surface. TM-2 defines the target architecture and contracts.
+TM-0 and TM-1 record the recovered presentation and functional surface. TM-2 defines the target architecture and explicit migration dispositions. TM-3 through TM-9 implement the staged capability. TM-10 records final composition and legacy-retirement reconciliation.
 
 ## Installation and Composition
 
@@ -178,19 +178,20 @@ During early independent development, a consuming application may install the re
 
 The Nuxt Layer is the package root export and is composed using Nuxt `extends` after installation. Production applications must pin and integration-test the exact dependency revision rather than follow a changing default branch.
 
-TM-3 does not yet expose consumer configuration. Configuration options will be documented when an authorised implementation stage introduces them.
+The host application is the composition root. It supplies persistence and external access-control adapters, chooses compatible peer capabilities and integration-tests the composed system. See `docs/composition-contract.md`.
 
 ## Public Exports
 
-TM-3 establishes three deliberate package entry points:
+The capability exposes four deliberate package entry points:
 
 ```text
 @nuxt4-layers/theme-manager
 @nuxt4-layers/theme-manager/contracts
 @nuxt4-layers/theme-manager/capability
+@nuxt4-layers/theme-manager/presentation.css
 ```
 
-The root is the Nuxt Layer entry point, `/contracts` is the supported TypeScript contract surface, and `/capability` exposes machine-readable capability metadata. Undocumented internal paths are not public contracts.
+The root is the Nuxt Layer entry point, `/contracts` is the supported TypeScript contract surface, `/capability` exposes machine-readable capability metadata, and `/presentation.css` is the supported semantic presentation stylesheet. Undocumented internal paths are not public contracts.
 
 ## Development and Testing
 
@@ -203,12 +204,12 @@ pnpm test
 pnpm check
 ```
 
-`pnpm check` runs the complete TM-3 quality gate. Pull requests and pushes to `master` run the same quality checks in GitHub Actions.
+`pnpm check` runs the complete Theme Manager quality gate. Pull requests and pushes to `master` run the same quality checks in GitHub Actions.
 
-A minimal `playground/` application extends the repository root and provides the composition fixture for later integration work.
+A minimal `playground/` application extends the repository root as a local capability fixture. Final composed applications remain responsible for testing their selected external adapters and peer capabilities.
 
 ## Development Status
 
-**TM-9 — UI-Layer Integration** publishes the versioned semantic presentation consumer boundary and a deliberate `@nuxt4-layers/theme-manager/presentation.css` entry point while proving Theme Manager remains independent of UI implementation and source topology.
+**TM-10 — Composition and Legacy Retirement is complete.** The TM-0/TM-1 recovered surface has been reconciled against the implemented dispositions, the final composition contract is documented, and the legacy repository is retired from future implementation use while remaining unchanged as immutable evidence.
 
-The live UI capability's provisional parallel token/application model is recorded as downstream UI migration work, not copied into Theme Manager. The next authorised work package is **TM-10 — Composition and Legacy Retirement**.
+Future work occurs through normal capability evolution and downstream composition, including the separate UI migration to consume `SemanticPresentationTheme`.
