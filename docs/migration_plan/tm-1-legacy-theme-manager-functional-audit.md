@@ -192,7 +192,7 @@ Default-theme identity is also inconsistent: both `default-fresh` and the opaque
 | Unimplemented/comment-only historical token families | **REMOVE or explicitly define** |
 | Legacy repository | **KEEP IMMUTABLE** throughout migration |
 
-## 3. Theme Manager Extension Matrix
+## Theme Manager Extension Matrix
 
 The legacy architecture should be extended rather than replaced. The existing non-colour Tailwind vocabulary becomes the starting point for a broader runtime-theme model.
 
