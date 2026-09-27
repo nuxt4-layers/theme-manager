@@ -6,6 +6,15 @@ const presentationCss = fileURLToPath(new URL('./assets/css/main.css', import.me
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   css: [presentationCss],
+  runtimeConfig: {
+    public: {
+      themeManager: {
+        creationTemplateId: '',
+        creationOwnerType: '',
+        creationOwnerId: '',
+      },
+    },
+  },
   vite: {
     plugins: [tailwindcss() as never],
   },
