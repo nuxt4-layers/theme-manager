@@ -288,8 +288,16 @@ The next authorised objective is **TM-3 — New Repository Foundation**.
 | Component CSS inside Theme Manager | **REMOVE** |
 | Theme Manager knowledge of UI topology | **PROHIBIT** |
 | Authentication implementation dependency | **REMOVE** |
-| Identity/group ownership | **EXTERNAL** |
-| Authorization policy/enforcement service | **EXTERNAL CONTRACT** |
-| Physical asset storage | **EXTERNAL/ADAPTER** |
+| Theme resource ownership/visibility/lifecycle semantics | **THEME MANAGER DOMAIN** |
+| Identity actor/group/organisation semantics | **EXTERNAL; referenced opaquely** |
+| Theme Manager action/resource vocabulary | **THEME MANAGER DOMAIN** |
+| Authorization policy/permission assignment and decision service | **EXTERNAL CONTRACT** |
+| Theme import/export | **ADD as first-class validated kernel capability** |
+| Imported ownership/privileged metadata | **DO NOT TRUST; assign/constrain through trusted operations** |
+| Theme asset references | **THEME MANAGER DOMAIN** |
+| Physical asset storage/upload/binary processing | **EXTERNAL/ADAPTER** |
+| Theme library projections (mine/group/org/shared/public/system) | **ADOPT** |
+| Anonymous access to public/system themes | **SUPPORT** |
+| Ownership vs visibility vs authorization vs selection | **MODEL SEPARATELY** |
 | Application-specific routing/layout | **COMPOSITION ROOT** |
 
