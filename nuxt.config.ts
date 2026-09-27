@@ -7,6 +7,6 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   css: [resolve('./assets/css/main.css')],
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss() as never],
   },
 })
