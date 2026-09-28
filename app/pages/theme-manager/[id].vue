@@ -44,7 +44,6 @@ async function newTheme(): Promise<ThemeDefinition> {
     ...template,
     id: `theme-${crypto.randomUUID()}`,
     name: 'Untitled Theme',
-    description: '',
     version: '1.0.0',
     created: now,
     updated: now,
