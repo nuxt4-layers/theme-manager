@@ -27,8 +27,9 @@
 
         <fieldset class="rounded-xl border border-edge-base-default bg-fill-base-default p-5">
           <legend class="px-1 font-bold text-pen-base-default">Preview</legend>
+          <p class="mb-3 text-xs text-pen-muted-default">Edit and preview the complete semantic colour vocabulary in either presentation mode.</p>
           <div class="flex gap-2">
-            <button v-for="mode in ['light', 'dark'] as const" :key="mode" type="button" class="rounded-lg border px-3 py-2 capitalize" :class="previewMode === mode ? 'border-edge-primary-default text-pen-primary-default' : 'border-edge-base-default text-pen-muted-default'" @click="setMode(mode)">{{ mode }}</button>
+            <button v-for="mode in ['light', 'dark'] as const" :key="mode" type="button" class="flex-1 rounded-lg border px-3 py-2 capitalize" :class="previewMode === mode ? 'border-edge-primary-default bg-fill-primary-default text-pen-primary-default' : 'border-edge-base-default text-pen-muted-default'" @click="setMode(mode)">{{ mode }}</button>
           </div>
         </fieldset>
 
@@ -36,27 +37,38 @@
       </aside>
 
       <main class="lg:col-span-2">
-        <div class="mb-4 flex gap-2 border-b border-edge-base-default">
-          <button v-for="tab in tabs" :key="tab" type="button" class="px-3 py-2 capitalize" :class="activeTab === tab ? 'border-b-2 border-edge-primary-default text-pen-primary-default' : 'text-pen-muted-default'" @click="activeTab = tab">{{ tab }}</button>
+        <div class="mb-4 flex gap-2 overflow-x-auto border-b border-edge-base-default">
+          <button v-for="tab in tabs" :key="tab" type="button" class="whitespace-nowrap px-3 py-2 capitalize" :class="activeTab === tab ? 'border-b-2 border-edge-primary-default text-pen-primary-default' : 'text-pen-muted-default'" @click="activeTab = tab">{{ tab }}</button>
         </div>
 
         <div v-if="activeTab === 'colours'" class="space-y-5">
           <div class="flex flex-wrap gap-2">
-            <button v-for="category in categories" :key="category" type="button" class="rounded-full border px-3 py-1 capitalize" :class="activeCategory === category ? 'border-edge-primary-default text-pen-primary-default' : 'border-edge-base-default text-pen-muted-default'" @click="activeCategory = category">{{ category }}</button>
+            <button v-for="category in categories" :key="category.id" type="button" class="rounded-full border px-4 py-2 text-sm font-medium" :class="activeCategory === category.id ? 'border-edge-primary-default bg-fill-primary-default text-pen-primary-default' : 'border-edge-base-default text-pen-muted-default'" @click="activeCategory = category.id">{{ category.label }}</button>
           </div>
 
-          <article v-for="[role, states] in visibleColourRoles" :key="role" class="rounded-xl border border-edge-base-default bg-fill-base-default p-5">
-            <h2 class="mb-4 font-mono font-bold text-pen-base-default">{{ role }}</h2>
-            <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-              <label v-for="[state, value] in Object.entries(states)" :key="state" class="text-xs uppercase text-pen-muted-default">
+          <article v-for="[role, states] in visibleColourRoles" :key="role" class="overflow-hidden rounded-xl border border-edge-base-default bg-fill-base-default">
+            <header class="flex items-center justify-between border-b border-edge-base-default bg-fill-floor-default px-5 py-3">
+              <div class="flex items-center gap-3">
+                <span class="h-8 w-2 rounded bg-fill-primary-default" aria-hidden="true" />
+                <h2 class="font-mono font-bold text-pen-base-default">{{ roleLabel(role) }}</h2>
+              </div>
+              <code class="rounded border border-edge-base-default bg-fill-base-default px-2 py-1 text-xs text-pen-muted-default">{{ role }}</code>
+            </header>
+
+            <div class="grid gap-4 p-5 sm:grid-cols-2 xl:grid-cols-3">
+              <label v-for="[state, value] in orderedStates(states)" :key="state" class="text-xs font-bold uppercase tracking-wide text-pen-muted-default">
                 {{ state }}
-                <div class="mt-1 flex items-center gap-2 rounded-lg border border-edge-input-default bg-fill-input-default p-1">
-                  <input type="color" :value="colourInput(value)" @input="setColour(role, state, ($event.target as HTMLInputElement).value)" />
-                  <input :value="value" class="min-w-0 flex-1 bg-transparent px-1 py-1 font-mono text-sm text-pen-base-default" @input="setColour(role, state, ($event.target as HTMLInputElement).value)" />
+                <div class="mt-1.5 flex items-center gap-2 rounded-lg border border-edge-input-default bg-fill-input-default p-1.5 focus-within:ring-2 focus-within:ring-edge-primary-default">
+                  <div class="relative size-8 shrink-0 overflow-hidden rounded-md border border-edge-base-default">
+                    <input type="color" class="absolute left-1/2 top-1/2 size-12 -translate-x-1/2 -translate-y-1/2 cursor-pointer border-0 p-0" :value="colourInput(value)" @input="setColour(role, state, ($event.target as HTMLInputElement).value)" />
+                  </div>
+                  <input :value="value" maxlength="32" class="min-w-0 flex-1 bg-transparent px-1 py-1 font-mono text-sm text-pen-base-default outline-none" @input="setColour(role, state, ($event.target as HTMLInputElement).value)" />
                 </div>
               </label>
             </div>
           </article>
+
+          <p v-if="visibleColourRoles.length === 0" class="rounded-xl border border-edge-base-default p-8 text-center text-pen-muted-default">No {{ activeCategory }} colour roles are present in this Theme.</p>
         </div>
 
         <div v-else-if="activeTab === 'raw'">
@@ -84,16 +96,38 @@ const emit = defineEmits<{ save: [theme: ThemeDefinition]; cancel: []; delete: [
 const model = reactive(structuredClone(toRaw(props.theme)))
 const activeTab = ref<'colours' | 'typography' | 'spacing' | 'radii' | 'effects' | 'responsive' | 'assets' | 'raw'>('colours')
 const tabs = ['colours', 'typography', 'spacing', 'radii', 'effects', 'responsive', 'assets', 'raw'] as const
-const categories = ['fill', 'pen', 'edge'] as const
-const activeCategory = ref<(typeof categories)[number]>('fill')
+const categories = [
+  { id: 'fill', label: 'Fill (Backgrounds)' },
+  { id: 'pen', label: 'Pen (Text & Icons)' },
+  { id: 'edge', label: 'Edge (Borders)' },
+] as const
+const activeCategory = ref<(typeof categories)[number]['id']>('fill')
 const previewMode = ref<'light' | 'dark'>('light')
 const raw = ref(JSON.stringify(model, null, 2))
 const rawError = ref<string | null>(null)
+const interactionOrder = ['default', 'hover', 'active', 'selected', 'visited', 'disabled'] as const
 
 const colourModes = computed(() => model.modes as Record<string, Record<string, Record<string, string>>>)
 const visibleColourRoles = computed(() =>
-  Object.entries(colourModes.value[previewMode.value] ?? {}).filter(([role]) => role.startsWith(`${activeCategory.value}-`)),
+  Object.entries(colourModes.value[previewMode.value] ?? {})
+    .filter(([role]) => role.startsWith(`${activeCategory.value}-`))
+    .sort(([left], [right]) => left.localeCompare(right)),
 )
+
+function roleLabel(role: string) {
+  return role.replace(`${activeCategory.value}-`, '').replaceAll('-', ' ')
+}
+
+function orderedStates(states: Record<string, string>) {
+  return Object.entries(states).sort(([left], [right]) => {
+    const leftIndex = interactionOrder.indexOf(left as (typeof interactionOrder)[number])
+    const rightIndex = interactionOrder.indexOf(right as (typeof interactionOrder)[number])
+    if (leftIndex === -1 && rightIndex === -1) return left.localeCompare(right)
+    if (leftIndex === -1) return 1
+    if (rightIndex === -1) return -1
+    return leftIndex - rightIndex
+  })
+}
 
 function colourInput(value: string) {
   return /^#[0-9a-f]{6}$/i.test(value) ? value : '#000000'
@@ -103,18 +137,22 @@ function syncRaw() {
   raw.value = JSON.stringify(model, null, 2)
 }
 
+function preview() {
+  emit('preview', parseThemeDefinition(toRaw(model)))
+}
+
 function setColour(role: string, state: string, value: string) {
   const roleStates = colourModes.value[previewMode.value]?.[role]
   if (!roleStates) return
   roleStates[state] = value
   syncRaw()
-  emit('preview', parseThemeDefinition(model))
+  preview()
 }
 
 function setMode(mode: 'light' | 'dark') {
   previewMode.value = mode
   if (import.meta.client) document.documentElement.classList.toggle('dark', mode === 'dark')
-  emit('preview', parseThemeDefinition(model))
+  preview()
 }
 
 function applyRaw() {
@@ -136,7 +174,7 @@ function formatRaw() {
 
 function save() {
   try {
-    emit('save', parseThemeDefinition(model))
+    emit('save', parseThemeDefinition(toRaw(model)))
   }
   catch (error) {
     rawError.value = error instanceof Error ? error.message : 'Invalid Theme Definition.'
