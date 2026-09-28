@@ -81,7 +81,7 @@ import { parseThemeDefinition } from '../../../shared/theme-definition'
 const props = defineProps<{ theme: ThemeDefinition; isNew?: boolean; saving?: boolean; error?: string | null }>()
 const emit = defineEmits<{ save: [theme: ThemeDefinition]; cancel: []; delete: []; preview: [theme: ThemeDefinition]; stopPreview: [] }>()
 
-const model = reactive(structuredClone(props.theme))
+const model = reactive(structuredClone(toRaw(props.theme)))
 const activeTab = ref<'colours' | 'typography' | 'spacing' | 'radii' | 'effects' | 'responsive' | 'assets' | 'raw'>('colours')
 const tabs = ['colours', 'typography', 'spacing', 'radii', 'effects', 'responsive', 'assets', 'raw'] as const
 const categories = ['fill', 'pen', 'edge'] as const
