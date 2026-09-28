@@ -17,6 +17,7 @@
 
 <script setup lang="ts">
 import type { ThemeDefinition } from '../../../contracts'
+import { assertCompleteThemeVocabulary, completeThemeVocabulary } from '../../../shared/canonical-theme'
 
 const route = useRoute()
 const management = useThemeManagement()
@@ -38,7 +39,7 @@ async function newTheme(): Promise<ThemeDefinition> {
     throw new Error('Theme creation requires composition-supplied template and owner context.')
   }
 
-  const template = structuredClone(await management.loadTheme(config.creationTemplateId))
+  const template = completeThemeVocabulary(structuredClone(await management.loadTheme(config.creationTemplateId)))
   const now = new Date().toISOString()
   return {
     ...template,
@@ -70,7 +71,7 @@ async function save(next: ThemeDefinition) {
   error.value = null
   try {
     next.updated = new Date().toISOString()
-    if (isNew.value) await management.createTheme(next)
+    if (isNew.value) await management.createTheme(assertCompleteThemeVocabulary(next))
     else await management.updateTheme(next)
     management.stopPreview()
     await navigateTo('/theme-manager')
