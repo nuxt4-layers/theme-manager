@@ -128,3 +128,11 @@ export {
   serializeThemeDefinition,
   summarizeTheme,
 } from '../shared/theme-definition'
+
+export {
+  CANONICAL_THEME_CARDINALITY,
+  assertCompleteThemeVocabulary,
+  completeThemeVocabulary,
+  createCanonicalThemeDefinition,
+  themeVocabularyCardinality,
+} from '../shared/canonical-theme'
