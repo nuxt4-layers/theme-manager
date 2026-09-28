@@ -1114,6 +1114,18 @@ const canonicalModes = {
   }
 } as const
 
+function mergeRecord(base: Record<string, unknown>, override: Record<string, unknown>): Record<string, unknown> {
+  const result = structuredClone(base)
+  for (const [key, value] of Object.entries(override)) {
+    if (value && typeof value === 'object' && !Array.isArray(value)
+      && result[key] && typeof result[key] === 'object' && !Array.isArray(result[key])) {
+      result[key] = mergeRecord(result[key] as Record<string, unknown>, value as Record<string, unknown>)
+    }
+    else result[key] = structuredClone(value)
+  }
+  return result
+}
+
 export function createCanonicalThemeDefinition(options: { id?: string; name?: string; description?: string; ownerType?: ThemeOwnerType; ownerId?: string } = {}): ThemeDefinition {
   const ownerType = options.ownerType ?? 'system'
   if (ownerType !== 'system' && !options.ownerId) throw new TypeError('ownerId is required for non-system canonical themes.')
@@ -1129,4 +1141,34 @@ export function createCanonicalThemeDefinition(options: { id?: string; name?: st
     presentation: canonicalPresentation,
     modes: canonicalModes,
   }) as ThemeDefinition
+}
+
+export function completeThemeVocabulary(theme: ThemeDefinition): ThemeDefinition {
+  const canonical = createCanonicalThemeDefinition()
+  return {
+    ...structuredClone(theme),
+    presentation: mergeRecord(canonical.presentation as unknown as Record<string, unknown>, theme.presentation as unknown as Record<string, unknown>) as unknown as ThemeDefinition['presentation'],
+    modes: mergeRecord(canonical.modes as unknown as Record<string, unknown>, theme.modes as unknown as Record<string, unknown>) as ThemeDefinition['modes'],
+  }
+}
+
+export function themeVocabularyCardinality(theme: ThemeDefinition) {
+  const mode = theme.modes.light as Record<string, Record<string, unknown>> | undefined
+  const colour = mode ? Object.values(mode).reduce((total, states) => total + Object.keys(states).length, 0) : 0
+  const typography = Object.values(theme.presentation.typography).reduce((total, family) => total + (family && typeof family === 'object' ? Object.keys(family).length : 0), 0)
+  const effects = Object.values(theme.presentation.effects).reduce((total, family) => total + (family && typeof family === 'object' ? Object.keys(family).length : 0), 0)
+  const responsive = Object.values(theme.presentation.responsive).reduce((total, family) => total + (family && typeof family === 'object' ? Object.keys(family).length : 0), 0)
+  const spacing = Object.keys(theme.presentation.spacing).length
+  const radii = Object.keys(theme.presentation.radii).length
+  return { colour, typography, spacing, radii, effects, responsive, total: colour + typography + spacing + radii + effects + responsive }
+}
+
+export function assertCompleteThemeVocabulary(theme: ThemeDefinition): ThemeDefinition {
+  const actual = themeVocabularyCardinality(theme)
+  for (const key of ['colour', 'typography', 'spacing', 'radii', 'effects', 'responsive', 'total'] as const) {
+    if (actual[key] < CANONICAL_THEME_CARDINALITY[key]) {
+      throw new TypeError(`Theme vocabulary is incomplete: ${key} has ${actual[key]} entries; expected at least ${CANONICAL_THEME_CARDINALITY[key]}.`)
+    }
+  }
+  return theme
 }
