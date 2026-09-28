@@ -78,8 +78,18 @@
           <button type="button" class="mt-2 text-sm text-pen-primary-default" @click="formatRaw">Format JSON</button>
         </div>
 
+        <div v-else-if="activeTab !== 'assets'" class="space-y-4">
+          <article v-for="[path, value] in presentationEntries" :key="path" class="rounded-xl border border-edge-base-default bg-fill-base-default p-4">
+            <label class="block text-xs font-bold uppercase tracking-wide text-pen-muted-default">
+              {{ path }}
+              <input :value="value" class="mt-2 w-full rounded-lg border border-edge-input-default bg-fill-input-default px-3 py-2 font-mono text-sm text-pen-base-default" @input="setPresentationValue(path, ($event.target as HTMLInputElement).value)" />
+            </label>
+          </article>
+          <p v-if="presentationEntries.length === 0" class="rounded-xl border border-edge-base-default p-8 text-center text-pen-muted-default">No {{ activeTab }} values are present in this Theme.</p>
+        </div>
+
         <div v-else class="rounded-xl border border-edge-base-default bg-fill-base-default p-6">
-          <p class="text-pen-muted-default">This Theme Definition contains the {{ activeTab }} presentation family. Raw JSON remains available for complete editing until its specialised visual editor is introduced.</p>
+          <p class="text-pen-muted-default">Semantic asset bindings are managed as asset references. Raw JSON remains available for bindings until an external asset provider is composed.</p>
         </div>
       </main>
     </div>
@@ -113,6 +123,34 @@ const visibleColourRoles = computed(() =>
     .filter(([role]) => role.startsWith(`${activeCategory.value}-`))
     .sort(([left], [right]) => left.localeCompare(right)),
 )
+
+const presentationEntries = computed(() => {
+  if (activeTab.value === 'colours' || activeTab.value === 'raw' || activeTab.value === 'assets') return []
+  const familyKey = activeTab.value === 'radii' ? 'radii' : activeTab.value
+  const family = model.presentation[familyKey] as Record<string, unknown>
+  return flattenPresentation(family)
+})
+
+function flattenPresentation(value: Record<string, unknown>, prefix = ''): Array<[string, string]> {
+  const result: Array<[string, string]> = []
+  for (const [key, entry] of Object.entries(value)) {
+    const path = prefix ? `${prefix}.${key}` : key
+    if (entry && typeof entry === 'object' && !Array.isArray(entry)) result.push(...flattenPresentation(entry as Record<string, unknown>, path))
+    else result.push([path, String(entry)])
+  }
+  return result
+}
+
+function setPresentationValue(path: string, value: string) {
+  const familyKey = activeTab.value === 'radii' ? 'radii' : activeTab.value
+  let target = model.presentation[familyKey] as Record<string, unknown>
+  const parts = path.split('.')
+  const leaf = parts.pop()!
+  for (const part of parts) target = target[part] as Record<string, unknown>
+  target[leaf] = value
+  syncRaw()
+  preview()
+}
 
 function roleLabel(role: string) {
   return role.replace(`${activeCategory.value}-`, '').replaceAll('-', ' ')
