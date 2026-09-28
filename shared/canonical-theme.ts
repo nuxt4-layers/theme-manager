@@ -1155,9 +1155,11 @@ export function completeThemeVocabulary(theme: ThemeDefinition): ThemeDefinition
 export function themeVocabularyCardinality(theme: ThemeDefinition) {
   const mode = theme.modes.light as Record<string, Record<string, unknown>> | undefined
   const colour = mode ? Object.values(mode).reduce((total, states) => total + Object.keys(states).length, 0) : 0
-  const typography = Object.values(theme.presentation.typography).reduce((total, family) => total + (family && typeof family === 'object' ? Object.keys(family).length : 0), 0)
-  const effects = Object.values(theme.presentation.effects).reduce((total, family) => total + (family && typeof family === 'object' ? Object.keys(family).length : 0), 0)
-  const responsive = Object.values(theme.presentation.responsive).reduce((total, family) => total + (family && typeof family === 'object' ? Object.keys(family).length : 0), 0)
+  const countNested = (value: Record<string, unknown>) =>
+    Object.values(value).reduce<number>((total, family) => total + (family && typeof family === 'object' && !Array.isArray(family) ? Object.keys(family).length : 0), 0)
+  const typography = countNested(theme.presentation.typography)
+  const effects = countNested(theme.presentation.effects)
+  const responsive = countNested(theme.presentation.responsive)
   const spacing = Object.keys(theme.presentation.spacing).length
   const radii = Object.keys(theme.presentation.radii).length
   return { colour, typography, spacing, radii, effects, responsive, total: colour + typography + spacing + radii + effects + responsive }
