@@ -16,6 +16,8 @@ describe('TM-7 management UI boundary', () => {
     expect(editor).toContain('Raw JSON')
     expect(editor).toContain('Preview')
     expect(editor).toContain('Delete Theme')
+    expect(editor).toContain('presentationEntries')
+    expect(editor).not.toContain('until its specialised visual editor is introduced')
   })
 
   it('unwraps reactive Theme props before cloning editor state', () => {
@@ -48,6 +50,8 @@ describe('TM-7 management UI boundary', () => {
     expect(editorPage).not.toContain("ownerId: 'unassigned'")
     expect(editorPage).toContain('creationTemplateId')
     expect(editorPage).toContain('creationOwnerId')
+    expect(editorPage).toContain('completeThemeVocabulary')
+    expect(editorPage).toContain('assertCompleteThemeVocabulary')
   })
 
   it('preserves the recovered management workflows', () => {
