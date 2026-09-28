@@ -18,6 +18,11 @@ describe('TM-7 management UI boundary', () => {
     expect(editor).toContain('Delete Theme')
   })
 
+  it('unwraps reactive Theme props before cloning editor state', () => {
+    expect(editor).toContain('structuredClone(toRaw(props.theme))')
+    expect(editor).not.toContain('structuredClone(props.theme)')
+  })
+
   it('uses the common TM-5 preview engine rather than direct CSS mutation', () => {
     expect(editor).not.toContain('style.setProperty')
     expect(editor).toContain("emit('preview'")
