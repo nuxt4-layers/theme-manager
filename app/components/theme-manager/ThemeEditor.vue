@@ -126,7 +126,7 @@ const visibleColourRoles = computed(() =>
 
 const presentationEntries = computed(() => {
   if (activeTab.value === 'colours' || activeTab.value === 'raw' || activeTab.value === 'assets') return []
-  const familyKey = activeTab.value === 'radii' ? 'radii' : activeTab.value
+  const familyKey = activeTab.value as Exclude<typeof activeTab.value, 'colours' | 'raw' | 'assets'>
   const family = model.presentation[familyKey] as Record<string, unknown>
   return flattenPresentation(family)
 })
@@ -142,7 +142,8 @@ function flattenPresentation(value: Record<string, unknown>, prefix = ''): Array
 }
 
 function setPresentationValue(path: string, value: string) {
-  const familyKey = activeTab.value === 'radii' ? 'radii' : activeTab.value
+  if (activeTab.value === 'colours' || activeTab.value === 'raw' || activeTab.value === 'assets') return
+  const familyKey = activeTab.value as Exclude<typeof activeTab.value, 'colours' | 'raw' | 'assets'>
   let target = model.presentation[familyKey] as Record<string, unknown>
   const parts = path.split('.')
   const leaf = parts.pop()!
