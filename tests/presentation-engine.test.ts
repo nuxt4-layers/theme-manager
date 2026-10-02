@@ -66,11 +66,20 @@ describe('TM-4 presentation engine', () => {
     const defaultNames = new Set(declarations(defaultCss, '--ui-'))
     const mappings = [...tailwindCss.matchAll(/(--(?!color-)[\\w-]+)\\s*:\\s*var\\((--api-[\\w-]+)\\)/g)]
 
+    const runtimeTailwindNames = tailwindNames.filter(name => !name?.startsWith('--breakpoint-'))
+    const breakpoints = tailwindNames.filter(name => name?.startsWith('--breakpoint-'))
+
     expect(tailwindNames).toHaveLength(292)
-    expect(mappings).toHaveLength(292)
+    expect(runtimeTailwindNames).toHaveLength(284)
+    expect(breakpoints).toHaveLength(8)
+    expect(mappings).toHaveLength(284)
     expect(mappings.every(([, tailwind, api]) => api === `--api-${tailwind!.slice(2)}`)).toBe(true)
     expect(tailwindNames.every(name => apiNames.has(`--api-${name!.slice(2)}`))).toBe(true)
     expect(tailwindNames.every(name => defaultNames.has(`--ui-${name!.slice(2)}`))).toBe(true)
+    expect(breakpoints.every(name => {
+      const declaration = tailwindCss.match(new RegExp(`${name}\\\\s*:\\\\s*([^;]+);`))
+      return declaration && !declaration[1]?.includes('var(')
+    })).toBe(true)
   })
 
   it('does not couple Theme Manager to consumer source topology or UI component CSS', () => {
