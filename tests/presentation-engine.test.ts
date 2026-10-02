@@ -64,7 +64,7 @@ describe('TM-4 presentation engine', () => {
     const tailwindNames = [...new Set(declarations(tailwindCss, '--').filter(name => !name?.startsWith('--color-')))]
     const apiNames = new Set(declarations(apiCss, '--api-'))
     const defaultNames = new Set(declarations(defaultCss, '--ui-'))
-    const mappings = [...tailwindCss.matchAll(/(--(?!color-)[\\w-]+)\\s*:\\s*var\\((--api-[\\w-]+)\\)/g)]
+    const mappings = [...tailwindCss.matchAll(/(--(?!color-)[\w-]+)\s*:\s*var\((--api-[\w-]+)\)/g)]
 
     const runtimeTailwindNames = tailwindNames.filter(name => !name?.startsWith('--breakpoint-'))
     const breakpoints = tailwindNames.filter(name => name?.startsWith('--breakpoint-'))
@@ -77,7 +77,7 @@ describe('TM-4 presentation engine', () => {
     expect(tailwindNames.every(name => apiNames.has(`--api-${name!.slice(2)}`))).toBe(true)
     expect(tailwindNames.every(name => defaultNames.has(`--ui-${name!.slice(2)}`))).toBe(true)
     expect(breakpoints.every(name => {
-      const declaration = tailwindCss.match(new RegExp(`${name}\\\\s*:\\\\s*([^;]+);`))
+      const declaration = tailwindCss.match(new RegExp(`${name}\\s*:\\s*([^;]+);`))
       return declaration && !declaration[1]?.includes('var(')
     })).toBe(true)
   })
