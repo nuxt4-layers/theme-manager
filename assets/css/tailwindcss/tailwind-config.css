@@ -459,35 +459,35 @@
    * @creates:
    * @description: Font family utilities like font-sans
    */
-  --font-sans: "Inter", "Helvetica Neue", Arial, sans-serif;
-  --font-serif: "Merriweather", serif;
-  --font-mono: "Fira Code", "Courier New", monospace;
+  --font-sans: var(--api-font-sans);
+  --font-serif: var(--api-font-serif);
+  --font-mono: var(--api-font-mono);
 
   /**
    * @namespace: --text-*
    * @creates:
    * @description: Font size utilities like text-xl
    */
-  --text-sm: 0.875rem;
-  --text-base: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.25rem;
-  --text-2xl: 1.5rem;
-  --text-3xl: 1.875rem;
-  --text-4xl: 2.0rem;
+  --text-sm: var(--api-text-sm);
+  --text-base: var(--api-text-base);
+  --text-lg: var(--api-text-lg);
+  --text-xl: var(--api-text-xl);
+  --text-2xl: var(--api-text-2xl);
+  --text-3xl: var(--api-text-3xl);
+  --text-4xl: var(--api-text-4xl);
 
   /**
    * @namespace: --font-weight-*
    * @creates:
    * @description: Font weight utilities like font-bold
    */
-  --font-weight-light: 300;
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-  --font-weight-extrabold: 800;
-  --font-weight-heavy: 900;
+  --font-weight-light: var(--api-font-weight-light);
+  --font-weight-normal: var(--api-font-weight-normal);
+  --font-weight-medium: var(--api-font-weight-medium);
+  --font-weight-semibold: var(--api-font-weight-semibold);
+  --font-weight-bold: var(--api-font-weight-bold);
+  --font-weight-extrabold: var(--api-font-weight-extrabold);
+  --font-weight-heavy: var(--api-font-weight-heavy);
 
   /**
    * @namespace: --tracking-*
@@ -507,23 +507,23 @@
    * @description: These values override Tailwind's default screen variants, allowing for a
    * custom responsive design system tailored to the application's needs.
    */
-  --breakpoint-sm: 640px;
-  --breakpoint-md: 768px;
-  --breakpoint-lg: 1024px;
-  --breakpoint-xl: 1280px;
-  --breakpoint-2xl: 1536px;
-  --breakpoint-3xl: 1920px;
-  --breakpoint-4xl: 2560px;
-  --breakpoint-5xl: 3840px;
+  --breakpoint-sm: var(--api-breakpoint-sm);
+  --breakpoint-md: var(--api-breakpoint-md);
+  --breakpoint-lg: var(--api-breakpoint-lg);
+  --breakpoint-xl: var(--api-breakpoint-xl);
+  --breakpoint-2xl: var(--api-breakpoint-2xl);
+  --breakpoint-3xl: var(--api-breakpoint-3xl);
+  --breakpoint-4xl: var(--api-breakpoint-4xl);
+  --breakpoint-5xl: var(--api-breakpoint-5xl);
 
   /**
    * @namespace: --container-*
    * @creates:
    * @description: Container query variants like @sm:* and size utilities like max-w-md
    */
-  --container-center: true;
+  --container-center: var(--api-container-center);
   /* ... (all your --container-padding-* and --container-sm/md/lg/xl lines) ... */
-  --container-2xl: 1536px;
+  --container-2xl: var(--api-container-2xl);
 
   /*
    * @namespace: --spacing-*
@@ -532,55 +532,55 @@
    * units for padding, margins, width, height, and other layout properties.
    */
 
-  --spacing-p-xs: 4px;
-  --spacing-p-sm: 8px;
-  --spacing-p-md: 16px;
-  --spacing-p-lg: 24px;
-  --spacing-p-xl: 32px;
+  --spacing-p-xs: var(--api-spacing-p-xs);
+  --spacing-p-sm: var(--api-spacing-p-sm);
+  --spacing-p-md: var(--api-spacing-p-md);
+  --spacing-p-lg: var(--api-spacing-p-lg);
+  --spacing-p-xl: var(--api-spacing-p-xl);
 
   /* * ADDED the missing max-width scale keys.
    * This will generate max-w-xl, max-w-4xl, etc. correctly.
    */
-  --spacing-xs: 20rem;
-  --spacing-sm: 24rem;
-  --spacing-md: 28rem;
-  --spacing-lg: 32rem;
-  --spacing-xl: 36rem;  /* This will fix contact.vue (max-w-xl) */
-  --spacing-2xl: 42rem;
-  --spacing-3xl: 48rem;
-  --spacing-4xl: 56rem; /* This will fix about.vue (max-w-4xl) */
-  --spacing-5xl: 64rem;
-  --spacing-6xl: 72rem;
-  --spacing-7xl: 80rem;
-  --spacing-full: 100%;
-  --spacing-screen-sm: 640px;
-  --spacing-screen-md: 768px;
-  --spacing-screen-lg: 1024px;
-  --spacing-screen-xl: 1280px;
-  --spacing-screen-2xl: 1536px;
+  --spacing-xs: var(--api-spacing-xs);
+  --spacing-sm: var(--api-spacing-sm);
+  --spacing-md: var(--api-spacing-md);
+  --spacing-lg: var(--api-spacing-lg);
+  --spacing-xl: var(--api-spacing-xl);  /* This will fix contact.vue (max-w-xl) */
+  --spacing-2xl: var(--api-spacing-2xl);
+  --spacing-3xl: var(--api-spacing-3xl);
+  --spacing-4xl: var(--api-spacing-4xl); /* This will fix about.vue (max-w-4xl) */
+  --spacing-5xl: var(--api-spacing-5xl);
+  --spacing-6xl: var(--api-spacing-6xl);
+  --spacing-7xl: var(--api-spacing-7xl);
+  --spacing-full: var(--api-spacing-full);
+  --spacing-screen-sm: var(--api-spacing-screen-sm);
+  --spacing-screen-md: var(--api-spacing-screen-md);
+  --spacing-screen-lg: var(--api-spacing-screen-lg);
+  --spacing-screen-xl: var(--api-spacing-screen-xl);
+  --spacing-screen-2xl: var(--api-spacing-screen-2xl);
 
   /* Map Tailwind's defaults to your new 'p-*' scale */
-  --spacing-1: var(--spacing-p-xs); /* 4px */
-  --spacing-2: var(--spacing-p-sm); /* 8px */
-  --spacing-3: 12px;
-  --spacing-4: var(--spacing-p-md); /* 16px */
-  --spacing-5: 20px;
-  --spacing-6: var(--spacing-p-lg); /* 24px */
-  --spacing-7: var(--spacing-p-xl); /* 32px */
-  --spacing-8: 48px;
-  --spacing-9: 64px;
+  --spacing-1: var(--api-spacing-1); /* 4px */
+  --spacing-2: var(--api-spacing-2); /* 8px */
+  --spacing-3: var(--api-spacing-3);
+  --spacing-4: var(--api-spacing-4); /* 16px */
+  --spacing-5: var(--api-spacing-5);
+  --spacing-6: var(--api-spacing-6); /* 24px */
+  --spacing-7: var(--api-spacing-7); /* 32px */
+  --spacing-8: var(--api-spacing-8);
+  --spacing-9: var(--api-spacing-9);
 
   /**
    * @namespace: --radius-*
    * @creates:
    * @description: Border radius utilities like rounded-sm
    */
-  --radius-sm: 2px;
-  --radius-md: 4px;
-  --radius-lg: 8px;
-  --radius-xl: 16px;
-  --radius-DEFAULT: var(--radius-md);
-  --radius-full: var(calc(infinity * 1px));
+  --radius-sm: var(--api-radius-sm);
+  --radius-md: var(--api-radius-md);
+  --radius-lg: var(--api-radius-lg);
+  --radius-xl: var(--api-radius-xl);
+  --radius-DEFAULT: var(--api-radius-DEFAULT);
+  --radius-full: var(--api-radius-full);
 
   /**
    * ==================================================================
@@ -598,88 +598,88 @@
    */
 
   /* --- Base --- */
-  --shadow-sm-base: 0 1px 2px 0 var(--color-fill-base-shadow);
-  --shadow-md-base: 0 4px 6px -1px var(--color-fill-base-shadow), 0 2px 4px -2px var(--color-fill-base-shadow);
-  --shadow-lg-base: 0 10px 15px -3px var(--color-fill-base-shadow), 0 4px 6px -4px var(--color-fill-base-shadow);
-  --shadow-xl-base: 0 20px 25px -5px var(--color-fill-base-shadow), 0 8px 10px -6px var(--color-fill-base-shadow);
+  --shadow-sm-base: var(--api-shadow-sm-base);
+  --shadow-md-base: var(--api-shadow-md-base);
+  --shadow-lg-base: var(--api-shadow-lg-base);
+  --shadow-xl-base: var(--api-shadow-xl-base);
 
   /* --- Primary --- */
-  --shadow-sm-primary: 0 1px 2px 0 var(--color-fill-primary-shadow);
-  --shadow-md-primary: 0 4px 6px -1px var(--color-fill-primary-shadow), 0 2px 4px -2px var(--color-fill-primary-shadow);
-  --shadow-lg-primary: 0 10px 15px -3px var(--color-fill-primary-shadow), 0 4px 6px -4px var(--color-fill-primary-shadow);
-  --shadow-xl-primary: 0 20px 25px -5px var(--color-fill-primary-shadow), 0 8px 10px -6px var(--color-fill-primary-shadow);
+  --shadow-sm-primary: var(--api-shadow-sm-primary);
+  --shadow-md-primary: var(--api-shadow-md-primary);
+  --shadow-lg-primary: var(--api-shadow-lg-primary);
+  --shadow-xl-primary: var(--api-shadow-xl-primary);
 
   /* --- Secondary --- */
-  --shadow-sm-secondary: 0 1px 2px 0 var(--color-fill-secondary-shadow);
-  --shadow-md-secondary: 0 4px 6px -1px var(--color-fill-secondary-shadow), 0 2px 4px -2px var(--color-fill-secondary-shadow);
-  --shadow-lg-secondary: 0 10px 15px -3px var(--color-fill-secondary-shadow), 0 4px 6px -4px var(--color-fill-secondary-shadow);
-  --shadow-xl-secondary: 0 20px 25px -5px var(--color-fill-secondary-shadow), 0 8px 10px -6px var(--color-fill-secondary-shadow);
+  --shadow-sm-secondary: var(--api-shadow-sm-secondary);
+  --shadow-md-secondary: var(--api-shadow-md-secondary);
+  --shadow-lg-secondary: var(--api-shadow-lg-secondary);
+  --shadow-xl-secondary: var(--api-shadow-xl-secondary);
 
   /* --- Tertiary --- */
-  --shadow-sm-tertiary: 0 1px 2px 0 var(--color-fill-tertiary-shadow);
-  --shadow-md-tertiary: 0 4px 6px -1px var(--color-fill-tertiary-shadow), 0 2px 4px -2px var(--color-fill-tertiary-shadow);
-  --shadow-lg-tertiary: 0 10px 15px -3px var(--color-fill-tertiary-shadow), 0 4px 6px -4px var(--color-fill-tertiary-shadow);
-  --shadow-xl-tertiary: 0 20px 25px -5px var(--color-fill-tertiary-shadow), 0 8px 10px -6px var(--color-fill-tertiary-shadow);
+  --shadow-sm-tertiary: var(--api-shadow-sm-tertiary);
+  --shadow-md-tertiary: var(--api-shadow-md-tertiary);
+  --shadow-lg-tertiary: var(--api-shadow-lg-tertiary);
+  --shadow-xl-tertiary: var(--api-shadow-xl-tertiary);
 
   /* --- Accent --- */
-  --shadow-sm-accent: 0 1px 2px 0 var(--color-fill-accent-shadow);
-  --shadow-md-accent: 0 4px 6px -1px var(--color-fill-accent-shadow), 0 2px 4px -2px var(--color-fill-accent-shadow);
-  --shadow-lg-accent: 0 10px 15px -3px var(--color-fill-accent-shadow), 0 4px 6px -4px var(--color-fill-accent-shadow);
-  --shadow-xl-accent: 0 20px 25px -5px var(--color-fill-accent-shadow), 0 8px 10px -6px var(--color-fill-accent-shadow);
+  --shadow-sm-accent: var(--api-shadow-sm-accent);
+  --shadow-md-accent: var(--api-shadow-md-accent);
+  --shadow-lg-accent: var(--api-shadow-lg-accent);
+  --shadow-xl-accent: var(--api-shadow-xl-accent);
 
   /* --- Muted --- */
-  --shadow-sm-muted: 0 1px 2px 0 var(--color-fill-muted-shadow);
-  --shadow-md-muted: 0 4px 6px -1px var(--color-fill-muted-shadow), 0 2px 4px -2px var(--color-fill-muted-shadow);
-  --shadow-lg-muted: 0 10px 15px -3px var(--color-fill-muted-shadow), 0 4px 6px -4px var(--color-fill-muted-shadow);
-  --shadow-xl-muted: 0 20px 25px -5px var(--color-fill-muted-shadow), 0 8px 10px -6px var(--color-fill-muted-shadow);
+  --shadow-sm-muted: var(--api-shadow-sm-muted);
+  --shadow-md-muted: var(--api-shadow-md-muted);
+  --shadow-lg-muted: var(--api-shadow-lg-muted);
+  --shadow-xl-muted: var(--api-shadow-xl-muted);
 
   /* --- Floor --- */
-  --shadow-sm-floor: 0 1px 2px 0 var(--color-fill-floor-shadow);
-  --shadow-md-floor: 0 4px 6px -1px var(--color-fill-floor-shadow), 0 2px 4px -2px var(--color-fill-floor-shadow);
-  --shadow-lg-floor: 0 10px 15px -3px var(--color-fill-floor-shadow), 0 4px 6px -4px var(--color-fill-floor-shadow);
-  --shadow-xl-floor: 0 20px 25px -5px var(--color-fill-floor-shadow), 0 8px 10px -6px var(--color-fill-floor-shadow);
+  --shadow-sm-floor: var(--api-shadow-sm-floor);
+  --shadow-md-floor: var(--api-shadow-md-floor);
+  --shadow-lg-floor: var(--api-shadow-lg-floor);
+  --shadow-xl-floor: var(--api-shadow-xl-floor);
 
   /* --- Input (note: your shadow color is transparent) --- */
-  --shadow-sm-input: 0 1px 2px 0 var(--color-fill-input-shadow);
-  --shadow-md-input: 0 4px 6px -1px var(--color-fill-input-shadow), 0 2px 4px -2px var(--color-fill-input-shadow);
-  --shadow-lg-input: 0 10px 15px -3px var(--color-fill-input-shadow), 0 4px 6px -4px var(--color-fill-input-shadow);
-  --shadow-xl-input: 0 20px 25px -5px var(--color-fill-input-shadow), 0 8px 10px -6px var(--color-fill-input-shadow);
+  --shadow-sm-input: var(--api-shadow-sm-input);
+  --shadow-md-input: var(--api-shadow-md-input);
+  --shadow-lg-input: var(--api-shadow-lg-input);
+  --shadow-xl-input: var(--api-shadow-xl-input);
 
   /* --- Link --- */
-  --shadow-sm-link: 0 1px 2px 0 var(--color-fill-link-shadow);
-  --shadow-md-link: 0 4px 6px -1px var(--color-fill-link-shadow), 0 2px 4px -2px var(--color-fill-link-shadow);
-  --shadow-lg-link: 0 10px 15px -3px var(--color-fill-link-shadow), 0 4px 6px -4px var(--color-fill-link-shadow);
-  --shadow-xl-link: 0 20px 25px -5px var(--color-fill-link-shadow), 0 8px 10px -6px var(--color-fill-link-shadow);
+  --shadow-sm-link: var(--api-shadow-sm-link);
+  --shadow-md-link: var(--api-shadow-md-link);
+  --shadow-lg-link: var(--api-shadow-lg-link);
+  --shadow-xl-link: var(--api-shadow-xl-link);
 
   /* --- Status: Success --- */
-  --shadow-sm-success: 0 1px 2px 0 var(--color-fill-success-shadow);
-  --shadow-md-success: 0 4px 6px -1px var(--color-fill-success-shadow), 0 2px 4px -2px var(--color-fill-success-shadow);
-  --shadow-lg-success: 0 10px 15px -3px var(--color-fill-success-shadow), 0 4px 6px -4px var(--color-fill-success-shadow);
-  --shadow-xl-success: 0 20px 25px -5px var(--color-fill-success-shadow), 0 8px 10px -6px var(--color-fill-success-shadow);
+  --shadow-sm-success: var(--api-shadow-sm-success);
+  --shadow-md-success: var(--api-shadow-md-success);
+  --shadow-lg-success: var(--api-shadow-lg-success);
+  --shadow-xl-success: var(--api-shadow-xl-success);
 
   /* --- Status: Info --- */
-  --shadow-sm-info: 0 1px 2px 0 var(--color-fill-info-shadow);
-  --shadow-md-info: 0 4px 6px -1px var(--color-fill-info-shadow), 0 2px 4px -2px var(--color-fill-info-shadow);
-  --shadow-lg-info: 0 10px 15px -3px var(--color-fill-info-shadow), 0 4px 6px -4px var(--color-fill-info-shadow);
-  --shadow-xl-info: 0 20px 25px -5px var(--color-fill-info-shadow), 0 8px 10px -6px var(--color-fill-info-shadow);
+  --shadow-sm-info: var(--api-shadow-sm-info);
+  --shadow-md-info: var(--api-shadow-md-info);
+  --shadow-lg-info: var(--api-shadow-lg-info);
+  --shadow-xl-info: var(--api-shadow-xl-info);
 
   /* --- Status: Warning --- */
-  --shadow-sm-warning: 0 1px 2px 0 var(--color-fill-warning-shadow);
-  --shadow-md-warning: 0 4px 6px -1px var(--color-fill-warning-shadow), 0 2px 4px -2px var(--color-fill-warning-shadow);
-  --shadow-lg-warning: 0 10px 15px -3px var(--color-fill-warning-shadow), 0 4px 6px -4px var(--color-fill-warning-shadow);
-  --shadow-xl-warning: 0 20px 25px -5px var(--color-fill-warning-shadow), 0 8px 10px -6px var(--color-fill-warning-shadow);
+  --shadow-sm-warning: var(--api-shadow-sm-warning);
+  --shadow-md-warning: var(--api-shadow-md-warning);
+  --shadow-lg-warning: var(--api-shadow-lg-warning);
+  --shadow-xl-warning: var(--api-shadow-xl-warning);
 
   /* --- Status: Error --- */
-  --shadow-sm-error: 0 1px 2px 0 var(--color-fill-error-shadow);
-  --shadow-md-error: 0 4px 6px -1px var(--color-fill-error-shadow), 0 2px 4px -2px var(--color-fill-error-shadow);
-  --shadow-lg-error: 0 10px 15px -3px var(--color-fill-error-shadow), 0 4px 6px -4px var(--color-fill-error-shadow);
-  --shadow-xl-error: 0 20px 25px -5px var(--color-fill-error-shadow), 0 8px 10px -6px var(--color-fill-error-shadow);
+  --shadow-sm-error: var(--api-shadow-sm-error);
+  --shadow-md-error: var(--api-shadow-md-error);
+  --shadow-lg-error: var(--api-shadow-lg-error);
+  --shadow-xl-error: var(--api-shadow-xl-error);
 
   /* --- Status: Notification --- */
-  --shadow-sm-notification: 0 1px 2px 0 var(--color-fill-notification-shadow);
-  --shadow-md-notification: 0 4px 6px -1px var(--color-fill-notification-shadow), 0 2px 4px -2px var(--color-fill-notification-shadow);
-  --shadow-lg-notification: 0 10px 15px -3px var(--color-fill-notification-shadow), 0 4px 6px -4px var(--color-fill-notification-shadow);
-  --shadow-xl-notification: 0 20px 25px -5px var(--color-fill-notification-shadow), 0 8px 10px -6px var(--color-fill-notification-shadow);
+  --shadow-sm-notification: var(--api-shadow-sm-notification);
+  --shadow-md-notification: var(--api-shadow-md-notification);
+  --shadow-lg-notification: var(--api-shadow-lg-notification);
+  --shadow-xl-notification: var(--api-shadow-xl-notification);
 
   /**
    * @namespace: --inset-shadow-*
@@ -687,94 +687,94 @@
    * @description: Inset box shadow utilities like inset-shadow-xs
    */
 
-  --inset-shadow-sm: inset 0 1px 2px 0 var(--color-fill-base-shadow);
-  --inset-shadow-md: inset 0 4px 6px 0 var(--color-fill-base-shadow);
-  --inset-shadow-lg: inset 0 6px 6px 0 var(--color-fill-base-shadow);
-  --inset-shadow-xl: inset 0 8px 10px 0 var(--color-fill-base-shadow);
+  --inset-shadow-sm: var(--api-inset-shadow-sm);
+  --inset-shadow-md: var(--api-inset-shadow-md);
+  --inset-shadow-lg: var(--api-inset-shadow-lg);
+  --inset-shadow-xl: var(--api-inset-shadow-xl);
 
   /* --- Base --- */
-  --inset-shadow-sm-base: inset 0 1px 2px 0 var(--color-fill-base-shadow);
-  --inset-shadow-md-base: inset 0 4px 6px 0 var(--color-fill-base-shadow);
-  --inset-shadow-lg-base: inset 0 6px 8px 0 var(--color-fill-base-shadow);
-  --inset-shadow-xl-base: inset 0 8px 10px 0 var(--color-fill-base-shadow);
+  --inset-shadow-sm-base: var(--api-inset-shadow-sm-base);
+  --inset-shadow-md-base: var(--api-inset-shadow-md-base);
+  --inset-shadow-lg-base: var(--api-inset-shadow-lg-base);
+  --inset-shadow-xl-base: var(--api-inset-shadow-xl-base);
 
   /* --- Primary --- */
-  --inset-shadow-sm-primary: inset 0 1px 2px 0 var(--color-fill-primary-shadow);
-  --inset-shadow-md-primary: inset 0 4px 6px 0 var(--color-fill-primary-shadow);
-  --inset-shadow-lg-primary: inset 0 6px 8px 0 var(--color-fill-primary-shadow);
-  --inset-shadow-xl-primary: inset 0 8px 10px 0 var(--color-fill-primary-shadow);
+  --inset-shadow-sm-primary: var(--api-inset-shadow-sm-primary);
+  --inset-shadow-md-primary: var(--api-inset-shadow-md-primary);
+  --inset-shadow-lg-primary: var(--api-inset-shadow-lg-primary);
+  --inset-shadow-xl-primary: var(--api-inset-shadow-xl-primary);
 
   /* --- Secondary --- */
-  --inset-shadow-sm-secondary: inset 0 1px 2px 0 var(--color-fill-secondary-shadow);
-  --inset-shadow-md-secondary: inset 0 4px 6px 0 var(--color-fill-secondary-shadow);
-  --inset-shadow-lg-secondary: inset 0 6px 8px 0 var(--color-fill-secondary-shadow);
-  --inset-shadow-xl-secondary: inset 0 8px 10px 0 var(--color-fill-secondary-shadow);
+  --inset-shadow-sm-secondary: var(--api-inset-shadow-sm-secondary);
+  --inset-shadow-md-secondary: var(--api-inset-shadow-md-secondary);
+  --inset-shadow-lg-secondary: var(--api-inset-shadow-lg-secondary);
+  --inset-shadow-xl-secondary: var(--api-inset-shadow-xl-secondary);
 
   /* --- Tertiary --- */
-  --inset-shadow-sm-tertiary: inset 0 1px 2px 0 var(--color-fill-tertiary-shadow);
-  --inset-shadow-md-tertiary: inset 0 4px 6px 0 var(--color-fill-tertiary-shadow);
-  --inset-shadow-lg-tertiary: inset 0 6px 8px 0 var(--color-fill-tertiary-shadow);
-  --inset-shadow-xl-tertiary: inset 0 8px 10px 0 var(--color-fill-tertiary-shadow);
+  --inset-shadow-sm-tertiary: var(--api-inset-shadow-sm-tertiary);
+  --inset-shadow-md-tertiary: var(--api-inset-shadow-md-tertiary);
+  --inset-shadow-lg-tertiary: var(--api-inset-shadow-lg-tertiary);
+  --inset-shadow-xl-tertiary: var(--api-inset-shadow-xl-tertiary);
 
   /* --- Accent --- */
-  --inset-shadow-sm-accent: inset 0 1px 2px 0 var(--color-fill-accent-shadow);
-  --inset-shadow-md-accent: inset 0 4px 6px 0 var(--color-fill-accent-shadow);
-  --inset-shadow-lg-accent: inset 0 6px 8px 0 var(--color-fill-accent-shadow);
-  --inset-shadow-xl-accent: inset 0 8px 10px 0 var(--color-fill-accent-shadow);
+  --inset-shadow-sm-accent: var(--api-inset-shadow-sm-accent);
+  --inset-shadow-md-accent: var(--api-inset-shadow-md-accent);
+  --inset-shadow-lg-accent: var(--api-inset-shadow-lg-accent);
+  --inset-shadow-xl-accent: var(--api-inset-shadow-xl-accent);
 
   /* --- Muted --- */
-  --inset-shadow-sm-muted: inset 0 1px 2px 0 var(--color-fill-muted-shadow);
-  --inset-shadow-md-muted: inset 0 4px 6px 0 var(--color-fill-muted-shadow);
-  --inset-shadow-lg-muted: inset 0 6px 8px 0 var(--color-fill-muted-shadow);
-  --inset-shadow-xl-muted: inset 0 8px 10px 0 var(--color-fill-muted-shadow);
+  --inset-shadow-sm-muted: var(--api-inset-shadow-sm-muted);
+  --inset-shadow-md-muted: var(--api-inset-shadow-md-muted);
+  --inset-shadow-lg-muted: var(--api-inset-shadow-lg-muted);
+  --inset-shadow-xl-muted: var(--api-inset-shadow-xl-muted);
 
   /* --- Floor --- */
-  --inset-shadow-sm-floor: inset 0 1px 2px 0 var(--color-fill-floor-shadow);
-  --inset-shadow-md-floor: inset 0 4px 6px 0 var(--color-fill-floor-shadow);
-  --inset-shadow-lg-floor: inset 0 6px 8px 0 var(--color-fill-floor-shadow);
-  --inset-shadow-xl-floor: inset 0 8px 10px 0 var(--color-fill-floor-shadow);
+  --inset-shadow-sm-floor: var(--api-inset-shadow-sm-floor);
+  --inset-shadow-md-floor: var(--api-inset-shadow-md-floor);
+  --inset-shadow-lg-floor: var(--api-inset-shadow-lg-floor);
+  --inset-shadow-xl-floor: var(--api-inset-shadow-xl-floor);
 
   /* --- Input --- */
-  --inset-shadow-sm-input: inset 0 1px 2px 0 var(--color-fill-input-shadow);
-  --inset-shadow-md-input: inset 0 4px 6px 0 var(--color-fill-input-shadow);
-  --inset-shadow-lg-input: inset 0 6px 8px 0 var(--color-fill-input-shadow);
-  --inset-shadow-xl-input: inset 0 8px 10px 0 var(--color-fill-input-shadow);
+  --inset-shadow-sm-input: var(--api-inset-shadow-sm-input);
+  --inset-shadow-md-input: var(--api-inset-shadow-md-input);
+  --inset-shadow-lg-input: var(--api-inset-shadow-lg-input);
+  --inset-shadow-xl-input: var(--api-inset-shadow-xl-input);
 
   /* --- Link --- */
-  --inset-shadow-sm-link: inset 0 1px 2px 0 var(--color-fill-link-shadow);
-  --inset-shadow-md-link: inset 0 4px 6px 0 var(--color-fill-link-shadow);
-  --inset-shadow-lg-link: inset 0 6px 8px 0 var(--color-fill-link-shadow);
-  --inset-shadow-xl-link: inset 0 8px 10px 0 var(--color-fill-link-shadow);
+  --inset-shadow-sm-link: var(--api-inset-shadow-sm-link);
+  --inset-shadow-md-link: var(--api-inset-shadow-md-link);
+  --inset-shadow-lg-link: var(--api-inset-shadow-lg-link);
+  --inset-shadow-xl-link: var(--api-inset-shadow-xl-link);
 
   /* --- Status: Success --- */
-  --inset-shadow-sm-success: inset 0 1px 2px 0 var(--color-fill-success-shadow);
-  --inset-shadow-md-success: inset 0 4px 6px 0 var(--color-fill-success-shadow);
-  --inset-shadow-lg-success: inset 0 6px 8px 0 var(--color-fill-success-shadow);
-  --inset-shadow-xl-success: inset 0 8px 10px 0 var(--color-fill-success-shadow);
+  --inset-shadow-sm-success: var(--api-inset-shadow-sm-success);
+  --inset-shadow-md-success: var(--api-inset-shadow-md-success);
+  --inset-shadow-lg-success: var(--api-inset-shadow-lg-success);
+  --inset-shadow-xl-success: var(--api-inset-shadow-xl-success);
 
   /* --- Status: Info --- */
-  --inset-shadow-sm-info: inset 0 1px 2px 0 var(--color-fill-info-shadow);
-  --inset-shadow-md-info: inset 0 4px 6px 0 var(--color-fill-info-shadow);
-  --inset-shadow-lg-info: inset 0 6px 8px 0 var(--color-fill-info-shadow);
-  --inset-shadow-xl-info: inset 0 8px 10px 0 var(--color-fill-info-shadow);
+  --inset-shadow-sm-info: var(--api-inset-shadow-sm-info);
+  --inset-shadow-md-info: var(--api-inset-shadow-md-info);
+  --inset-shadow-lg-info: var(--api-inset-shadow-lg-info);
+  --inset-shadow-xl-info: var(--api-inset-shadow-xl-info);
 
   /* --- Status: Warning --- */
-  --inset-shadow-sm-warning: inset 0 1px 2px 0 var(--color-fill-warning-shadow);
-  --inset-shadow-md-warning: inset 0 4px 6px 0 var(--color-fill-warning-shadow);
-  --inset-shadow-lg-warning: inset 0 6px 8px 0 var(--color-fill-warning-shadow);
-  --inset-shadow-xl-warning: inset 0 8px 10px 0 var(--color-fill-warning-shadow);
+  --inset-shadow-sm-warning: var(--api-inset-shadow-sm-warning);
+  --inset-shadow-md-warning: var(--api-inset-shadow-md-warning);
+  --inset-shadow-lg-warning: var(--api-inset-shadow-lg-warning);
+  --inset-shadow-xl-warning: var(--api-inset-shadow-xl-warning);
 
   /* --- Status: Error --- */
-  --inset-shadow-sm-error: inset 0 1px 2px 0 var(--color-fill-error-shadow);
-  --inset-shadow-md-error: inset 0 4px 6px 0 var(--color-fill-error-shadow);
-  --inset-shadow-lg-error: inset 0 6px 8px 0 var(--color-fill-error-shadow);
-  --inset-shadow-xl-error: inset 0 8px 10px 0 var(--color-fill-error-shadow);
+  --inset-shadow-sm-error: var(--api-inset-shadow-sm-error);
+  --inset-shadow-md-error: var(--api-inset-shadow-md-error);
+  --inset-shadow-lg-error: var(--api-inset-shadow-lg-error);
+  --inset-shadow-xl-error: var(--api-inset-shadow-xl-error);
 
   /* --- Status: Notification --- */
-  --inset-shadow-sm-notification: inset 0 1px 2px 0 var(--color-fill-notification-shadow);
-  --inset-shadow-md-notification: inset 0 4px 6px 0 var(--color-fill-notification-shadow);
-  --inset-shadow-lg-notification: inset 0 6px 8px 0 var(--color-fill-notification-shadow);
-  --inset-shadow-xl-notification: inset 0 8px 10px 0 var(--color-fill-notification-shadow);
+  --inset-shadow-sm-notification: var(--api-inset-shadow-sm-notification);
+  --inset-shadow-md-notification: var(--api-inset-shadow-md-notification);
+  --inset-shadow-lg-notification: var(--api-inset-shadow-lg-notification);
+  --inset-shadow-xl-notification: var(--api-inset-shadow-xl-notification);
 
   /**
    * @namespace: --drop-shadow-*
@@ -783,88 +783,88 @@
    */
 
   /* --- Base --- */
-  --drop-shadow-sm-base: 0 1px 1px var(--color-fill-base-shadow);
-  --drop-shadow-md-base: 0 4px 3px var(--color-fill-base-shadow);
-  --drop-shadow-lg-base: 0 10px 8px var(--color-fill-base-shadow);
-  --drop-shadow-xl-base: 0 20px 13px var(--color-fill-base-shadow);
+  --drop-shadow-sm-base: var(--api-drop-shadow-sm-base);
+  --drop-shadow-md-base: var(--api-drop-shadow-md-base);
+  --drop-shadow-lg-base: var(--api-drop-shadow-lg-base);
+  --drop-shadow-xl-base: var(--api-drop-shadow-xl-base);
 
   /* --- Primary --- */
-  --drop-shadow-sm-primary: 0 1px 1px var(--color-fill-primary-shadow);
-  --drop-shadow-md-primary: 0 4px 3px var(--color-fill-primary-shadow);
-  --drop-shadow-lg-primary: 0 10px 8px var(--color-fill-primary-shadow);
-  --drop-shadow-xl-primary: 0 20px 13px var(--color-fill-primary-shadow);
+  --drop-shadow-sm-primary: var(--api-drop-shadow-sm-primary);
+  --drop-shadow-md-primary: var(--api-drop-shadow-md-primary);
+  --drop-shadow-lg-primary: var(--api-drop-shadow-lg-primary);
+  --drop-shadow-xl-primary: var(--api-drop-shadow-xl-primary);
 
   /* --- Secondary --- */
-  --drop-shadow-sm-secondary: 0 1px 1px var(--color-fill-secondary-shadow);
-  --drop-shadow-md-secondary: 0 4px 3px var(--color-fill-secondary-shadow);
-  --drop-shadow-lg-secondary: 0 10px 8px var(--color-fill-secondary-shadow);
-  --drop-shadow-xl-secondary: 0 20px 13px var(--color-fill-secondary-shadow);
+  --drop-shadow-sm-secondary: var(--api-drop-shadow-sm-secondary);
+  --drop-shadow-md-secondary: var(--api-drop-shadow-md-secondary);
+  --drop-shadow-lg-secondary: var(--api-drop-shadow-lg-secondary);
+  --drop-shadow-xl-secondary: var(--api-drop-shadow-xl-secondary);
 
   /* --- Tertiary --- */
-  --drop-shadow-sm-tertiary: 0 1px 1px var(--color-fill-tertiary-shadow);
-  --drop-shadow-md-tertiary: 0 4px 3px var(--color-fill-tertiary-shadow);
-  --drop-shadow-lg-tertiary: 0 10px 8px var(--color-fill-tertiary-shadow);
-  --drop-shadow-xl-tertiary: 0 20px 13px var(--color-fill-tertiary-shadow);
+  --drop-shadow-sm-tertiary: var(--api-drop-shadow-sm-tertiary);
+  --drop-shadow-md-tertiary: var(--api-drop-shadow-md-tertiary);
+  --drop-shadow-lg-tertiary: var(--api-drop-shadow-lg-tertiary);
+  --drop-shadow-xl-tertiary: var(--api-drop-shadow-xl-tertiary);
 
   /* --- Accent --- */
-  --drop-shadow-sm-accent: 0 1px 1px var(--color-fill-accent-shadow);
-  --drop-shadow-md-accent: 0 4px 3px var(--color-fill-accent-shadow);
-  --drop-shadow-lg-accent: 0 10px 8px var(--color-fill-accent-shadow);
-  --drop-shadow-xl-accent: 0 20px 13px var(--color-fill-accent-shadow);
+  --drop-shadow-sm-accent: var(--api-drop-shadow-sm-accent);
+  --drop-shadow-md-accent: var(--api-drop-shadow-md-accent);
+  --drop-shadow-lg-accent: var(--api-drop-shadow-lg-accent);
+  --drop-shadow-xl-accent: var(--api-drop-shadow-xl-accent);
 
   /* --- Muted --- */
-  --drop-shadow-sm-muted: 0 1px 1px var(--color-fill-muted-shadow);
-  --drop-shadow-md-muted: 0 4px 3px var(--color-fill-muted-shadow);
-  --drop-shadow-lg-muted: 0 10px 8px var(--color-fill-muted-shadow);
-  --drop-shadow-xl-muted: 0 20px 13px var(--color-fill-muted-shadow);
+  --drop-shadow-sm-muted: var(--api-drop-shadow-sm-muted);
+  --drop-shadow-md-muted: var(--api-drop-shadow-md-muted);
+  --drop-shadow-lg-muted: var(--api-drop-shadow-lg-muted);
+  --drop-shadow-xl-muted: var(--api-drop-shadow-xl-muted);
 
   /* --- Floor --- */
-  --drop-shadow-sm-floor: 0 1px 1px var(--color-fill-floor-shadow);
-  --drop-shadow-md-floor: 0 4px 3px var(--color-fill-floor-shadow);
-  --drop-shadow-lg-floor: 0 10px 8px var(--color-fill-floor-shadow);
-  --drop-shadow-xl-floor: 0 20px 13px var(--color-fill-floor-shadow);
+  --drop-shadow-sm-floor: var(--api-drop-shadow-sm-floor);
+  --drop-shadow-md-floor: var(--api-drop-shadow-md-floor);
+  --drop-shadow-lg-floor: var(--api-drop-shadow-lg-floor);
+  --drop-shadow-xl-floor: var(--api-drop-shadow-xl-floor);
 
   /* --- Input --- */
-  --drop-shadow-sm-input: 0 1px 1px var(--color-fill-input-shadow);
-  --drop-shadow-md-input: 0 4px 3px var(--color-fill-input-shadow);
-  --drop-shadow-lg-input: 0 10px 8px var(--color-fill-input-shadow);
-  --drop-shadow-xl-input: 0 20px 13px var(--color-fill-input-shadow);
+  --drop-shadow-sm-input: var(--api-drop-shadow-sm-input);
+  --drop-shadow-md-input: var(--api-drop-shadow-md-input);
+  --drop-shadow-lg-input: var(--api-drop-shadow-lg-input);
+  --drop-shadow-xl-input: var(--api-drop-shadow-xl-input);
 
   /* --- Link --- */
-  --drop-shadow-sm-link: 0 1px 1px var(--color-fill-link-shadow);
-  --drop-shadow-md-link: 0 4px 3px var(--color-fill-link-shadow);
-  --drop-shadow-lg-link: 0 10px 8px var(--color-fill-link-shadow);
-  --drop-shadow-xl-link: 0 20px 13px var(--color-fill-link-shadow);
+  --drop-shadow-sm-link: var(--api-drop-shadow-sm-link);
+  --drop-shadow-md-link: var(--api-drop-shadow-md-link);
+  --drop-shadow-lg-link: var(--api-drop-shadow-lg-link);
+  --drop-shadow-xl-link: var(--api-drop-shadow-xl-link);
 
   /* --- Success --- */
-  --drop-shadow-sm-success: 0 1px 1px var(--color-fill-success-shadow);
-  --drop-shadow-md-success: 0 4px 3px var(--color-fill-success-shadow);
-  --drop-shadow-lg-success: 0 10px 8px var(--color-fill-success-shadow);
-  --drop-shadow-xl-success: 0 20px 13px var(--color-fill-success-shadow);
+  --drop-shadow-sm-success: var(--api-drop-shadow-sm-success);
+  --drop-shadow-md-success: var(--api-drop-shadow-md-success);
+  --drop-shadow-lg-success: var(--api-drop-shadow-lg-success);
+  --drop-shadow-xl-success: var(--api-drop-shadow-xl-success);
 
   /* --- Info --- */
-  --drop-shadow-sm-info: 0 1px 1px var(--color-fill-info-shadow);
-  --drop-shadow-md-info: 0 4px 3px var(--color-fill-info-shadow);
-  --drop-shadow-lg-info: 0 10px 8px var(--color-fill-info-shadow);
-  --drop-shadow-xl-info: 0 20px 13px var(--color-fill-info-shadow);
+  --drop-shadow-sm-info: var(--api-drop-shadow-sm-info);
+  --drop-shadow-md-info: var(--api-drop-shadow-md-info);
+  --drop-shadow-lg-info: var(--api-drop-shadow-lg-info);
+  --drop-shadow-xl-info: var(--api-drop-shadow-xl-info);
 
   /* --- Warning --- */
-  --drop-shadow-sm-warning: 0 1px 1px var(--color-fill-warning-shadow);
-  --drop-shadow-md-warning: 0 4px 3px var(--color-fill-warning-shadow);
-  --drop-shadow-lg-warning: 0 10px 8px var(--color-fill-warning-shadow);
-  --drop-shadow-xl-warning: 0 20px 13px var(--color-fill-warning-shadow);
+  --drop-shadow-sm-warning: var(--api-drop-shadow-sm-warning);
+  --drop-shadow-md-warning: var(--api-drop-shadow-md-warning);
+  --drop-shadow-lg-warning: var(--api-drop-shadow-lg-warning);
+  --drop-shadow-xl-warning: var(--api-drop-shadow-xl-warning);
 
   /* --- Error --- */
-  --drop-shadow-sm-error: 0 1px 1px var(--color-fill-error-shadow);
-  --drop-shadow-md-error: 0 4px 3px var(--color-fill-error-shadow);
-  --drop-shadow-lg-error: 0 10px 8px var(--color-fill-error-shadow);
-  --drop-shadow-xl-error: 0 20px 13px var(--color-fill-error-shadow);
+  --drop-shadow-sm-error: var(--api-drop-shadow-sm-error);
+  --drop-shadow-md-error: var(--api-drop-shadow-md-error);
+  --drop-shadow-lg-error: var(--api-drop-shadow-lg-error);
+  --drop-shadow-xl-error: var(--api-drop-shadow-xl-error);
 
   /* --- Notification --- */
-  --drop-shadow-sm-notification: 0 1px 1px var(--color-fill-notification-shadow);
-  --drop-shadow-md-notification: 0 4px 3px var(--color-fill-notification-shadow);
-  --drop-shadow-lg-notification: 0 10px 8px var(--color-fill-notification-shadow);
-  --drop-shadow-xl-notification: 0 20px 13px var(--color-fill-notification-shadow);
+  --drop-shadow-sm-notification: var(--api-drop-shadow-sm-notification);
+  --drop-shadow-md-notification: var(--api-drop-shadow-md-notification);
+  --drop-shadow-lg-notification: var(--api-drop-shadow-lg-notification);
+  --drop-shadow-xl-notification: var(--api-drop-shadow-xl-notification);
 
   /**
    * @namespace: --text-shadow-*
@@ -873,88 +873,88 @@
    */
 
   /* --- Base --- */
-  --text-shadow-sm-base: 0 1px 2px var(--color-pen-base-shadow);
-  --text-shadow-md-base: 0 2px 4px var(--color-pen-base-shadow);
-  --text-shadow-lg-base: 0 4px 8px var(--color-pen-base-shadow);
-  --text-shadow-xl-base: 0 8px 16px var(--color-pen-base-shadow);
+  --text-shadow-sm-base: var(--api-text-shadow-sm-base);
+  --text-shadow-md-base: var(--api-text-shadow-md-base);
+  --text-shadow-lg-base: var(--api-text-shadow-lg-base);
+  --text-shadow-xl-base: var(--api-text-shadow-xl-base);
 
   /* --- Primary --- */
-  --text-shadow-sm-primary: 0 1px 2px var(--color-pen-primary-shadow);
-  --text-shadow-md-primary: 0 2px 4px var(--color-pen-primary-shadow);
-  --text-shadow-lg-primary: 0 4px 8px var(--color-pen-primary-shadow);
-  --text-shadow-xl-primary: 0 8px 16px var(--color-pen-primary-shadow);
+  --text-shadow-sm-primary: var(--api-text-shadow-sm-primary);
+  --text-shadow-md-primary: var(--api-text-shadow-md-primary);
+  --text-shadow-lg-primary: var(--api-text-shadow-lg-primary);
+  --text-shadow-xl-primary: var(--api-text-shadow-xl-primary);
 
   /* --- Secondary --- */
-  --text-shadow-sm-secondary: 0 1px 2px var(--color-pen-secondary-shadow);
-  --text-shadow-md-secondary: 0 2px 4px var(--color-pen-secondary-shadow);
-  --text-shadow-lg-secondary: 0 4px 8px var(--color-pen-secondary-shadow);
-  --text-shadow-xl-secondary: 0 8px 16px var(--color-pen-secondary-shadow);
+  --text-shadow-sm-secondary: var(--api-text-shadow-sm-secondary);
+  --text-shadow-md-secondary: var(--api-text-shadow-md-secondary);
+  --text-shadow-lg-secondary: var(--api-text-shadow-lg-secondary);
+  --text-shadow-xl-secondary: var(--api-text-shadow-xl-secondary);
 
   /* --- Tertiary --- */
-  --text-shadow-sm-tertiary: 0 1px 2px var(--color-pen-tertiary-shadow);
-  --text-shadow-md-tertiary: 0 2px 4px var(--color-pen-tertiary-shadow);
-  --text-shadow-lg-tertiary: 0 4px 8px var(--color-pen-tertiary-shadow);
-  --text-shadow-xl-tertiary: 0 8px 16px var(--color-pen-tertiary-shadow);
+  --text-shadow-sm-tertiary: var(--api-text-shadow-sm-tertiary);
+  --text-shadow-md-tertiary: var(--api-text-shadow-md-tertiary);
+  --text-shadow-lg-tertiary: var(--api-text-shadow-lg-tertiary);
+  --text-shadow-xl-tertiary: var(--api-text-shadow-xl-tertiary);
 
   /* --- Accent --- */
-  --text-shadow-sm-accent: 0 1px 2px var(--color-pen-accent-shadow);
-  --text-shadow-md-accent: 0 2px 4px var(--color-pen-accent-shadow);
-  --text-shadow-lg-accent: 0 4px 8px var(--color-pen-accent-shadow);
-  --text-shadow-xl-accent: 0 8px 16px var(--color-pen-accent-shadow);
+  --text-shadow-sm-accent: var(--api-text-shadow-sm-accent);
+  --text-shadow-md-accent: var(--api-text-shadow-md-accent);
+  --text-shadow-lg-accent: var(--api-text-shadow-lg-accent);
+  --text-shadow-xl-accent: var(--api-text-shadow-xl-accent);
 
   /* --- Muted --- */
-  --text-shadow-sm-muted: 0 1px 2px var(--color-pen-muted-shadow);
-  --text-shadow-md-muted: 0 2px 4px var(--color-pen-muted-shadow);
-  --text-shadow-lg-muted: 0 4px 8px var(--color-pen-muted-shadow);
-  --text-shadow-xl-muted: 0 8px 16px var(--color-pen-muted-shadow);
+  --text-shadow-sm-muted: var(--api-text-shadow-sm-muted);
+  --text-shadow-md-muted: var(--api-text-shadow-md-muted);
+  --text-shadow-lg-muted: var(--api-text-shadow-lg-muted);
+  --text-shadow-xl-muted: var(--api-text-shadow-xl-muted);
 
   /* --- Floor --- */
-  --text-shadow-sm-floor: 0 1px 2px var(--color-pen-floor-shadow);
-  --text-shadow-md-floor: 0 2px 4px var(--color-pen-floor-shadow);
-  --text-shadow-lg-floor: 0 4px 8px var(--color-pen-floor-shadow);
-  --text-shadow-xl-floor: 0 8px 16px var(--color-pen-floor-shadow);
+  --text-shadow-sm-floor: var(--api-text-shadow-sm-floor);
+  --text-shadow-md-floor: var(--api-text-shadow-md-floor);
+  --text-shadow-lg-floor: var(--api-text-shadow-lg-floor);
+  --text-shadow-xl-floor: var(--api-text-shadow-xl-floor);
 
   /* --- Input --- */
-  --text-shadow-sm-input: 0 1px 2px var(--color-pen-input-shadow);
-  --text-shadow-md-input: 0 2px 4px var(--color-pen-input-shadow);
-  --text-shadow-lg-input: 0 4px 8px var(--color-pen-input-shadow);
-  --text-shadow-xl-input: 0 8px 16px var(--color-pen-input-shadow);
+  --text-shadow-sm-input: var(--api-text-shadow-sm-input);
+  --text-shadow-md-input: var(--api-text-shadow-md-input);
+  --text-shadow-lg-input: var(--api-text-shadow-lg-input);
+  --text-shadow-xl-input: var(--api-text-shadow-xl-input);
 
   /* --- Link --- */
-  --text-shadow-sm-link: 0 1px 2px var(--color-pen-link-shadow);
-  --text-shadow-md-link: 0 2px 4px var(--color-pen-link-shadow);
-  --text-shadow-lg-link: 0 4px 8px var(--color-pen-link-shadow);
-  --text-shadow-xl-link: 0 8px 16px var(--color-pen-link-shadow);
+  --text-shadow-sm-link: var(--api-text-shadow-sm-link);
+  --text-shadow-md-link: var(--api-text-shadow-md-link);
+  --text-shadow-lg-link: var(--api-text-shadow-lg-link);
+  --text-shadow-xl-link: var(--api-text-shadow-xl-link);
 
   /* --- Status: Success --- */
-  --text-shadow-sm-success: 0 1px 2px var(--color-pen-success-shadow);
-  --text-shadow-md-success: 0 2px 4px var(--color-pen-success-shadow);
-  --text-shadow-lg-success: 0 4px 8px var(--color-pen-success-shadow);
-  --text-shadow-xl-success: 0 8px 16px var(--color-pen-success-shadow);
+  --text-shadow-sm-success: var(--api-text-shadow-sm-success);
+  --text-shadow-md-success: var(--api-text-shadow-md-success);
+  --text-shadow-lg-success: var(--api-text-shadow-lg-success);
+  --text-shadow-xl-success: var(--api-text-shadow-xl-success);
 
   /* --- Status: Info --- */
-  --text-shadow-sm-info: 0 1px 2px var(--color-pen-info-shadow);
-  --text-shadow-md-info: 0 2px 4px var(--color-pen-info-shadow);
-  --text-shadow-lg-info: 0 4px 8px var(--color-pen-info-shadow);
-  --text-shadow-xl-info: 0 8px 16px var(--color-pen-info-shadow);
+  --text-shadow-sm-info: var(--api-text-shadow-sm-info);
+  --text-shadow-md-info: var(--api-text-shadow-md-info);
+  --text-shadow-lg-info: var(--api-text-shadow-lg-info);
+  --text-shadow-xl-info: var(--api-text-shadow-xl-info);
 
   /* --- Status: Warning --- */
-  --text-shadow-sm-warning: 0 1px 2px var(--color-pen-warning-shadow);
-  --text-shadow-md-warning: 0 2px 4px var(--color-pen-warning-shadow);
-  --text-shadow-lg-warning: 0 4px 8px var(--color-pen-warning-shadow);
-  --text-shadow-xl-warning: 0 8px 16px var(--color-pen-warning-shadow);
+  --text-shadow-sm-warning: var(--api-text-shadow-sm-warning);
+  --text-shadow-md-warning: var(--api-text-shadow-md-warning);
+  --text-shadow-lg-warning: var(--api-text-shadow-lg-warning);
+  --text-shadow-xl-warning: var(--api-text-shadow-xl-warning);
 
   /* --- Status: Error --- */
-  --text-shadow-sm-error: 0 1px 2px var(--color-pen-error-shadow);
-  --text-shadow-md-error: 0 2px 4px var(--color-pen-error-shadow);
-  --text-shadow-lg-error: 0 4px 8px var(--color-pen-error-shadow);
-  --text-shadow-xl-error: 0 8px 16px var(--color-pen-error-shadow);
+  --text-shadow-sm-error: var(--api-text-shadow-sm-error);
+  --text-shadow-md-error: var(--api-text-shadow-md-error);
+  --text-shadow-lg-error: var(--api-text-shadow-lg-error);
+  --text-shadow-xl-error: var(--api-text-shadow-xl-error);
 
   /* --- Status: Notification --- */
-  --text-shadow-sm-notification: 0 1px 2px var(--color-pen-notification-shadow);
-  --text-shadow-md-notification: 0 2px 4px var(--color-pen-notification-shadow);
-  --text-shadow-lg-notification: 0 4px 8px var(--color-pen-notification-shadow);
-  --text-shadow-xl-notification: 0 8px 16px var(--color-pen-notification-shadow);
+  --text-shadow-sm-notification: var(--api-text-shadow-sm-notification);
+  --text-shadow-md-notification: var(--api-text-shadow-md-notification);
+  --text-shadow-lg-notification: var(--api-text-shadow-lg-notification);
+  --text-shadow-xl-notification: var(--api-text-shadow-xl-notification);
 
   /**
    * @namespace: --blur-*
