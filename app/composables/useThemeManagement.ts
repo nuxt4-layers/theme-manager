@@ -1,6 +1,6 @@
 import type { ThemeDefinition, ThemeSummary } from '../../contracts'
 import { parseThemeDefinition } from '../../shared/theme-definition'
-import { legacyColourThemeToRuntime } from '../../shared/theme-runtime'
+import { themeDefinitionToRuntime } from '../../shared/theme-runtime'
 
 export function useThemeManagement() {
   const runtime = useThemeRuntime()
@@ -27,11 +27,7 @@ export function useThemeManagement() {
   }
 
   function previewTheme(theme: ThemeDefinition): void {
-    runtime.preview(legacyColourThemeToRuntime({
-      id: theme.id,
-      name: theme.name,
-      colors: theme.modes,
-    }))
+    runtime.preview(themeDefinitionToRuntime(theme))
   }
 
   function stopPreview(): void {
