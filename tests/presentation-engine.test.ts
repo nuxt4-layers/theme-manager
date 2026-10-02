@@ -41,7 +41,7 @@ describe('TM-4 presentation engine', () => {
 
   it('keeps every semantic API property backed by raw light and dark values', () => {
     const rawNames = new Set(declarations(defaultCss, '--ui-'))
-    const mappings = [...apiCss.matchAll(/(--api-[\w-]+)\s*:\s*var\((--ui-[\w-]+)-(light|dark)\)/g)]
+    const mappings = [...apiCss.matchAll(/(--api-(?:fill|pen|edge)-[\w-]+)\s*:\s*var\((--ui-(?:fill|pen|edge)-[\w-]+)-(light|dark)\)/g)]
     expect(mappings).toHaveLength(560)
     expect(mappings.every(([, , rawBase, mode]) => rawNames.has(`${rawBase}-${mode}`))).toBe(true)
   })
