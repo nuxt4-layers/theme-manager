@@ -507,14 +507,14 @@
    * @description: These values override Tailwind's default screen variants, allowing for a
    * custom responsive design system tailored to the application's needs.
    */
-  --breakpoint-sm: var(--api-breakpoint-sm);
-  --breakpoint-md: var(--api-breakpoint-md);
-  --breakpoint-lg: var(--api-breakpoint-lg);
-  --breakpoint-xl: var(--api-breakpoint-xl);
-  --breakpoint-2xl: var(--api-breakpoint-2xl);
-  --breakpoint-3xl: var(--api-breakpoint-3xl);
-  --breakpoint-4xl: var(--api-breakpoint-4xl);
-  --breakpoint-5xl: var(--api-breakpoint-5xl);
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+  --breakpoint-3xl: 1920px;
+  --breakpoint-4xl: 2560px;
+  --breakpoint-5xl: 3840px;
 
   /**
    * @namespace: --container-*
