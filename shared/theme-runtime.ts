@@ -13,10 +13,19 @@ export type RuntimeInteractionState = (typeof THEME_INTERACTION_STATES)[number]
 export type RuntimeThemeStates = Record<string, string>
 export type RuntimeThemeModeDefinition = Record<string, RuntimeThemeStates>
 
+export interface RuntimeThemePresentation {
+  typography: Record<string, unknown>
+  spacing: Record<string, unknown>
+  radii: Record<string, unknown>
+  effects: Record<string, unknown>
+  responsive: Record<string, unknown>
+}
+
 export interface RuntimeTheme {
   id: string
   name: string
   modes: Record<RuntimeThemeMode, RuntimeThemeModeDefinition>
+  presentation?: RuntimeThemePresentation
 }
 
 export interface ThemeStyleTarget {
@@ -81,6 +90,44 @@ export function runtimeVariableName(role: string, state: string, mode: RuntimeTh
   return `--ui-${role}-${state}-${mode}`
 }
 
+function presentationRecord(value: unknown, path: string): Record<string, unknown> {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    throw new TypeError(`Theme presentation '${path}' must be an object.`)
+  }
+  return value as Record<string, unknown>
+}
+
+function presentationValues(value: unknown, path: string): Array<[string, string]> {
+  return Object.entries(presentationRecord(value, path)).map(([key, cssValue]) => {
+    if (!CSS_VARIABLE_PART.test(key) && key !== 'DEFAULT') throw new TypeError(`Invalid presentation key '${path}.${key}'.`)
+    if (typeof cssValue !== 'string' || !cssValue.trim()) throw new TypeError(`Theme presentation '${path}.${key}' must be a non-empty CSS value.`)
+    return [key, cssValue]
+  })
+}
+
+export function runtimePresentationVariables(presentation: RuntimeThemePresentation): Array<[string, string]> {
+  const typography = presentationRecord(presentation.typography, 'typography')
+  const effects = presentationRecord(presentation.effects, 'effects')
+  const responsive = presentationRecord(presentation.responsive, 'responsive')
+  const entries: Array<[string, string]> = []
+  const add = (prefix: string, value: unknown, path: string) => {
+    for (const [key, cssValue] of presentationValues(value, path)) entries.push([`--ui-${prefix}-${key}`, cssValue])
+  }
+
+  add('font', typography.families, 'typography.families')
+  add('text', typography.sizes, 'typography.sizes')
+  add('font-weight', typography.weights, 'typography.weights')
+  add('spacing', presentation.spacing, 'spacing')
+  add('radius', presentation.radii, 'radii')
+  add('shadow', effects.shadow, 'effects.shadow')
+  add('inset-shadow', effects.insetShadow, 'effects.insetShadow')
+  add('drop-shadow', effects.dropShadow, 'effects.dropShadow')
+  add('text-shadow', effects.textShadow, 'effects.textShadow')
+  add('breakpoint', responsive.breakpoints, 'responsive.breakpoints')
+  add('container', responsive.containers, 'responsive.containers')
+  return entries
+}
+
 export function createThemeApplication(target: ThemeStyleTarget): ThemeApplication {
   let applied = new Set<string>()
 
@@ -107,8 +154,35 @@ export function createThemeApplication(target: ThemeStyleTarget): ThemeApplicati
           }
         }
       }
+
+      if (theme.presentation) {
+        for (const [name, cssValue] of runtimePresentationVariables(theme.presentation)) {
+          target.setProperty(name, cssValue)
+          applied.add(name)
+        }
+      }
     },
   }
+}
+
+export function themeDefinitionToRuntime(value: unknown): RuntimeTheme {
+  if (!value || typeof value !== 'object') throw new TypeError('Theme must be an object.')
+  const definition = value as {
+    id?: unknown
+    name?: unknown
+    modes?: unknown
+    presentation?: unknown
+  }
+  const presentation = presentationRecord(definition.presentation, 'presentation')
+  const runtime: RuntimeTheme = {
+    id: String(definition.id ?? ''),
+    name: String(definition.name ?? ''),
+    modes: definition.modes as RuntimeTheme['modes'],
+    presentation: presentation as unknown as RuntimeThemePresentation,
+  }
+  assertRuntimeTheme(runtime)
+  runtimePresentationVariables(runtime.presentation!)
+  return runtime
 }
 
 export function legacyColourThemeToRuntime(value: unknown): RuntimeTheme {

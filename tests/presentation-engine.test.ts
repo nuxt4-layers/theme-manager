@@ -15,13 +15,13 @@ const declarations = (css: string, prefix: string) =>
 
 describe('TM-4 presentation engine', () => {
   it('preserves the recovered raw colour cardinality', () => {
-    const raw = declarations(defaultCss, '--ui-')
+    const raw = declarations(defaultCss, '--ui-').filter(name => /--ui-(fill|pen|edge)-/.test(name ?? ''))
     expect(raw).toHaveLength(560)
     expect(new Set(raw)).toHaveLength(560)
   })
 
   it('preserves the recovered semantic colour cardinality', () => {
-    const semantic = declarations(apiCss, '--api-')
+    const semantic = declarations(apiCss, '--api-').filter(name => /--api-(fill|pen|edge)-/.test(name ?? ''))
     expect(semantic).toHaveLength(560)
     expect(new Set(semantic)).toHaveLength(280)
   })
@@ -41,7 +41,7 @@ describe('TM-4 presentation engine', () => {
 
   it('keeps every semantic API property backed by raw light and dark values', () => {
     const rawNames = new Set(declarations(defaultCss, '--ui-'))
-    const mappings = [...apiCss.matchAll(/(--api-[\w-]+)\s*:\s*var\((--ui-[\w-]+)-(light|dark)\)/g)]
+    const mappings = [...apiCss.matchAll(/(--api-(?:fill|pen|edge)-[\w-]+)\s*:\s*var\((--ui-(?:fill|pen|edge)-[\w-]+)-(light|dark)\)/g)]
     expect(mappings).toHaveLength(560)
     expect(mappings.every(([, , rawBase, mode]) => rawNames.has(`${rawBase}-${mode}`))).toBe(true)
   })
@@ -58,6 +58,28 @@ describe('TM-4 presentation engine', () => {
     expect(declarations(tailwindCss, '--inset-shadow-')).toHaveLength(60)
     expect(declarations(tailwindCss, '--drop-shadow-')).toHaveLength(56)
     expect(declarations(tailwindCss, '--text-shadow-')).toHaveLength(56)
+  })
+
+  it('backs the complete non-colour Tailwind vocabulary through runtime API and defaults', () => {
+    const tailwindNames = [...new Set(declarations(tailwindCss, '--').filter(name => !name?.startsWith('--color-')))]
+    const apiNames = new Set(declarations(apiCss, '--api-'))
+    const defaultNames = new Set(declarations(defaultCss, '--ui-'))
+    const mappings = [...tailwindCss.matchAll(/(--(?!color-)[\w-]+)\s*:\s*var\((--api-[\w-]+)\)/g)]
+
+    const runtimeTailwindNames = tailwindNames.filter(name => !name?.startsWith('--breakpoint-'))
+    const breakpoints = tailwindNames.filter(name => name?.startsWith('--breakpoint-'))
+
+    expect(tailwindNames).toHaveLength(292)
+    expect(runtimeTailwindNames).toHaveLength(284)
+    expect(breakpoints).toHaveLength(8)
+    expect(mappings).toHaveLength(284)
+    expect(mappings.every(([, tailwind, api]) => api === `--api-${tailwind!.slice(2)}`)).toBe(true)
+    expect(tailwindNames.every(name => apiNames.has(`--api-${name!.slice(2)}`))).toBe(true)
+    expect(tailwindNames.every(name => defaultNames.has(`--ui-${name!.slice(2)}`))).toBe(true)
+    expect(breakpoints.every(name => {
+      const declaration = tailwindCss.match(new RegExp(`${name}\\s*:\\s*([^;]+);`))
+      return declaration && !declaration[1]?.includes('var(')
+    })).toBe(true)
   })
 
   it('does not couple Theme Manager to consumer source topology or UI component CSS', () => {

@@ -56,6 +56,41 @@ describe('TM-5 runtime application engine', () => {
     expect(application.appliedVariables).toHaveLength(14)
   })
 
+  it('applies the complete presentation families as runtime CSS variables', () => {
+    const { style, values } = target()
+    const application = createThemeApplication(style)
+    const runtime = theme()
+    runtime.presentation = {
+      typography: {
+        families: { sans: 'Runtime Sans, sans-serif' },
+        sizes: { base: '1.125rem' },
+        weights: { bold: '750' },
+      },
+      spacing: { 4: '18px' },
+      radii: { DEFAULT: '6px' },
+      effects: {
+        shadow: { 'sm-base': '0 1px 2px #000' },
+        insetShadow: { sm: 'inset 0 1px 2px #000' },
+        dropShadow: { 'sm-base': '0 1px 1px #000' },
+        textShadow: { 'sm-base': '0 1px 2px #000' },
+      },
+      responsive: {
+        breakpoints: { md: '800px' },
+        containers: { '2xl': '1600px' },
+      },
+    }
+
+    application.apply(runtime)
+
+    expect(values.get('--ui-font-sans')).toBe('Runtime Sans, sans-serif')
+    expect(values.get('--ui-spacing-4')).toBe('18px')
+    expect(values.get('--ui-radius-DEFAULT')).toBe('6px')
+    expect(values.get('--ui-text-shadow-sm-base')).toBe('0 1px 2px #000')
+    expect(values.get('--ui-breakpoint-md')).toBe('800px')
+    expect(values.get('--ui-container-2xl')).toBe('1600px')
+    expect(application.appliedVariables).toHaveLength(25)
+  })
+
   it('clears every previous override before applying a replacement', () => {
     const { style, values } = target()
     const application = createThemeApplication(style)

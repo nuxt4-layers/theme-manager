@@ -109,6 +109,7 @@ export type {
   RuntimeTheme,
   RuntimeThemeMode,
   RuntimeInteractionState,
+  RuntimeThemePresentation,
   ThemeApplication,
   ThemeStyleTarget,
 } from '../shared/theme-runtime'
@@ -119,7 +120,9 @@ export {
   assertRuntimeTheme,
   createThemeApplication,
   legacyColourThemeToRuntime,
+  runtimePresentationVariables,
   runtimeVariableName,
+  themeDefinitionToRuntime,
 } from '../shared/theme-runtime'
 
 export {
