@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { createCanonicalThemeDefinition } from '../shared/canonical-theme'
 import {
@@ -20,6 +22,9 @@ function target() {
   return { style, values }
 }
 
+const root = resolve(import.meta.dirname, '..')
+const read = (path: string) => readFileSync(resolve(root, path), 'utf8')
+
 describe('Theme Definition to runtime integration', () => {
   it('preserves the complete canonical presentation through conversion', () => {
     const definition = createCanonicalThemeDefinition()
@@ -28,6 +33,26 @@ describe('Theme Definition to runtime integration', () => {
 
     expect(variables).toHaveLength(292)
     expect(new Set(variables.map(([name]) => name))).toHaveLength(292)
+  })
+
+  it('maps every canonical presentation variable through default and API CSS, with runtime-safe Tailwind indirection', () => {
+    const runtime = themeDefinitionToRuntime(createCanonicalThemeDefinition())
+    const names = runtimePresentationVariables(runtime.presentation!).map(([name]) => name)
+    const defaultCss = read('assets/css/theme/theme-default.css')
+    const apiCss = read('assets/css/theme/theme-api.css')
+    const tailwindCss = read('assets/css/tailwindcss/tailwind-config.css')
+
+    for (const uiName of names) {
+      const suffix = uiName.slice('--ui-'.length)
+      const apiName = `--api-${suffix}`
+      expect(defaultCss, `missing default declaration for ${uiName}`).toContain(`${uiName}:`)
+      expect(apiCss, `missing API mapping for ${apiName}`).toContain(`${apiName}: var(${uiName})`)
+
+      if (!suffix.startsWith('breakpoint-')) {
+        expect(tailwindCss, `missing Tailwind API indirection for ${suffix}`)
+          .toContain(`--${suffix}: var(${apiName})`)
+      }
+    }
   })
 
   it('carries distinctive values from every non-colour family into runtime CSS variables', () => {
