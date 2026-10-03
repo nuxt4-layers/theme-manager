@@ -5,7 +5,13 @@
  * discovery and reusable component CSS belong to consuming/composition and UI
  * capabilities respectively and are deliberately absent here.
  */
-@import 'tailwindcss';
+/*
+ * Theme Manager is the authoritative Tailwind presentation vocabulary.
+ * Mark this compilation's utilities important so a consumer framework (for
+ * example Nuxt UI) cannot replace Theme Manager's runtime-backed utilities
+ * with a second Tailwind theme definition later in the cascade.
+ */
+@import 'tailwindcss' important;
 @import './theme/theme-default.css';
 @import './theme/theme-api.css';
 @import './tailwindcss/tailwind-config.css';
