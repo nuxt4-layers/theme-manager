@@ -31,6 +31,11 @@ describe('TM-7 management UI boundary', () => {
     expect(editorPage).toContain('@preview="management.previewTheme"')
   })
 
+  it('applies the complete Theme Definition when a Theme is selected', () => {
+    expect(indexPage).toContain('themeDefinitionToRuntime(theme)')
+    expect(indexPage).not.toContain('legacyColourThemeToRuntime')
+  })
+
   it('does not inherit legacy account/authentication composition assumptions', () => {
     const all = [library, editor, indexPage, editorPage].join('\n')
     expect(all).not.toContain("layout: 'account'")
