@@ -10,6 +10,7 @@ describe('TM-7 management UI boundary', () => {
   const editor = read('app/components/theme-manager/ThemeEditor.vue')
   const indexPage = read('app/pages/theme-manager/index.vue')
   const editorPage = read('app/pages/theme-manager/[id].vue')
+  const runtimeComposable = read('app/composables/useThemeRuntime.ts')
   const runtimeMiddleware = read('app/middleware/theme-runtime.global.ts')
 
   it('ships Theme Manager-owned library and editor projections', () => {
@@ -37,7 +38,8 @@ describe('TM-7 management UI boundary', () => {
     expect(indexPage).not.toContain('legacyColourThemeToRuntime')
   })
 
-  it('restores the complete persisted Theme selection on a fresh navigation', () => {
+  it('persists Theme selection for restoration across the complete consumer application', () => {
+    expect(runtimeComposable).toContain("path: '/'")
     expect(runtimeMiddleware).toContain('management.loadTheme(selectedThemeId)')
     expect(runtimeMiddleware).toContain('runtime.activate(themeDefinitionToRuntime(theme))')
     expect(runtimeMiddleware).toContain('runtime.failToDefault(error)')
