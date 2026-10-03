@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import type { ThemeSummary } from '../../../contracts'
-import { legacyColourThemeToRuntime } from '../../../shared/theme-runtime'
+import { themeDefinitionToRuntime } from '../../../shared/theme-runtime'
 
 const management = useThemeManagement()
 const runtime = useThemeRuntime()
@@ -37,7 +37,7 @@ async function refresh() {
 async function selectTheme(id: string) {
   try {
     const theme = await management.loadTheme(id)
-    runtime.activate(legacyColourThemeToRuntime({ id: theme.id, name: theme.name, colors: theme.modes }))
+    runtime.activate(themeDefinitionToRuntime(theme))
   }
   catch (cause) {
     error.value = cause instanceof Error ? cause.message : 'Failed to select theme.'
