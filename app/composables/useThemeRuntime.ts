@@ -7,6 +7,7 @@ export function useThemeRuntime() {
   const selectedThemeId = useCookie<string | null>(ACTIVE_THEME_COOKIE, {
     default: () => null,
     maxAge: 60 * 60 * 24 * 365,
+    path: '/',
     sameSite: 'lax',
   })
   const activeTheme = useState<RuntimeTheme | null>('theme-manager:active-theme', () => null)
