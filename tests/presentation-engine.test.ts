@@ -158,8 +158,28 @@ describe('TM-4 presentation engine', () => {
       if (family !== 'fill' || state!.endsWith('-shadow') || state!.endsWith('-disabled')) continue
 
       const edge = colours.get(`edge|${state}|${mode}`)
-      if (edge && contrast(edge, fill) < 3) {
+      if (edge && contrast(edge, fill) < 3.2) {
         failures.push(`${mode} ${state}: ${contrast(edge, fill).toFixed(3)}:1`)
+      }
+    }
+
+    expect(failures).toEqual([])
+  })
+
+  it('preserves chromatic identity for semantic default edges', () => {
+    const semanticRoles = ['primary', 'secondary', 'accent', 'link', 'success', 'info', 'warning', 'error', 'notification']
+    const failures: string[] = []
+
+    for (const mode of ['light', 'dark']) {
+      for (const role of semanticRoles) {
+        const match = defaultCss.match(new RegExp(`--ui-edge-${role}-default-${mode}\\s*:\\s*#([0-9a-fA-F]{6})`))
+        if (!match) {
+          failures.push(`${mode} ${role}: missing`)
+          continue
+        }
+
+        const channels = [0, 2, 4].map(index => Number.parseInt(match[1]!.slice(index, index + 2), 16))
+        if (Math.max(...channels) - Math.min(...channels) < 12) failures.push(`${mode} ${role}: achromatic`)
       }
     }
 
