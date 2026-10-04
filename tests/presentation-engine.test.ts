@@ -13,6 +13,33 @@ const mainCss = read('assets/css/main.css')
 const declarations = (css: string, prefix: string) =>
   [...css.matchAll(new RegExp(`(${prefix}[\\w-]+)\\s*:`, 'g'))].map(match => match[1])
 
+
+const defaultColours = new Map(
+  [...defaultCss.matchAll(/--ui-(fill|pen|edge)-([\\w-]+)-(light|dark)\\s*:\\s*(#[0-9a-fA-F]{6})\\s*;/g)]
+    .map(([, family, roleState, mode, value]) => [`${family}|${roleState}|${mode}`, value!] as const),
+)
+
+const relativeLuminance = (hex: string) => {
+  const channels = [1, 3, 5].map(index => Number.parseInt(hex.slice(index, index + 2), 16) / 255)
+    .map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4)
+  return (0.2126 * channels[0]!) + (0.7152 * channels[1]!) + (0.0722 * channels[2]!)
+}
+
+const contrastRatio = (first: string, second: string) => {
+  const firstLuminance = relativeLuminance(first)
+  const secondLuminance = relativeLuminance(second)
+  return (Math.max(firstLuminance, secondLuminance) + 0.05)
+    / (Math.min(firstLuminance, secondLuminance) + 0.05)
+}
+
+const semanticColourParts = (roleState: string) => {
+  const separator = roleState.lastIndexOf('-')
+  return {
+    role: roleState.slice(0, separator),
+    state: roleState.slice(separator + 1),
+  }
+}
+
 describe('TM-4 presentation engine', () => {
   it('preserves the recovered raw colour cardinality', () => {
     const raw = declarations(defaultCss, '--ui-').filter(name => /--ui-(fill|pen|edge)-/.test(name ?? ''))
@@ -100,66 +127,76 @@ describe('TM-4 presentation engine', () => {
     expect(defaultCss).toContain('--tm-shadow-color-pen-base: var(--ui-pen-base-shadow-dark);')
   })
 
-  it('keeps non-disabled default Theme text pairs at WCAG AA contrast', () => {
-    const colours = new Map(
-      [...defaultCss.matchAll(/--ui-(fill|pen)-([\\w-]+)-(light|dark)\\s*:\\s*(#[0-9a-fA-F]{6})\\s*;/g)]
-        .map(([, family, state, mode, value]) => [`${family}|${state}|${mode}`, value!] as const),
-    )
-
-    const luminance = (hex: string) => {
-      const channels = [1, 3, 5].map(index => Number.parseInt(hex.slice(index, index + 2), 16) / 255)
-        .map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4)
-      return (0.2126 * channels[0]!) + (0.7152 * channels[1]!) + (0.0722 * channels[2]!)
-    }
-
-    const contrast = (foreground: string, background: string) => {
-      const foregroundLuminance = luminance(foreground)
-      const backgroundLuminance = luminance(background)
-      return (Math.max(foregroundLuminance, backgroundLuminance) + 0.05)
-        / (Math.min(foregroundLuminance, backgroundLuminance) + 0.05)
-    }
-
+  it('keeps every intended non-disabled same-role Pen/Fill pair at WCAG AA normal-text contrast', () => {
     const failures: string[] = []
-    for (const [key, fill] of colours) {
-      const [family, state, mode] = key.split('|')
-      if (family !== 'fill' || state!.endsWith('-shadow') || state!.endsWith('-disabled')) continue
+    let checked = 0
 
-      const pen = colours.get(`pen|${state}|${mode}`)
-      if (pen && contrast(pen, fill) < 4.5) {
-        failures.push(`${mode} ${state}: ${contrast(pen, fill).toFixed(3)}:1`)
-      }
+    for (const [key, fill] of defaultColours) {
+      const [family, roleState, mode] = key.split('|')
+      if (family !== 'fill') continue
+      const { state } = semanticColourParts(roleState!)
+      if (state === 'shadow' || state === 'disabled') continue
+
+      const pen = defaultColours.get(`pen|${roleState}|${mode}`)
+      expect(pen, `missing Pen partner for ${mode} ${roleState}`).toBeDefined()
+      checked += 1
+
+      const ratio = contrastRatio(pen!, fill)
+      if (ratio < 4.5) failures.push(`${mode} ${roleState}: ${ratio.toFixed(3)}:1`)
     }
 
+    expect(checked).toBe(140)
     expect(failures).toEqual([])
   })
 
-  it('keeps non-disabled default Theme UI edges at 3:1 non-text contrast', () => {
-    const colours = new Map(
-      [...defaultCss.matchAll(/--ui-(fill|edge)-([\\w-]+)-(light|dark)\\s*:\\s*(#[0-9a-fA-F]{6})\\s*;/g)]
-        .map(([, family, state, mode, value]) => [`${family}|${state}|${mode}`, value!] as const),
-    )
-
-    const luminance = (hex: string) => {
-      const channels = [1, 3, 5].map(index => Number.parseInt(hex.slice(index, index + 2), 16) / 255)
-        .map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4)
-      return (0.2126 * channels[0]!) + (0.7152 * channels[1]!) + (0.0722 * channels[2]!)
-    }
-
-    const contrast = (first: string, second: string) => {
-      const firstLuminance = luminance(first)
-      const secondLuminance = luminance(second)
-      return (Math.max(firstLuminance, secondLuminance) + 0.05)
-        / (Math.min(firstLuminance, secondLuminance) + 0.05)
-    }
-
+  it('keeps every intended non-disabled same-role Edge/Fill pair at WCAG non-text contrast', () => {
     const failures: string[] = []
-    for (const [key, fill] of colours) {
-      const [family, state, mode] = key.split('|')
-      if (family !== 'fill' || state!.endsWith('-shadow') || state!.endsWith('-disabled')) continue
+    let checked = 0
 
-      const edge = colours.get(`edge|${state}|${mode}`)
-      if (edge && contrast(edge, fill) < 3.2) {
-        failures.push(`${mode} ${state}: ${contrast(edge, fill).toFixed(3)}:1`)
+    for (const [key, fill] of defaultColours) {
+      const [family, roleState, mode] = key.split('|')
+      if (family !== 'fill') continue
+      const { state } = semanticColourParts(roleState!)
+      if (state === 'shadow' || state === 'disabled') continue
+
+      const edge = defaultColours.get(`edge|${roleState}|${mode}`)
+      expect(edge, `missing Edge partner for ${mode} ${roleState}`).toBeDefined()
+      checked += 1
+
+      const ratio = contrastRatio(edge!, fill)
+      if (ratio < 3) failures.push(`${mode} ${roleState}: ${ratio.toFixed(3)}:1`)
+    }
+
+    expect(checked).toBe(140)
+    expect(failures).toEqual([])
+  })
+
+  it('documents disabled pairs as deliberately exempt from normal WCAG contrast thresholds', () => {
+    const disabledFillPairs = [...defaultColours.keys()]
+      .filter(key => key.startsWith('fill|') && key.includes('-disabled|'))
+    const disabledEdgePairs = [...defaultColours.keys()]
+      .filter(key => key.startsWith('edge|') && key.includes('-disabled|'))
+
+    expect(disabledFillPairs).toHaveLength(28)
+    expect(disabledEdgePairs).toHaveLength(28)
+  })
+
+  it('keeps default focus-capable Edge tokens distinguishable from their same-role Fill surfaces', () => {
+    // This protects the palette's potential visible boundary. It does not claim WCAG
+    // focus-appearance conformance, which depends on the rendered component, adjacent
+    // colours, indicator area/thickness and focus implementation.
+    const failures: string[] = []
+    for (const mode of ['light', 'dark']) {
+      for (const role of ['base', 'primary', 'secondary', 'tertiary', 'accent', 'muted', 'floor', 'input', 'link', 'success', 'info', 'warning', 'error', 'notification']) {
+        for (const state of ['default', 'hover', 'active', 'selected', 'visited']) {
+          const fill = defaultColours.get(`fill|${role}-${state}|${mode}`)
+          const edge = defaultColours.get(`edge|${role}-${state}|${mode}`)
+          expect(fill, `missing Fill for ${mode} ${role}-${state}`).toBeDefined()
+          expect(edge, `missing Edge for ${mode} ${role}-${state}`).toBeDefined()
+          if (contrastRatio(edge!, fill!) < 3) {
+            failures.push(`${mode} ${role}-${state}`)
+          }
+        }
       }
     }
 
