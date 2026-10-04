@@ -133,6 +133,39 @@ describe('TM-4 presentation engine', () => {
     expect(failures).toEqual([])
   })
 
+  it('keeps non-disabled default Theme UI edges at 3:1 non-text contrast', () => {
+    const colours = new Map(
+      [...defaultCss.matchAll(/--ui-(fill|edge)-([\\w-]+)-(light|dark)\\s*:\\s*(#[0-9a-fA-F]{6})\\s*;/g)]
+        .map(([, family, state, mode, value]) => [`${family}|${state}|${mode}`, value!] as const),
+    )
+
+    const luminance = (hex: string) => {
+      const channels = [1, 3, 5].map(index => Number.parseInt(hex.slice(index, index + 2), 16) / 255)
+        .map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4)
+      return (0.2126 * channels[0]!) + (0.7152 * channels[1]!) + (0.0722 * channels[2]!)
+    }
+
+    const contrast = (first: string, second: string) => {
+      const firstLuminance = luminance(first)
+      const secondLuminance = luminance(second)
+      return (Math.max(firstLuminance, secondLuminance) + 0.05)
+        / (Math.min(firstLuminance, secondLuminance) + 0.05)
+    }
+
+    const failures: string[] = []
+    for (const [key, fill] of colours) {
+      const [family, state, mode] = key.split('|')
+      if (family !== 'fill' || state!.endsWith('-shadow') || state!.endsWith('-disabled')) continue
+
+      const edge = colours.get(`edge|${state}|${mode}`)
+      if (edge && contrast(edge, fill) < 3) {
+        failures.push(`${mode} ${state}: ${contrast(edge, fill).toFixed(3)}:1`)
+      }
+    }
+
+    expect(failures).toEqual([])
+  })
+
   it('does not couple Theme Manager to consumer source topology or UI component CSS', () => {
     expect(mainCss).not.toContain('@source')
     expect(mainCss).not.toContain('components/')
