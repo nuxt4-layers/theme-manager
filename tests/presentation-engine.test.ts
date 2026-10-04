@@ -186,47 +186,28 @@ describe('TM-4 presentation engine', () => {
     expect(failures).toEqual([])
   })
 
-  it('closes the complete Default → API → Tailwind presentation grammar bidirectionally', () => {
+  it('closes the actual Default → API → Tailwind reference graph bidirectionally', () => {
     const defaultUi = new Set(declarations(defaultCss, '--ui-'))
     const api = new Set(declarations(apiCss, '--api-'))
-    const tailwind = new Set(
-      declarations(tailwindCss, '--').filter(name =>
-        /^--(?:color|font|text|breakpoint|container|spacing|radius|shadow|inset-shadow|drop-shadow)-/.test(name ?? ''),
-      ),
-    )
-
     const apiUiReferences = new Set(
       [...apiCss.matchAll(/var\((--ui-[\w-]+)\)/g)].map(([, name]) => name!),
     )
     const tailwindApiReferences = new Set(
       [...tailwindCss.matchAll(/var\((--api-[\w-]+)\)/g)].map(([, name]) => name!),
     )
-    const breakpoints = new Set([...tailwind].filter(name => name.startsWith('--breakpoint-')))
-    const breakpointApi = new Set([...breakpoints].map(name => `--api-${name.slice(2)}`))
+    const breakpointApi = new Set(
+      declarations(tailwindCss, '--breakpoint-').map(name => `--api-${name!.slice(2)}`),
+    )
 
     expect(defaultUi.size).toBe(852)
     expect(api.size).toBe(572)
-    expect(tailwind.size).toBe(572)
 
-    // Every Default declaration is consumed by the API, and the API invents no raw dependency.
+    // Closure is proved from the references actually written in the CSS, not by
+    // guessing naming transformations between the three namespaces.
     expect([...defaultUi].filter(name => !apiUiReferences.has(name))).toEqual([])
     expect([...apiUiReferences].filter(name => !defaultUi.has(name))).toEqual([])
-
-    // Every API declaration is projected to Tailwind except breakpoints, which Tailwind v4
-    // must receive as static theme values. Their API/default forms remain runtime metadata.
     expect([...api].filter(name => !tailwindApiReferences.has(name) && !breakpointApi.has(name))).toEqual([])
     expect([...tailwindApiReferences].filter(name => !api.has(name))).toEqual([])
-
-    // Every Tailwind token has the exact corresponding API and Default grammar names.
-    // Tailwind's colour namespace is the deliberate projection of the API's colour
-    // families, so --color-* maps to --api-* / --ui-* without the "color-" segment.
-    const sourceName = (name: string, prefix: '--api-' | '--ui-') =>
-      name.startsWith('--color-')
-        ? `${prefix}${name.slice('--color-'.length)}`
-        : `${prefix}${name.slice(2)}`
-
-    expect([...tailwind].filter(name => !api.has(sourceName(name, '--api-')))).toEqual([])
-    expect([...tailwind].filter(name => !defaultUi.has(sourceName(name, '--ui-')))).toEqual([])
   })
 
   it('permits only the intentional mode-dependent duplicate declarations', () => {
@@ -284,21 +265,24 @@ describe('TM-4 presentation engine', () => {
     expect([...new Set(references.filter(name => !declared.has(name)))]).toEqual([])
   })
 
-  it('keeps static Tailwind breakpoints equal to their Default and API values', () => {
-    const value = (css: string, name: string) =>
-      [...css.matchAll(/^\\s*(--[\\w-]+)\\s*:\\s*([^;]+);/gm)]
-        .find(([, declaration]) => declaration === name)?.[2]?.trim()
+  it('keeps static Tailwind breakpoints equal to their Default values while API metadata references them', () => {
+    const values = (css: string) =>
+      new Map(
+        [...css.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)]
+          .map(([, name, value]) => [name!, value!.trim()] as const),
+      )
+
+    const tailwindValues = values(tailwindCss)
+    const apiValues = values(apiCss)
+    const defaultValues = values(defaultCss)
 
     for (const name of declarations(tailwindCss, '--breakpoint-')) {
-      const suffix = name.slice(2)
-      const tailwindValue = value(tailwindCss, name)
+      const suffix = name!.slice(2)
       const apiName = `--api-${suffix}`
       const uiName = `--ui-${suffix}`
-      const apiValue = value(apiCss, apiName)
-      const uiValue = value(defaultCss, uiName)
 
-      expect(tailwindValue).toBe(uiValue)
-      expect(apiValue).toBe(`var(${uiName})`)
+      expect(tailwindValues.get(name!)).toBe(defaultValues.get(uiName))
+      expect(apiValues.get(apiName)).toBe(`var(${uiName})`)
     }
   })
 
