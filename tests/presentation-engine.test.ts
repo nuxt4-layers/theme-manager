@@ -82,6 +82,13 @@ describe('TM-4 presentation engine', () => {
     })).toBe(true)
   })
 
+  it('keeps default radius values valid and upstream of the public API', () => {
+    expect(defaultCss).toContain('--ui-radius-DEFAULT: var(--ui-radius-md);')
+    expect(defaultCss).toContain('--ui-radius-full: calc(infinity * 1px);')
+    expect(defaultCss).not.toMatch(/--ui-radius-[\w-]+\s*:\s*var\(--(?:api-)?radius-/)
+    expect(defaultCss).not.toContain('var(calc(')
+  })
+
   it('does not couple Theme Manager to consumer source topology or UI component CSS', () => {
     expect(mainCss).not.toContain('@source')
     expect(mainCss).not.toContain('components/')
