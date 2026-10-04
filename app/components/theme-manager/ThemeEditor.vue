@@ -37,8 +37,8 @@
       </aside>
 
       <main class="lg:col-span-2">
-        <div class="mb-4 flex gap-2 overflow-x-auto border-b border-edge-base-default">
-          <button v-for="tab in tabs" :key="tab" type="button" class="whitespace-nowrap px-3 py-2 capitalize" :class="activeTab === tab ? 'border-b-2 border-edge-primary-default text-pen-primary-default' : 'text-pen-muted-default'" @click="activeTab = tab">{{ tab }}</button>
+        <div class="mb-4 flex gap-2 overflow-x-auto border-b border-edge-base-default" role="tablist" aria-label="Theme editor sections">
+          <button v-for="tab in tabs" :key="tab" type="button" role="tab" class="whitespace-nowrap border-b-2 px-3 py-2 capitalize" :aria-selected="activeTab === tab" :class="activeTab === tab ? 'border-edge-primary-default bg-fill-primary-default font-medium text-pen-primary-default' : 'border-transparent text-pen-muted-default'" @click="activeTab = tab">{{ tab }}</button>
         </div>
 
         <div v-if="activeTab === 'colours'" class="space-y-5">
