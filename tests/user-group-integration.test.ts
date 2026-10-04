@@ -15,8 +15,8 @@ const theme = (id: string, ownerId: string): ThemeDefinition => ({
   id, name: id, version: '1', schemaVersion: '1',
   ownership: { ownerType: 'user', ownerId },
   visibility: 'private', lifecycle: 'draft',
-  presentation: { colour: {}, typography: {}, spacing: {}, radii: {}, effects: {}, responsive: {}, assets: {} },
-  modes: {},
+  presentation: { colour: {}, typography: { families: {}, sizes: {}, weights: {} }, spacing: {}, radii: {}, effects: { shadow: {}, insetShadow: {}, dropShadow: {}, textShadow: {} }, responsive: { breakpoints: {}, containers: {} }, assets: {} },
+  modes: { light: { pen: { default: '#000', hover: '#111', active: '#222', selected: '#333', visited: '#444', disabled: '#555' } }, dark: { pen: { default: '#000', hover: '#111', active: '#222', selected: '#333', visited: '#444', disabled: '#555' } } },
 })
 
 function repository(initial: ThemeDefinition[]): ThemeRepository {
@@ -72,6 +72,45 @@ describe('TM-8 Identity and Authorization integration', () => {
     await service.update('existing', { ...theme('existing', 'user-a'), name: 'changed' })
     await service.delete('existing')
     expect(seen).toEqual(['theme.create', 'theme.edit', 'theme.delete'])
+  })
+
+  it('requires publish and share authority for privileged transitions', async () => {
+    const seen: string[] = []
+    const service = createThemeService(repository([theme('existing', 'user-a')]), access((request) => {
+      seen.push(request.action)
+      return true
+    }))
+    await service.update('existing', { ...theme('existing', 'user-a'), lifecycle: 'published', visibility: 'public' })
+    expect(seen).toEqual(['theme.edit', 'theme.publish', 'theme.share'])
+  })
+
+  it('rejects creation for ownership the actor does not hold', async () => {
+    const service = createThemeService(repository([]), access(() => true))
+    await expect(service.create(theme('forged', 'user-b'))).rejects.toBeInstanceOf(ThemeAuthorizationError)
+  })
+
+  it('authorizes creation before revealing duplicate identifiers', async () => {
+    const seen: string[] = []
+    const service = createThemeService(repository([theme('existing', 'user-a')]), access((request) => {
+      seen.push(request.action)
+      return false
+    }))
+    await expect(service.create(theme('existing', 'user-a'))).rejects.toBeInstanceOf(ThemeAuthorizationError)
+    expect(seen).toEqual(['theme.create'])
+  })
+
+  it('does not hide non-authorization failures while listing', async () => {
+    const service = createThemeService(repository([theme('existing', 'user-a')]), {
+      actor: async () => actor,
+      async assert() { throw new Error('provider unavailable') },
+    })
+    await expect(service.list()).rejects.toThrow('provider unavailable')
+  })
+
+  it('hides resource existence from unauthorized readers', async () => {
+    const service = createThemeService(repository([theme('other', 'user-b')]), access(() => false))
+    expect(await service.find('other')).toBeNull()
+    expect(await service.find('missing')).toBeNull()
   })
 
   it('prevents ownership transfer through ordinary edit', async () => {
