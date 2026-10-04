@@ -19,14 +19,14 @@ const makeTheme = (id = 'theme-a', ownerType: ThemeDefinition['ownership']['owne
   lifecycle: 'draft',
   presentation: {
     colour: {},
-    typography: {},
+    typography: { families: {}, sizes: {}, weights: {} },
     spacing: {},
     radii: {},
-    effects: {},
-    responsive: {},
+    effects: { shadow: {}, insetShadow: {}, dropShadow: {}, textShadow: {} },
+    responsive: { breakpoints: {}, containers: {} },
     assets: {},
   },
-  modes: {},
+  modes: { light: { pen: { default: '#000', hover: '#111', active: '#222', selected: '#333', visited: '#444', disabled: '#555' } }, dark: { pen: { default: '#000', hover: '#111', active: '#222', selected: '#333', visited: '#444', disabled: '#555' } } },
 })
 
 function memoryRepository(initial: ThemeDefinition[] = []) {
