@@ -100,6 +100,39 @@ describe('TM-4 presentation engine', () => {
     expect(defaultCss).toContain('--tm-shadow-color-pen-base: var(--ui-pen-base-shadow-dark);')
   })
 
+  it('keeps non-disabled default Theme text pairs at WCAG AA contrast', () => {
+    const colours = new Map(
+      [...defaultCss.matchAll(/--ui-(fill|pen)-([\\w-]+)-(light|dark)\\s*:\\s*(#[0-9a-fA-F]{6})\\s*;/g)]
+        .map(([, family, state, mode, value]) => [`${family}|${state}|${mode}`, value!] as const),
+    )
+
+    const luminance = (hex: string) => {
+      const channels = [1, 3, 5].map(index => Number.parseInt(hex.slice(index, index + 2), 16) / 255)
+        .map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4)
+      return (0.2126 * channels[0]!) + (0.7152 * channels[1]!) + (0.0722 * channels[2]!)
+    }
+
+    const contrast = (foreground: string, background: string) => {
+      const foregroundLuminance = luminance(foreground)
+      const backgroundLuminance = luminance(background)
+      return (Math.max(foregroundLuminance, backgroundLuminance) + 0.05)
+        / (Math.min(foregroundLuminance, backgroundLuminance) + 0.05)
+    }
+
+    const failures: string[] = []
+    for (const [key, fill] of colours) {
+      const [family, state, mode] = key.split('|')
+      if (family !== 'fill' || state!.endsWith('-shadow') || state!.endsWith('-disabled')) continue
+
+      const pen = colours.get(`pen|${state}|${mode}`)
+      if (pen && contrast(pen, fill) < 4.5) {
+        failures.push(`${mode} ${state}: ${contrast(pen, fill).toFixed(3)}:1`)
+      }
+    }
+
+    expect(failures).toEqual([])
+  })
+
   it('does not couple Theme Manager to consumer source topology or UI component CSS', () => {
     expect(mainCss).not.toContain('@source')
     expect(mainCss).not.toContain('components/')
