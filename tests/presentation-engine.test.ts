@@ -89,6 +89,17 @@ describe('TM-4 presentation engine', () => {
     expect(defaultCss).not.toContain('var(calc(')
   })
 
+  it('keeps the default Theme self-contained from downstream presentation namespaces', () => {
+    const downstreamReference = /var\(--(?:api-|color-|spacing-|radius-)/
+    expect(defaultCss).not.toMatch(downstreamReference)
+
+    expect(defaultCss).toContain('--ui-spacing-1: var(--ui-spacing-p-xs);')
+    expect(defaultCss).toContain('--tm-shadow-color-fill-base: var(--ui-fill-base-shadow-light);')
+    expect(defaultCss).toContain('--tm-shadow-color-pen-base: var(--ui-pen-base-shadow-light);')
+    expect(defaultCss).toContain('--tm-shadow-color-fill-base: var(--ui-fill-base-shadow-dark);')
+    expect(defaultCss).toContain('--tm-shadow-color-pen-base: var(--ui-pen-base-shadow-dark);')
+  })
+
   it('does not couple Theme Manager to consumer source topology or UI component CSS', () => {
     expect(mainCss).not.toContain('@source')
     expect(mainCss).not.toContain('components/')
