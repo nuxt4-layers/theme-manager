@@ -5,13 +5,13 @@
         <h1 id="theme-library-title" class="text-3xl font-bold text-pen-base-default">Theme Library</h1>
         <p class="mt-1 text-pen-muted-default">Manage semantic presentation themes.</p>
       </div>
-      <button type="button" class="rounded-lg bg-fill-primary-default px-4 py-2 font-medium text-pen-base-default" @click="$emit('create')">
+      <button type="button" class="rounded-lg border border-edge-primary-default bg-fill-primary-default px-4 py-2 font-medium text-pen-primary-default" @click="$emit('create')">
         Create Theme
       </button>
     </header>
 
     <p v-if="loading" role="status" class="py-12 text-center text-pen-muted-default">Loading themes…</p>
-    <div v-else-if="error" role="alert" class="rounded-lg border border-edge-error-default p-4 text-pen-error-default">{{ error }}</div>
+    <div v-else-if="error" role="alert" class="rounded-lg border border-edge-error-default bg-fill-error-default p-4 text-pen-error-default">{{ error }}</div>
     <div v-else-if="themes.length === 0" class="rounded-xl border border-dashed border-edge-base-default p-12 text-center">
       <h2 class="font-bold text-pen-base-default">No themes found</h2>
       <p class="mt-1 text-pen-muted-default">Create a theme to begin building a presentation profile.</p>

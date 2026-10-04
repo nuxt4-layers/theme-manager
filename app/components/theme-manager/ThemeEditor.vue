@@ -7,11 +7,11 @@
       </div>
       <div class="flex gap-2">
         <button type="button" class="rounded-lg border border-edge-base-default px-4 py-2 text-pen-base-default" @click="$emit('cancel')">Cancel</button>
-        <button type="button" class="rounded-lg bg-fill-primary-default px-4 py-2 font-bold text-pen-base-default disabled:opacity-50" :disabled="saving || !!rawError" @click="save">Save</button>
+        <button type="button" class="rounded-lg border border-edge-primary-default bg-fill-primary-default px-4 py-2 font-bold text-pen-primary-default disabled:opacity-50" :disabled="saving || !!rawError" @click="save">Save</button>
       </div>
     </header>
 
-    <div v-if="error" role="alert" class="mb-5 rounded-lg border border-edge-error-default p-4 text-pen-error-default">{{ error }}</div>
+    <div v-if="error" role="alert" class="mb-5 rounded-lg border border-edge-error-default bg-fill-error-default p-4 text-pen-error-default">{{ error }}</div>
 
     <div class="grid gap-6 lg:grid-cols-3">
       <aside class="space-y-5">
@@ -33,7 +33,7 @@
           </div>
         </fieldset>
 
-        <button v-if="!isNew && model.ownership.ownerType !== 'system'" type="button" class="w-full rounded-lg border border-edge-error-default px-4 py-2 text-pen-error-default" @click="$emit('delete')">Delete Theme</button>
+        <button v-if="!isNew && model.ownership.ownerType !== 'system'" type="button" class="w-full rounded-lg border border-edge-error-default bg-fill-error-default px-4 py-2 text-pen-error-default" @click="$emit('delete')">Delete Theme</button>
       </aside>
 
       <main class="lg:col-span-2">
@@ -74,7 +74,7 @@
         <div v-else-if="activeTab === 'raw'">
           <label class="sr-only" for="theme-raw-json">Theme Definition JSON</label>
           <textarea id="theme-raw-json" v-model="raw" rows="30" spellcheck="false" class="w-full rounded-xl border border-edge-base-default bg-fill-base-default p-4 font-mono text-xs text-pen-base-default" @input="applyRaw" />
-          <p v-if="rawError" role="alert" class="mt-2 text-sm text-pen-error-default">{{ rawError }}</p>
+          <p v-if="rawError" role="alert" class="mt-2 rounded border border-edge-error-default bg-fill-error-default p-2 text-sm text-pen-error-default">{{ rawError }}</p>
           <button type="button" class="mt-2 text-sm text-pen-primary-default" @click="formatRaw">Format JSON</button>
         </div>
 

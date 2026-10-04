@@ -31,6 +31,16 @@ describe('TM-7 management UI boundary', () => {
     expect(editor).toContain('border-transparent text-pen-muted-default')
   })
 
+  it('pairs semantic fill, pen and edge roles consistently in management states', () => {
+    expect(editor).toContain('border-edge-primary-default bg-fill-primary-default px-4 py-2 font-bold text-pen-primary-default')
+    expect(library).toContain('border-edge-primary-default bg-fill-primary-default px-4 py-2 font-medium text-pen-primary-default')
+    expect(editor).toContain('border-edge-error-default bg-fill-error-default p-4 text-pen-error-default')
+    expect(library).toContain('border-edge-error-default bg-fill-error-default p-4 text-pen-error-default')
+    expect(editorPage).toContain('border-edge-error-default bg-fill-error-default p-4 text-pen-error-default')
+    expect(editor).not.toContain('bg-fill-primary-default px-4 py-2 font-bold text-pen-base-default')
+    expect(library).not.toContain('bg-fill-primary-default px-4 py-2 font-medium text-pen-base-default')
+  })
+
   it('unwraps reactive Theme props before cloning editor state', () => {
     expect(editor).toContain('structuredClone(toRaw(props.theme))')
     expect(editor).not.toContain('structuredClone(props.theme)')
