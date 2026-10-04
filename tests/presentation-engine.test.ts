@@ -13,6 +13,53 @@ const mainCss = read('assets/css/main.css')
 const declarations = (css: string, prefix: string) =>
   [...css.matchAll(new RegExp(`(${prefix}[\\w-]+)\\s*:`, 'g'))].map(match => match[1])
 
+
+const defaultColourEntries = defaultCss
+  .split(/\r?\n/)
+  .map(line => line.trim().match(/^--ui-(fill|pen|edge)-(.+)-(light|dark):\s*(#[0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?)\s*;/))
+  .filter((match): match is RegExpMatchArray => match !== null)
+  .map(([, family, roleState, mode, value]) => ({
+    family: family!,
+    roleState: roleState!,
+    mode: mode!,
+    value: value!,
+    alpha: value!.length === 9 ? Number.parseInt(value!.slice(7, 9), 16) / 255 : 1,
+  }))
+
+const defaultColour = (family: 'fill' | 'pen' | 'edge', roleState: string, mode: string) =>
+  defaultColourEntries.find(entry =>
+    entry.family === family && entry.roleState === roleState && entry.mode === mode,
+  )
+
+const relativeLuminance = (hex: string) => {
+  const channels = [1, 3, 5].map(index => Number.parseInt(hex.slice(index, index + 2), 16) / 255)
+    .map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4)
+  return (0.2126 * channels[0]!) + (0.7152 * channels[1]!) + (0.0722 * channels[2]!)
+}
+
+const contrastRatio = (first: string, second: string) => {
+  const firstLuminance = relativeLuminance(first)
+  const secondLuminance = relativeLuminance(second)
+  return (Math.max(firstLuminance, secondLuminance) + 0.05)
+    / (Math.min(firstLuminance, secondLuminance) + 0.05)
+}
+
+const stateOf = (roleState: string) => roleState.slice(roleState.lastIndexOf('-') + 1)
+
+const requireOpaquePair = (
+  family: 'pen' | 'edge',
+  roleState: string,
+  mode: string,
+  surface: { value: string, alpha: number },
+) => {
+  const partner = defaultColour(family, roleState, mode)
+  if (!partner) return { error: `${mode} ${roleState}: missing ${family === 'pen' ? 'Pen' : 'Edge'} partner` }
+  if (surface.alpha !== 1 || partner.alpha !== 1) {
+    return { error: `${mode} ${roleState}: transparent applicable pair requires rendered compositing` }
+  }
+  return { ratio: contrastRatio(partner.value, surface.value) }
+}
+
 describe('TM-4 presentation engine', () => {
   it('preserves the recovered raw colour cardinality', () => {
     const raw = declarations(defaultCss, '--ui-').filter(name => /--ui-(fill|pen|edge)-/.test(name ?? ''))
@@ -100,70 +147,58 @@ describe('TM-4 presentation engine', () => {
     expect(defaultCss).toContain('--tm-shadow-color-pen-base: var(--ui-pen-base-shadow-dark);')
   })
 
-  it('keeps non-disabled default Theme text pairs at WCAG AA contrast', () => {
-    const colours = new Map(
-      [...defaultCss.matchAll(/--ui-(fill|pen)-([\\w-]+)-(light|dark)\\s*:\\s*(#[0-9a-fA-F]{6})\\s*;/g)]
-        .map(([, family, state, mode, value]) => [`${family}|${state}|${mode}`, value!] as const),
-    )
+  it('parses the complete concrete Default Theme colour palette including alpha colours', () => {
+    expect(defaultColourEntries).toHaveLength(560)
+    expect(defaultColourEntries.filter(entry => entry.family === 'fill')).toHaveLength(196)
+    expect(defaultColourEntries.filter(entry => entry.family === 'pen')).toHaveLength(196)
+    expect(defaultColourEntries.filter(entry => entry.family === 'edge')).toHaveLength(168)
 
-    const luminance = (hex: string) => {
-      const channels = [1, 3, 5].map(index => Number.parseInt(hex.slice(index, index + 2), 16) / 255)
-        .map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4)
-      return (0.2126 * channels[0]!) + (0.7152 * channels[1]!) + (0.0722 * channels[2]!)
-    }
+    const transparent = defaultColourEntries.filter(entry => entry.alpha !== 1)
+    expect(transparent.map(({ family, roleState, mode, value }) => ({ family, roleState, mode, value }))).toEqual([
+      { family: 'fill', roleState: 'input-shadow', mode: 'light', value: '#00000000' },
+      { family: 'fill', roleState: 'input-shadow', mode: 'dark', value: '#00000000' },
+    ])
+  })
 
-    const contrast = (foreground: string, background: string) => {
-      const foregroundLuminance = luminance(foreground)
-      const backgroundLuminance = luminance(background)
-      return (Math.max(foregroundLuminance, backgroundLuminance) + 0.05)
-        / (Math.min(foregroundLuminance, backgroundLuminance) + 0.05)
-    }
+  it('keeps every statically computable non-disabled same-role Pen/Fill pair at WCAG AA normal-text contrast', () => {
+    const fills = defaultColourEntries.filter(entry => entry.family === 'fill')
+    const applicable = fills.filter(entry => !['shadow', 'disabled'].includes(stateOf(entry.roleState)))
+    expect(applicable).toHaveLength(140)
 
-    const failures: string[] = []
-    for (const [key, fill] of colours) {
-      const [family, state, mode] = key.split('|')
-      if (family !== 'fill' || state!.endsWith('-shadow') || state!.endsWith('-disabled')) continue
-
-      const pen = colours.get(`pen|${state}|${mode}`)
-      if (pen && contrast(pen, fill) < 4.5) {
-        failures.push(`${mode} ${state}: ${contrast(pen, fill).toFixed(3)}:1`)
-      }
-    }
+    const failures = applicable.flatMap(({ roleState, mode, value, alpha }) => {
+      const result = requireOpaquePair('pen', roleState, mode, { value, alpha })
+      if (result.error) return [result.error]
+      return result.ratio! < 4.5 ? [`${mode} ${roleState}: ${result.ratio!.toFixed(3)}:1`] : []
+    })
 
     expect(failures).toEqual([])
   })
 
-  it('keeps non-disabled default Theme UI edges at 3:1 non-text contrast', () => {
-    const colours = new Map(
-      [...defaultCss.matchAll(/--ui-(fill|edge)-([\\w-]+)-(light|dark)\\s*:\\s*(#[0-9a-fA-F]{6})\\s*;/g)]
-        .map(([, family, state, mode, value]) => [`${family}|${state}|${mode}`, value!] as const),
-    )
+  it('keeps every statically computable non-disabled same-role Edge/Fill pair at WCAG non-text contrast', () => {
+    const fills = defaultColourEntries.filter(entry => entry.family === 'fill')
+    const applicable = fills.filter(entry => !['shadow', 'disabled'].includes(stateOf(entry.roleState)))
+    expect(applicable).toHaveLength(140)
 
-    const luminance = (hex: string) => {
-      const channels = [1, 3, 5].map(index => Number.parseInt(hex.slice(index, index + 2), 16) / 255)
-        .map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4)
-      return (0.2126 * channels[0]!) + (0.7152 * channels[1]!) + (0.0722 * channels[2]!)
-    }
-
-    const contrast = (first: string, second: string) => {
-      const firstLuminance = luminance(first)
-      const secondLuminance = luminance(second)
-      return (Math.max(firstLuminance, secondLuminance) + 0.05)
-        / (Math.min(firstLuminance, secondLuminance) + 0.05)
-    }
-
-    const failures: string[] = []
-    for (const [key, fill] of colours) {
-      const [family, state, mode] = key.split('|')
-      if (family !== 'fill' || state!.endsWith('-shadow') || state!.endsWith('-disabled')) continue
-
-      const edge = colours.get(`edge|${state}|${mode}`)
-      if (edge && contrast(edge, fill) < 3.2) {
-        failures.push(`${mode} ${state}: ${contrast(edge, fill).toFixed(3)}:1`)
-      }
-    }
+    const failures = applicable.flatMap(({ roleState, mode, value, alpha }) => {
+      const result = requireOpaquePair('edge', roleState, mode, { value, alpha })
+      if (result.error) return [result.error]
+      return result.ratio! < 3 ? [`${mode} ${roleState}: ${result.ratio!.toFixed(3)}:1`] : []
+    })
 
     expect(failures).toEqual([])
+  })
+
+  it('keeps context-dependent and disabled colours outside the static contrast calculation explicitly', () => {
+    const disabled = defaultColourEntries.filter(entry => stateOf(entry.roleState) === 'disabled')
+    expect(disabled.filter(entry => entry.family === 'fill')).toHaveLength(28)
+    expect(disabled.filter(entry => entry.family === 'pen')).toHaveLength(28)
+    expect(disabled.filter(entry => entry.family === 'edge')).toHaveLength(28)
+
+    const shadows = defaultColourEntries.filter(entry => stateOf(entry.roleState) === 'shadow')
+    expect(shadows.filter(entry => entry.family === 'fill')).toHaveLength(28)
+    expect(shadows.filter(entry => entry.family === 'pen')).toHaveLength(28)
+    expect(shadows.filter(entry => entry.family === 'edge')).toHaveLength(0)
+    expect(shadows.filter(entry => entry.alpha !== 1)).toHaveLength(2)
   })
 
   it('preserves chromatic identity for semantic default edges', () => {
