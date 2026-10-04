@@ -70,7 +70,7 @@ Theme Manager has no package dependency on UI, Identity, Authentication, Authori
 
 Runtime Theme presentation can operate with the bundled deterministic default without persistence or Identity/AuthZ.
 
-Persisted Theme resolution requires a composition-supplied repository adapter.
+Persisted Theme resolution requires a composition-supplied repository adapter. The [Theme Persistence Integration Guide](persistence-integration-guide.md) defines the supported implementation pattern, registration procedure, trust boundary and database-provider separation.
 
 Management HTTP operations require Identity actor-context and Authorization providers and fail closed when those providers are absent.
 
