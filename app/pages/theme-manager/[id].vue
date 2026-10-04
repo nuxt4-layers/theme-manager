@@ -1,6 +1,6 @@
 <template>
   <p v-if="pending" role="status" class="p-8 text-pen-muted-default">Loading theme…</p>
-  <div v-else-if="error && !theme" role="alert" class="m-8 rounded-lg border border-edge-error-default p-4 text-pen-error-default">{{ error }}</div>
+  <div v-else-if="error && !theme" role="alert" class="m-8 rounded-lg border border-edge-error-default bg-fill-error-default p-4 text-pen-error-default">{{ error }}</div>
   <ThemeManagerThemeEditor
     v-else-if="theme"
     :theme="theme"
