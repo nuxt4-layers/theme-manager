@@ -49,9 +49,9 @@ describe('TM-8 Identity and Authorization integration', () => {
     expect((await service.list()).map(t => t.id)).toEqual(['mine'])
   })
 
-  it('enforces read authorization on resource lookup', async () => {
+  it('does not disclose unauthorized resource existence on lookup', async () => {
     const service = createThemeService(repository([theme('other', 'user-b')]), access(() => false))
-    await expect(service.find('other')).rejects.toBeInstanceOf(ThemeAuthorizationError)
+    expect(await service.find('other')).toBeNull()
   })
 
   it('enforces create, edit and delete as distinct Theme actions', async () => {
