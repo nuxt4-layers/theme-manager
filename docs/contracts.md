@@ -13,7 +13,7 @@ The capability manifest currently declares:
 - `ThemeManagement` contract version `1`;
 - `SemanticPresentationTheme` contract version `1`.
 
-TM-3 establishes the contract boundary and foundational domain vocabulary. Later migration work implements the recovered presentation and runtime behaviour behind these contracts.
+These contracts define the supported capability boundary for Theme management and semantic presentation.
 
 ## Theme domain data
 
@@ -29,7 +29,7 @@ The public contract establishes foundational types for:
 - Theme summaries;
 - Theme Manager authorization action names.
 
-The concrete presentation grammar and runtime-validatable Theme Definition schema are completed by the later migration work. TM-3 MUST NOT silently invent recovered token cardinalities or runtime behaviour assigned to TM-4 and later stages.
+The concrete presentation grammar and runtime-validatable Theme Definition schema are implemented behind this public boundary. Consumers must use the declared contracts rather than infer contracts from internal implementation details.
 
 ## Persistence port
 
@@ -43,7 +43,7 @@ No database, ORM or provider SDK type is part of the public contract.
 
 Theme Manager does not require another platform capability merely to load as a Nuxt Layer.
 
-Identity, Authorization, Asset/Resource and persistence-provider integrations are external boundaries. Their concrete capability contracts are not fabricated by TM-3. As those integrations are implemented, machine-readable `requires` declarations MUST be added only where an actual required/optional capability dependency exists and MUST agree with the human-readable architecture.
+Identity, Authorization, Asset/Resource and persistence-provider integrations are external boundaries. Machine-readable `requires` declarations MUST represent only actual required or optional capability dependencies and MUST agree with the human-readable architecture.
 
 Tailwind CSS is a Theme Manager implementation/package dependency when presentation migration requires it; it is not thereby a cross-capability manifest requirement.
 
@@ -61,7 +61,7 @@ The root entry is the Nuxt Layer. `/contracts` is the supported TypeScript contr
 
 ## Compatibility
 
-The package begins at pre-1.0 version `0.1.0`. Breaking public-contract changes during pre-1.0 development must still be documented.
+Until a stable public release is declared, consumers should treat the package as pre-1.0. Breaking public-contract changes must still be documented.
 
 Production composition applications must pin the exact integrated dependency set and test it before deployment.
 
@@ -69,4 +69,4 @@ Production composition applications must pin the exact integrated dependency set
 
 Theme Definition data and persisted JSON crossing trust boundaries are untrusted until runtime validation succeeds. TypeScript types are not a substitute for runtime validation.
 
-TM-3 establishes this requirement and the provider-independent boundary; runtime validators and import/application enforcement belong to the corresponding implementation stages.
+Runtime validators and import/application boundaries enforce this requirement.

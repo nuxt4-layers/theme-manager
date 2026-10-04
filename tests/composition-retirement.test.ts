@@ -15,7 +15,7 @@ describe('TM-10 composition and legacy-retirement gate', () => {
     requires: unknown[]
     publicExports: string[]
   }
-  const retirement = read('docs/migration_plan/tm-10-composition-legacy-retirement.md')
+  const retirement = read('docs/archive/migration/tm-10-composition-legacy-retirement.md')
   const composition = read('docs/composition-contract.md')
 
   it('retains the complete TM-0 through TM-10 migration record', () => {
@@ -33,7 +33,7 @@ describe('TM-10 composition and legacy-retirement gate', () => {
         'tm-9-ui-layer-integration.md',
         'tm-10-composition-legacy-retirement.md',
       ]
-      expect(existsSync(resolve(root, 'docs/migration_plan', entries[stage]!))).toBe(true)
+      expect(existsSync(resolve(root, 'docs/archive/migration', entries[stage]!))).toBe(true)
     }
   })
 

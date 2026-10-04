@@ -37,8 +37,9 @@ describe('TM-9 presentation-consumer boundary', () => {
     expect(contract).toContain('no UI component CSS')
   })
 
-  it('records the live UI divergence as a downstream migration obligation', () => {
-    expect(contract).toContain('provisional independent `--ui-*` grammar')
-    expect(contract).toContain('downstream UI-capability migration obligation')
+  it('keeps the consumer contract product-facing rather than migration-facing', () => {
+    expect(contract).toContain('treats semantic presentation vocabulary as the styling boundary')
+    expect(contract).toContain('does not mutate raw Theme state as a substitute for Theme Manager')
+    expect(contract).not.toContain('downstream UI-capability migration obligation')
   })
 })
