@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document defines the final composition boundary for the re-baselined Theme Manager.
+This document defines the supported composition boundary for Theme Manager.
 
 The host Nuxt application is the composition root. Theme Manager remains a bounded foundation capability and does not become an application shell.
 
