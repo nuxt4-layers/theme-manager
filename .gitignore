@@ -46,7 +46,6 @@
 # Lockfiles from other package managers (pnpm is canonical)
 **/package-lock.json
 **/yarn.lock
-#**/pnpm-lock.yaml
 # Removed: .firebase/functions/example/node_modules - Too specific, handled by **/node_modules/
 
 # Package manager debug logs
