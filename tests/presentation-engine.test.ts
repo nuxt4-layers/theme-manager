@@ -218,8 +218,15 @@ describe('TM-4 presentation engine', () => {
     expect([...tailwindApiReferences].filter(name => !api.has(name))).toEqual([])
 
     // Every Tailwind token has the exact corresponding API and Default grammar names.
-    expect([...tailwind].filter(name => !api.has(`--api-${name.slice(2)}`))).toEqual([])
-    expect([...tailwind].filter(name => !defaultUi.has(`--ui-${name.slice(2)}`))).toEqual([])
+    // Tailwind's colour namespace is the deliberate projection of the API's colour
+    // families, so --color-* maps to --api-* / --ui-* without the "color-" segment.
+    const sourceName = (name: string, prefix: '--api-' | '--ui-') =>
+      name.startsWith('--color-')
+        ? `${prefix}${name.slice('--color-'.length)}`
+        : `${prefix}${name.slice(2)}`
+
+    expect([...tailwind].filter(name => !api.has(sourceName(name, '--api-')))).toEqual([])
+    expect([...tailwind].filter(name => !defaultUi.has(sourceName(name, '--ui-')))).toEqual([])
   })
 
   it('permits only the intentional mode-dependent duplicate declarations', () => {
@@ -279,7 +286,8 @@ describe('TM-4 presentation engine', () => {
 
   it('keeps static Tailwind breakpoints equal to their Default and API values', () => {
     const value = (css: string, name: string) =>
-      css.match(new RegExp(`${name.replace(/[.*+?^\${}()|[\\]\\]/g, '\\\\$&')}\\\\s*:\\\\s*([^;]+);`))?.[1]?.trim()
+      [...css.matchAll(/^\\s*(--[\\w-]+)\\s*:\\s*([^;]+);/gm)]
+        .find(([, declaration]) => declaration === name)?.[2]?.trim()
 
     for (const name of declarations(tailwindCss, '--breakpoint-')) {
       const suffix = name.slice(2)
