@@ -14,9 +14,16 @@ const declarations = (css: string, prefix: string) =>
   [...css.matchAll(new RegExp(`(${prefix}[\\w-]+)\\s*:`, 'g'))].map(match => match[1])
 
 
-const defaultColourEntries = [...defaultCss.matchAll(
-  /--ui-(fill|pen|edge)-([\\w-]+)-(light|dark)\\s*:\\s*(#[0-9a-fA-F]{6})\\s*;/g,
-)].map(([, family, roleState, mode, value]) => ({ family: family!, roleState: roleState!, mode: mode!, value: value! }))
+const defaultColourEntries = defaultCss
+  .split(/\r?\n/)
+  .map(line => line.trim().match(/^--ui-(fill|pen|edge)-(.+)-(light|dark):\s*(#[0-9a-fA-F]{6})\s*;/))
+  .filter((match): match is RegExpMatchArray => match !== null)
+  .map(([, family, roleState, mode, value]) => ({
+    family: family!,
+    roleState: roleState!,
+    mode: mode!,
+    value: value!,
+  }))
 
 const defaultColour = (family: 'fill' | 'pen' | 'edge', roleState: string, mode: string) =>
   defaultColourEntries.find(entry =>
@@ -124,6 +131,13 @@ describe('TM-4 presentation engine', () => {
     expect(defaultCss).toContain('--tm-shadow-color-pen-base: var(--ui-pen-base-shadow-light);')
     expect(defaultCss).toContain('--tm-shadow-color-fill-base: var(--ui-fill-base-shadow-dark);')
     expect(defaultCss).toContain('--tm-shadow-color-pen-base: var(--ui-pen-base-shadow-dark);')
+  })
+
+  it('parses the complete concrete Default Theme colour palette before applying WCAG rules', () => {
+    expect(defaultColourEntries).toHaveLength(560)
+    expect(defaultColourEntries.filter(entry => entry.family === 'fill')).toHaveLength(196)
+    expect(defaultColourEntries.filter(entry => entry.family === 'pen')).toHaveLength(196)
+    expect(defaultColourEntries.filter(entry => entry.family === 'edge')).toHaveLength(168)
   })
 
   it('keeps every applicable non-disabled same-role Pen/Fill pair at WCAG AA normal-text contrast', () => {
