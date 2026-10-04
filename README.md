@@ -120,8 +120,12 @@ The completed TM-0 through TM-10 migration records are retained under [`docs/arc
 
 Current users and contributors should start with this README and the four reference documents above.
 
-## Security and contributing
+## Contributing, security and licence
 
-Theme Manager is being prepared for public open-source use. Security policy, vulnerability reporting, contributor guidance and repository/supply-chain hardening will be completed before public release.
+Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) for the development workflow, architectural boundaries and verification requirements. Participation is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
 
-Until that work is complete, no stable public release is declared.
+Please report suspected vulnerabilities according to [SECURITY.md](SECURITY.md), not through a public issue.
+
+Theme Manager is licensed under the [MIT License](LICENSE).
+
+The repository is being prepared for public open-source use. Repository and supply-chain security hardening will be completed before public release, and no stable public release is currently declared.
