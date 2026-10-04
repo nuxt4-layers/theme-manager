@@ -23,6 +23,14 @@ describe('TM-7 management UI boundary', () => {
     expect(editor).not.toContain('until its specialised visual editor is introduced')
   })
 
+  it('exposes and visibly distinguishes the selected editor tab', () => {
+    expect(editor).toContain('role="tablist"')
+    expect(editor).toContain('role="tab"')
+    expect(editor).toContain(':aria-selected="activeTab === tab"')
+    expect(editor).toContain('bg-fill-primary-default font-medium text-pen-primary-default')
+    expect(editor).toContain('border-transparent text-pen-muted-default')
+  })
+
   it('unwraps reactive Theme props before cloning editor state', () => {
     expect(editor).toContain('structuredClone(toRaw(props.theme))')
     expect(editor).not.toContain('structuredClone(props.theme)')
