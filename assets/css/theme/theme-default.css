@@ -874,8 +874,8 @@
   --ui-radius-md: 4px;
   --ui-radius-lg: 8px;
   --ui-radius-xl: 16px;
-  --ui-radius-DEFAULT: var(--radius-md);
-  --ui-radius-full: var(calc(infinity * 1px));
+  --ui-radius-DEFAULT: var(--ui-radius-md);
+  --ui-radius-full: calc(infinity * 1px);
   --ui-shadow-sm-base: 0 1px 2px 0 var(--color-fill-base-shadow);
   --ui-shadow-md-base: 0 4px 6px -1px var(--color-fill-base-shadow), 0 2px 4px -2px var(--color-fill-base-shadow);
   --ui-shadow-lg-base: 0 10px 15px -3px var(--color-fill-base-shadow), 0 4px 6px -4px var(--color-fill-base-shadow);
