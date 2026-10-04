@@ -333,111 +333,111 @@
   /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
   /* --- 'base' edge --- */
-  --ui-edge-base-default-light: #737373; /* Neutral 300 */
-  --ui-edge-base-hover-light: #737373; /* Primary Green */
-  --ui-edge-base-active-light: #737373; /* Dark Green */
-  --ui-edge-base-selected-light: #737373; /* Dark Green */
-  --ui-edge-base-visited-light: #737373;
+  --ui-edge-base-default-light: #8e8e8e; /* Neutral 300 */
+  --ui-edge-base-hover-light: #73907a; /* Primary Green */
+  --ui-edge-base-active-light: #64866d; /* Dark Green */
+  --ui-edge-base-selected-light: #64866d; /* Dark Green */
+  --ui-edge-base-visited-light: #8e8e8e;
   --ui-edge-base-disabled-light: #e5e5e5;
 
   /* --- 'primary' edge --- */
-  --ui-edge-primary-default-light: #525252;
-  --ui-edge-primary-hover-light: #404040;
-  --ui-edge-primary-active-light: #262626;
-  --ui-edge-primary-selected-light: #262626;
-  --ui-edge-primary-visited-light: #525252;
+  --ui-edge-primary-default-light: #495e4f;
+  --ui-edge-primary-hover-light: #3c5142;
+  --ui-edge-primary-active-light: #2e3c32;
+  --ui-edge-primary-selected-light: #2e3c32;
+  --ui-edge-primary-visited-light: #495e4f;
   --ui-edge-primary-disabled-light: #e5e5e5;
 
   /* --- 'secondary' edge --- */
-  --ui-edge-secondary-default-light: #525252;
-  --ui-edge-secondary-hover-light: #404040;
-  --ui-edge-secondary-active-light: #404040;
-  --ui-edge-secondary-selected-light: #404040;
-  --ui-edge-secondary-visited-light: #525252;
+  --ui-edge-secondary-default-light: #68546f;
+  --ui-edge-secondary-hover-light: #5c4862;
+  --ui-edge-secondary-active-light: #4d3952;
+  --ui-edge-secondary-selected-light: #4d3952;
+  --ui-edge-secondary-visited-light: #68546f;
   --ui-edge-secondary-disabled-light: #e5e5e5;
 
   /* --- 'tertiary'  edge --- */
-  --ui-edge-tertiary-default-light: #737373; /* Neutral 300 */
-  --ui-edge-tertiary-hover-light: #737373;
-  --ui-edge-tertiary-active-light: #404040;
-  --ui-edge-tertiary-selected-light: #404040;
-  --ui-edge-tertiary-visited-light: #737373;
+  --ui-edge-tertiary-default-light: #7d7d7d; /* Neutral 300 */
+  --ui-edge-tertiary-hover-light: #727272;
+  --ui-edge-tertiary-active-light: #4f4f4f;
+  --ui-edge-tertiary-selected-light: #4f4f4f;
+  --ui-edge-tertiary-visited-light: #7d7d7d;
   --ui-edge-tertiary-disabled-light: #e5e5e5;
 
   /* --- 'accent' edge --- */
-  --ui-edge-accent-default-light: #525252;
-  --ui-edge-accent-hover-light: #525252;
-  --ui-edge-accent-active-light: #404040;
-  --ui-edge-accent-selected-light: #404040;
-  --ui-edge-accent-visited-light: #525252;
+  --ui-edge-accent-default-light: #536858;
+  --ui-edge-accent-hover-light: #495e4f;
+  --ui-edge-accent-active-light: #3c5142;
+  --ui-edge-accent-selected-light: #3c5142;
+  --ui-edge-accent-visited-light: #536858;
   --ui-edge-accent-disabled-light: #e5e5e5;
 
   /* --- 'muted' edge --- */
-  --ui-edge-muted-default-light: #737373;
-  --ui-edge-muted-hover-light: #737373;
-  --ui-edge-muted-active-light: #404040;
-  --ui-edge-muted-selected-light: #404040;
-  --ui-edge-muted-visited-light: #737373;
+  --ui-edge-muted-default-light: #7d7d7d;
+  --ui-edge-muted-hover-light: #727272;
+  --ui-edge-muted-active-light: #4f4f4f;
+  --ui-edge-muted-selected-light: #4f4f4f;
+  --ui-edge-muted-visited-light: #7d7d7d;
   --ui-edge-muted-disabled-light: #e5e5e5;
 
   /* --- 'floor' edge --- */
-  --ui-edge-floor-default-light: #737373; /* Neutral 200 */
-  --ui-edge-floor-hover-light: #737373;
-  --ui-edge-floor-active-light: #737373;
-  --ui-edge-floor-selected-light: #737373;
-  --ui-edge-floor-visited-light: #737373;
+  --ui-edge-floor-default-light: #898989; /* Neutral 200 */
+  --ui-edge-floor-hover-light: #888888;
+  --ui-edge-floor-active-light: #898989;
+  --ui-edge-floor-selected-light: #898989;
+  --ui-edge-floor-visited-light: #898989;
   --ui-edge-floor-disabled-light: #f5f5f5;
 
   /* --- 'input' edge --- */
-  --ui-edge-input-default-light: #737373; /* Neutral 300 */
-  --ui-edge-input-hover-light: #737373; /* Primary Green */
+  --ui-edge-input-default-light: #8c8c8c; /* Neutral 300 */
+  --ui-edge-input-hover-light: #78967f; /* Primary Green */
   --ui-edge-input-active-light: #6b9075; /* Dark Green */
   --ui-edge-input-selected-light: #6b9075; /* Dark Green */
-  --ui-edge-input-visited-light: #737373;
+  --ui-edge-input-visited-light: #8c8c8c;
   --ui-edge-input-disabled-light: #e5e5e5;
 
   /* --- 'link' edge --- */
-  --ui-edge-link-default-light: #525252;
-  --ui-edge-link-hover-light: #404040;
-  --ui-edge-link-active-light: #262626;
-  --ui-edge-link-selected-light: #262626;
-  --ui-edge-link-visited-light: #525252;
+  --ui-edge-link-default-light: #495e4f;
+  --ui-edge-link-hover-light: #3c5142;
+  --ui-edge-link-active-light: #2e3c32;
+  --ui-edge-link-selected-light: #2e3c32;
+  --ui-edge-link-visited-light: #495e4f;
   --ui-edge-link-disabled-light: #e5e5e5;
 
   /* --- Status for Edges (Mid-tone, vibrant) --- */
-  --ui-edge-success-default-light: #737373; /* Green 300 */
-  --ui-edge-success-hover-light: #737373;
-  --ui-edge-success-active-light: #737373;
-  --ui-edge-success-selected-light: #737373;
-  --ui-edge-success-visited-light: #737373;
+  --ui-edge-success-default-light: #53946b; /* Green 300 */
+  --ui-edge-success-hover-light: #309053;
+  --ui-edge-success-active-light: #178841;
+  --ui-edge-success-selected-light: #178841;
+  --ui-edge-success-visited-light: #53946b;
   --ui-edge-success-disabled-light: #e5e5e5;
 
-  --ui-edge-info-default-light: #737373; /* Blue 300 */
-  --ui-edge-info-hover-light: #737373;
-  --ui-edge-info-active-light: #525252;
-  --ui-edge-info-selected-light: #525252;
-  --ui-edge-info-visited-light: #737373;
+  --ui-edge-info-default-light: #6182a7; /* Blue 300 */
+  --ui-edge-info-hover-light: #4577b4;
+  --ui-edge-info-active-light: #2d63bb;
+  --ui-edge-info-selected-light: #2d63bb;
+  --ui-edge-info-visited-light: #6182a7;
   --ui-edge-info-disabled-light: #e5e5e5;
 
-  --ui-edge-warning-default-light: #737373; /* Yellow 300 */
-  --ui-edge-warning-hover-light: #737373;
-  --ui-edge-warning-active-light: #737373;
-  --ui-edge-warning-selected-light: #737373;
-  --ui-edge-warning-visited-light: #737373;
+  --ui-edge-warning-default-light: #9a892b; /* Yellow 300 */
+  --ui-edge-warning-hover-light: #9e810d;
+  --ui-edge-warning-active-light: #9a7605;
+  --ui-edge-warning-selected-light: #9a7605;
+  --ui-edge-warning-visited-light: #9a892b;
   --ui-edge-warning-disabled-light: #e5e5e5;
 
-  --ui-edge-error-default-light: #737373; /* Red 300 */
-  --ui-edge-error-hover-light: #737373;
-  --ui-edge-error-active-light: #525252;
-  --ui-edge-error-selected-light: #525252;
-  --ui-edge-error-visited-light: #737373;
+  --ui-edge-error-default-light: #ab7070; /* Red 300 */
+  --ui-edge-error-hover-light: #ba5555;
+  --ui-edge-error-active-light: #b33333;
+  --ui-edge-error-selected-light: #b33333;
+  --ui-edge-error-visited-light: #ab7070;
   --ui-edge-error-disabled-light: #e5e5e5;
 
-  --ui-edge-notification-default-light: #737373; /* Violet 300 */
-  --ui-edge-notification-hover-light: #737373;
-  --ui-edge-notification-active-light: #525252;
-  --ui-edge-notification-selected-light: #525252;
-  --ui-edge-notification-visited-light: #737373;
+  --ui-edge-notification-default-light: #857bac; /* Violet 300 */
+  --ui-edge-notification-hover-light: #7f6abe;
+  --ui-edge-notification-active-light: #714bc7;
+  --ui-edge-notification-selected-light: #714bc7;
+  --ui-edge-notification-visited-light: #857bac;
   --ui-edge-notification-disabled-light: #e5e5e5;
 
   /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -701,75 +701,75 @@
   /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
   /* --- 'base' edge --- */
-  --ui-edge-base-default-dark: #737373; /* Neutral 600 */
+  --ui-edge-base-default-dark: #686868; /* Neutral 600 */
   --ui-edge-base-hover-dark: #94b99d; /* Primary Green */
   --ui-edge-base-active-dark: #a5c6ad; /* Light Green */
   --ui-edge-base-selected-dark: #a5c6ad; /* Light Green */
-  --ui-edge-base-visited-dark: #737373;
+  --ui-edge-base-visited-dark: #686868;
   --ui-edge-base-disabled-dark: #404040;
 
   /* --- 'primary' edge --- */
-  --ui-edge-primary-default-dark: #525252;
-  --ui-edge-primary-hover-dark: #525252;
-  --ui-edge-primary-active-dark: #525252;
-  --ui-edge-primary-selected-dark: #525252;
-  --ui-edge-primary-visited-dark: #525252;
+  --ui-edge-primary-default-dark: #495e4f;
+  --ui-edge-primary-hover-dark: #536858;
+  --ui-edge-primary-active-dark: #5e7163;
+  --ui-edge-primary-selected-dark: #5e7163;
+  --ui-edge-primary-visited-dark: #495e4f;
   --ui-edge-primary-disabled-dark: #525252;
 
   /* --- 'secondary' edge --- */
-  --ui-edge-secondary-default-dark: #525252;
-  --ui-edge-secondary-hover-dark: #525252;
-  --ui-edge-secondary-active-dark: #525252;
-  --ui-edge-secondary-selected-dark: #525252;
-  --ui-edge-secondary-visited-dark: #525252;
+  --ui-edge-secondary-default-dark: #68546f;
+  --ui-edge-secondary-hover-dark: #715e7a;
+  --ui-edge-secondary-active-dark: #786980;
+  --ui-edge-secondary-selected-dark: #786980;
+  --ui-edge-secondary-visited-dark: #68546f;
   --ui-edge-secondary-disabled-dark: #525252;
 
   /* --- 'tertiary'  edge --- */
-  --ui-edge-tertiary-default-dark: #a3a3a3; /* Neutral 600 */
-  --ui-edge-tertiary-hover-dark: #d4d4d4;
-  --ui-edge-tertiary-active-dark: #d4d4d4;
-  --ui-edge-tertiary-selected-dark: #d4d4d4;
-  --ui-edge-tertiary-visited-dark: #a3a3a3;
+  --ui-edge-tertiary-default-dark: #8f8f8f; /* Neutral 600 */
+  --ui-edge-tertiary-hover-dark: #a7a7a7;
+  --ui-edge-tertiary-active-dark: #d5d5d5;
+  --ui-edge-tertiary-selected-dark: #d5d5d5;
+  --ui-edge-tertiary-visited-dark: #8f8f8f;
   --ui-edge-tertiary-disabled-dark: #404040;
 
   /* --- 'accent' edge --- */
-  --ui-edge-accent-default-dark: #525252;
-  --ui-edge-accent-hover-dark: #525252;
-  --ui-edge-accent-active-dark: #737373;
-  --ui-edge-accent-selected-dark: #737373;
-  --ui-edge-accent-visited-dark: #525252;
+  --ui-edge-accent-default-dark: #536858;
+  --ui-edge-accent-hover-dark: #5e7163;
+  --ui-edge-accent-active-dark: #6a7a6e;
+  --ui-edge-accent-selected-dark: #6a7a6e;
+  --ui-edge-accent-visited-dark: #536858;
   --ui-edge-accent-disabled-dark: #525252;
 
   /* --- 'muted' edge --- */
-  --ui-edge-muted-default-dark: #a3a3a3;
-  --ui-edge-muted-hover-dark: #d4d4d4;
-  --ui-edge-muted-active-dark: #d4d4d4;
-  --ui-edge-muted-selected-dark: #d4d4d4;
-  --ui-edge-muted-visited-dark: #a3a3a3;
+  --ui-edge-muted-default-dark: #8f8f8f;
+  --ui-edge-muted-hover-dark: #a7a7a7;
+  --ui-edge-muted-active-dark: #d5d5d5;
+  --ui-edge-muted-selected-dark: #d5d5d5;
+  --ui-edge-muted-visited-dark: #8f8f8f;
   --ui-edge-muted-disabled-dark: #404040;
 
   /* --- 'floor' edge --- */
-  --ui-edge-floor-default-dark: #737373; /* Neutral 700 */
-  --ui-edge-floor-hover-dark: #737373;
+  --ui-edge-floor-default-dark: #626262; /* Neutral 700 */
+  --ui-edge-floor-hover-dark: #626262;
   --ui-edge-floor-active-dark: #737373;
   --ui-edge-floor-selected-dark: #737373;
-  --ui-edge-floor-visited-dark: #737373;
+  --ui-edge-floor-visited-dark: #626262;
   --ui-edge-floor-disabled-dark: #262626;
 
   /* --- 'input' edge --- */
-  --ui-edge-input-default-dark: #737373; /* Neutral 600 */
+  --ui-edge-input-default-dark: #757575; /* Neutral 600 */
   --ui-edge-input-hover-dark: #94b99d; /* Primary Green */
   --ui-edge-input-active-dark: #a5c6ad; /* Light Green */
   --ui-edge-input-selected-dark: #a5c6ad; /* Light Green */
-  --ui-edge-input-visited-dark: #737373;
+  --ui-edge-input-visited-dark: #757575;
   --ui-edge-input-disabled-dark: #404040;
 
   /* --- 'link' edge --- */
-  --ui-edge-link-default-dark: #525252;
-  --ui-edge-link-hover-dark: #525252;
-  --ui-edge-link-active-dark: #525252;
-  --ui-edge-link-selected-dark: #525252;
-  --ui-edge-link-visited-dark: #525252;
+  --ui-edge-link-default-dark: #4b5e50;
+  --ui-edge-link-hover-dark: #56675a;
+  --ui-edge-link-active-dark: #607064;
+  --ui-edge-link-selected-dark: #607064;
+  --ui-edge-link-visited-dark: #4b5e50;
   --ui-edge-link-disabled-dark: #525252;
 
   /* --- Status for Edges (Mid-tone, vibrant) --- */
@@ -780,11 +780,11 @@
   --ui-edge-success-visited-dark: #22c55e;
   --ui-edge-success-disabled-dark: #525252;
 
-  --ui-edge-info-default-dark: #a3a3a3; /* Blue 500 */
+  --ui-edge-info-default-dark: #4f8ff7; /* Blue 500 */
   --ui-edge-info-hover-dark: #60a5fa;
   --ui-edge-info-active-dark: #93c5fd;
   --ui-edge-info-selected-dark: #93c5fd;
-  --ui-edge-info-visited-dark: #a3a3a3;
+  --ui-edge-info-visited-dark: #4f8ff7;
   --ui-edge-info-disabled-dark: #525252;
 
   --ui-edge-warning-default-dark: #eab308; /* Yellow 500 */
@@ -794,11 +794,11 @@
   --ui-edge-warning-visited-dark: #eab308;
   --ui-edge-warning-disabled-dark: #525252;
 
-  --ui-edge-error-default-dark: #a3a3a3; /* Red 500 */
-  --ui-edge-error-hover-dark: #f87171;
+  --ui-edge-error-default-dark: #f26464; /* Red 500 */
+  --ui-edge-error-hover-dark: #f87b7b;
   --ui-edge-error-active-dark: #fca5a5;
   --ui-edge-error-selected-dark: #fca5a5;
-  --ui-edge-error-visited-dark: #a3a3a3;
+  --ui-edge-error-visited-dark: #f26464;
   --ui-edge-error-disabled-dark: #525252;
 
   --ui-edge-notification-default-dark: #8b5cf6; /* Violet 500 */
