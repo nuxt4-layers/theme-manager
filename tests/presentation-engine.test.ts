@@ -186,6 +186,114 @@ describe('TM-4 presentation engine', () => {
     expect(failures).toEqual([])
   })
 
+  it('closes the complete Default → API → Tailwind presentation grammar bidirectionally', () => {
+    const defaultUi = new Set(declarations(defaultCss, '--ui-'))
+    const api = new Set(declarations(apiCss, '--api-'))
+    const tailwind = new Set(
+      declarations(tailwindCss, '--').filter(name =>
+        /^--(?:color|font|text|breakpoint|container|spacing|radius|shadow|inset-shadow|drop-shadow)-/.test(name ?? ''),
+      ),
+    )
+
+    const apiUiReferences = new Set(
+      [...apiCss.matchAll(/var\((--ui-[\w-]+)\)/g)].map(([, name]) => name!),
+    )
+    const tailwindApiReferences = new Set(
+      [...tailwindCss.matchAll(/var\((--api-[\w-]+)\)/g)].map(([, name]) => name!),
+    )
+    const breakpoints = new Set([...tailwind].filter(name => name.startsWith('--breakpoint-')))
+    const breakpointApi = new Set([...breakpoints].map(name => `--api-${name.slice(2)}`))
+
+    expect(defaultUi.size).toBe(852)
+    expect(api.size).toBe(572)
+    expect(tailwind.size).toBe(572)
+
+    // Every Default declaration is consumed by the API, and the API invents no raw dependency.
+    expect([...defaultUi].filter(name => !apiUiReferences.has(name))).toEqual([])
+    expect([...apiUiReferences].filter(name => !defaultUi.has(name))).toEqual([])
+
+    // Every API declaration is projected to Tailwind except breakpoints, which Tailwind v4
+    // must receive as static theme values. Their API/default forms remain runtime metadata.
+    expect([...api].filter(name => !tailwindApiReferences.has(name) && !breakpointApi.has(name))).toEqual([])
+    expect([...tailwindApiReferences].filter(name => !api.has(name))).toEqual([])
+
+    // Every Tailwind token has the exact corresponding API and Default grammar names.
+    expect([...tailwind].filter(name => !api.has(`--api-${name.slice(2)}`))).toEqual([])
+    expect([...tailwind].filter(name => !defaultUi.has(`--ui-${name.slice(2)}`))).toEqual([])
+  })
+
+  it('permits only the intentional mode-dependent duplicate declarations', () => {
+    const duplicates = (css: string, prefix: string) => {
+      const names = declarations(css, prefix)
+      return [...new Set(names.filter((name, index) => names.indexOf(name) !== index))]
+    }
+
+    const defaultDuplicates = duplicates(defaultCss, '--')
+    const apiDuplicates = duplicates(apiCss, '--')
+    const tailwindDuplicates = duplicates(tailwindCss, '--')
+
+    expect(defaultDuplicates).toHaveLength(28)
+    expect(defaultDuplicates.every(name => /^--tm-shadow-color-(?:fill|pen)-/.test(name))).toBe(true)
+
+    expect(apiDuplicates).toHaveLength(280)
+    expect(apiDuplicates.every(name => /^--api-(?:fill|pen|edge)-/.test(name))).toBe(true)
+
+    expect(tailwindDuplicates).toEqual([])
+  })
+
+  it('keeps light and dark colour grammar exactly symmetric', () => {
+    const rawColour = new Set(
+      declarations(defaultCss, '--ui-').filter(name => /^--ui-(?:fill|pen|edge)-/.test(name)),
+    )
+    const light = [...rawColour].filter(name => name.endsWith('-light'))
+    const dark = [...rawColour].filter(name => name.endsWith('-dark'))
+
+    expect(light).toHaveLength(280)
+    expect(dark).toHaveLength(280)
+    expect(light.map(name => name.replace(/-light$/, '')).sort())
+      .toEqual(dark.map(name => name.replace(/-dark$/, '')).sort())
+
+    const semanticColour = new Set(
+      declarations(apiCss, '--api-').filter(name => /^--api-(?:fill|pen|edge)-/.test(name)),
+    )
+    expect(semanticColour.size).toBe(280)
+
+    for (const semantic of semanticColour) {
+      const rawBase = semantic.replace(/^--api-/, '--ui-')
+      expect(rawColour.has(`${rawBase}-light`)).toBe(true)
+      expect(rawColour.has(`${rawBase}-dark`)).toBe(true)
+    }
+  })
+
+  it('has no dangling CSS custom-property references across the three-stage pipeline', () => {
+    const declared = new Set([
+      ...declarations(defaultCss, '--'),
+      ...declarations(apiCss, '--'),
+      ...declarations(tailwindCss, '--'),
+    ])
+    const references = [defaultCss, apiCss, tailwindCss]
+      .flatMap(css => [...css.matchAll(/var\((--[\w-]+)/g)].map(([, name]) => name!))
+
+    expect([...new Set(references.filter(name => !declared.has(name)))]).toEqual([])
+  })
+
+  it('keeps static Tailwind breakpoints equal to their Default and API values', () => {
+    const value = (css: string, name: string) =>
+      css.match(new RegExp(`${name.replace(/[.*+?^\${}()|[\\]\\]/g, '\\\\$&')}\\\\s*:\\\\s*([^;]+);`))?.[1]?.trim()
+
+    for (const name of declarations(tailwindCss, '--breakpoint-')) {
+      const suffix = name.slice(2)
+      const tailwindValue = value(tailwindCss, name)
+      const apiName = `--api-${suffix}`
+      const uiName = `--ui-${suffix}`
+      const apiValue = value(apiCss, apiName)
+      const uiValue = value(defaultCss, uiName)
+
+      expect(tailwindValue).toBe(uiValue)
+      expect(apiValue).toBe(`var(${uiName})`)
+    }
+  })
+
   it('does not couple Theme Manager to consumer source topology or UI component CSS', () => {
     expect(mainCss).not.toContain('@source')
     expect(mainCss).not.toContain('components/')
