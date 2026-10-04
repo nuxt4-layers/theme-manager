@@ -216,47 +216,47 @@
   --ui-pen-base-shadow-light: #a3a3a3;
 
   /* --- 'primary' pen (Dark green for text) --- */
-  --ui-pen-primary-default-light: #36483c;
-  --ui-pen-primary-hover-light: #2c3930;
+  --ui-pen-primary-default-light: #35463a;
+  --ui-pen-primary-hover-light: #2b382f;
   --ui-pen-primary-active-light: #1a201c;
   --ui-pen-primary-selected-light: #1a201c;
-  --ui-pen-primary-visited-light: #36483c;
+  --ui-pen-primary-visited-light: #35463a;
   --ui-pen-primary-disabled-light: #a3a3a3;
   --ui-pen-primary-shadow-light: #a3a3a3;
 
   /* --- 'secondary' pen (Dark lavender for text) --- */
-  --ui-pen-secondary-default-light: #5a3b60;
-  --ui-pen-secondary-hover-light: #4a304f;
-  --ui-pen-secondary-active-light: #37223b;
-  --ui-pen-secondary-selected-light: #37223b;
-  --ui-pen-secondary-visited-light: #5a3b60;
+  --ui-pen-secondary-default-light: #583a5e;
+  --ui-pen-secondary-hover-light: #492e4d;
+  --ui-pen-secondary-active-light: #352138;
+  --ui-pen-secondary-selected-light: #352138;
+  --ui-pen-secondary-visited-light: #583a5e;
   --ui-pen-secondary-disabled-light: #a3a3a3;
   --ui-pen-secondary-shadow-light: #a3a3a3;
 
   /* --- 'tertiary'  pen (Grey text) --- */
-  --ui-pen-tertiary-default-light: #666666; /* Neutral 500 */
+  --ui-pen-tertiary-default-light: #656565; /* Neutral 500 */
   --ui-pen-tertiary-hover-light: #525252; /* Neutral 600 */
   --ui-pen-tertiary-active-light: #262626; /* Neutral 800 */
   --ui-pen-tertiary-selected-light: #262626; /* Neutral 800 */
-  --ui-pen-tertiary-visited-light: #666666;
+  --ui-pen-tertiary-visited-light: #656565;
   --ui-pen-tertiary-disabled-light: #a3a3a3;
   --ui-pen-tertiary-shadow-light: #a3a3a3;
 
   /* --- 'accent' pen --- */
-  --ui-pen-accent-default-light: #3f5244;
-  --ui-pen-accent-hover-light: #36483c;
-  --ui-pen-accent-active-light: #2c3930;
-  --ui-pen-accent-selected-light: #2c3930;
-  --ui-pen-accent-visited-light: #3f5244;
+  --ui-pen-accent-default-light: #3d5043;
+  --ui-pen-accent-hover-light: #35463a;
+  --ui-pen-accent-active-light: #2b382f;
+  --ui-pen-accent-selected-light: #2b382f;
+  --ui-pen-accent-visited-light: #3d5043;
   --ui-pen-accent-disabled-light: #a3a3a3;
   --ui-pen-accent-shadow-light: #a3a3a3;
 
   /* --- 'muted' (For placeholders text/icons) --- */
-  --ui-pen-muted-default-light: #666666; /* Neutral 500 */
+  --ui-pen-muted-default-light: #656565; /* Neutral 500 */
   --ui-pen-muted-hover-light: #525252;
   --ui-pen-muted-active-light: #262626;
   --ui-pen-muted-selected-light: #262626;
-  --ui-pen-muted-visited-light: #666666;
+  --ui-pen-muted-visited-light: #656565;
   --ui-pen-muted-disabled-light: #a3a3a3;
   --ui-pen-muted-shadow-light: #a3a3a3;
 
@@ -279,11 +279,11 @@
   --ui-pen-input-shadow-light: #a3a3a3;
 
   /* --- 'link' text/icons --- */
-  --ui-pen-link-default-light: #36483c; /* Dark Green */
-  --ui-pen-link-hover-light: #2c3930;
-  --ui-pen-link-active-light: #212121; /* Dark Grey */
-  --ui-pen-link-selected-light: #212121; /* Dark Grey */
-  --ui-pen-link-visited-light: #36483c;
+  --ui-pen-link-default-light: #35463a; /* Dark Green */
+  --ui-pen-link-hover-light: #2b382f;
+  --ui-pen-link-active-light: #1f1f1f; /* Dark Grey */
+  --ui-pen-link-selected-light: #1f1f1f; /* Dark Grey */
+  --ui-pen-link-visited-light: #35463a;
   --ui-pen-link-disabled-light: #a3a3a3;
   --ui-pen-link-shadow-light: #a3a3a3;
 
@@ -584,47 +584,47 @@
   --ui-pen-base-shadow-dark: #000000;
 
   /* --- 'primary' pen (Bright green text) --- */
-  --ui-pen-primary-default-dark: #2f4a35;
-  --ui-pen-primary-hover-dark: #33553c;
-  --ui-pen-primary-active-dark: #375f42;
-  --ui-pen-primary-selected-dark: #375f42;
-  --ui-pen-primary-visited-dark: #2f4a35;
+  --ui-pen-primary-default-dark: #2e4834;
+  --ui-pen-primary-hover-dark: #32533a;
+  --ui-pen-primary-active-dark: #365e41;
+  --ui-pen-primary-selected-dark: #365e41;
+  --ui-pen-primary-visited-dark: #2e4834;
   --ui-pen-primary-disabled-dark: #737373;
   --ui-pen-primary-shadow-dark: #000000;
 
   /* --- 'secondary' pen (Bright lavender text) --- */
-  --ui-pen-secondary-default-dark: #5f3376;
-  --ui-pen-secondary-hover-dark: #693c86;
-  --ui-pen-secondary-active-dark: #783ea1;
-  --ui-pen-secondary-selected-dark: #783ea1;
-  --ui-pen-secondary-visited-dark: #5f3376;
+  --ui-pen-secondary-default-dark: #5d3274;
+  --ui-pen-secondary-hover-dark: #673b84;
+  --ui-pen-secondary-active-dark: #763d9e;
+  --ui-pen-secondary-selected-dark: #763d9e;
+  --ui-pen-secondary-visited-dark: #5d3274;
   --ui-pen-secondary-disabled-dark: #737373;
   --ui-pen-secondary-shadow-dark: #000000;
 
   /* --- 'tertiary'  pen (Light grey text) --- */
-  --ui-pen-tertiary-default-dark: #ababab; /* Neutral 400 */
+  --ui-pen-tertiary-default-dark: #adadad; /* Neutral 400 */
   --ui-pen-tertiary-hover-dark: #d4d4d4; /* Neutral 300 */
-  --ui-pen-tertiary-active-dark: #f9f9f9; /* Neutral 100 */
-  --ui-pen-tertiary-selected-dark: #f9f9f9; /* Neutral 100 */
-  --ui-pen-tertiary-visited-dark: #ababab;
+  --ui-pen-tertiary-active-dark: #fcfcfc; /* Neutral 100 */
+  --ui-pen-tertiary-selected-dark: #fcfcfc; /* Neutral 100 */
+  --ui-pen-tertiary-visited-dark: #adadad;
   --ui-pen-tertiary-disabled-dark: #737373;
   --ui-pen-tertiary-shadow-dark: #000000;
 
   /* --- 'accent' pen --- */
-  --ui-pen-accent-default-dark: #33553c;
-  --ui-pen-accent-hover-dark: #375f42;
-  --ui-pen-accent-active-dark: #396944;
-  --ui-pen-accent-selected-dark: #396944;
-  --ui-pen-accent-visited-dark: #33553c;
+  --ui-pen-accent-default-dark: #32533a;
+  --ui-pen-accent-hover-dark: #365e41;
+  --ui-pen-accent-active-dark: #386844;
+  --ui-pen-accent-selected-dark: #386844;
+  --ui-pen-accent-visited-dark: #32533a;
   --ui-pen-accent-disabled-dark: #737373;
   --ui-pen-accent-shadow-dark: #000000;
 
   /* --- 'muted' (For placeholders text/icons) --- */
-  --ui-pen-muted-default-dark: #ababab; /* Neutral 500 */
-  --ui-pen-muted-hover-dark: #c5c5c5;
-  --ui-pen-muted-active-dark: #f9f9f9;
-  --ui-pen-muted-selected-dark: #f9f9f9;
-  --ui-pen-muted-visited-dark: #ababab;
+  --ui-pen-muted-default-dark: #adadad; /* Neutral 500 */
+  --ui-pen-muted-hover-dark: #c7c7c7;
+  --ui-pen-muted-active-dark: #fcfcfc;
+  --ui-pen-muted-selected-dark: #fcfcfc;
+  --ui-pen-muted-visited-dark: #adadad;
   --ui-pen-muted-disabled-dark: #525252;
   --ui-pen-muted-shadow-dark: #000000;
 
@@ -647,11 +647,11 @@
   --ui-pen-input-shadow-dark: #000000;
 
   /* --- 'link' text/icons --- */
-  --ui-pen-link-default-dark: #2f4a35; /* Light Green */
-  --ui-pen-link-hover-dark: #33553c;
-  --ui-pen-link-active-dark: #565656; /* White */
-  --ui-pen-link-selected-dark: #565656; /* White */
-  --ui-pen-link-visited-dark: #2f4a35;
+  --ui-pen-link-default-dark: #2e4834; /* Light Green */
+  --ui-pen-link-hover-dark: #32533a;
+  --ui-pen-link-active-dark: #555555; /* White */
+  --ui-pen-link-selected-dark: #555555; /* White */
+  --ui-pen-link-visited-dark: #2e4834;
   --ui-pen-link-disabled-dark: #737373;
   --ui-pen-link-shadow-dark: #000000;
 
