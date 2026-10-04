@@ -1,0 +1,8 @@
+# Default ownership for all repository changes.
+* @steve-r-lewis
+
+# Security- and supply-chain-sensitive configuration.
+.github/ @steve-r-lewis
+package.json @steve-r-lewis
+pnpm-lock.yaml @steve-r-lewis
+SECURITY.md @steve-r-lewis
