@@ -65,7 +65,7 @@ Theme Manager owns the effective Theme. Runtime Theme values are validated and a
 
 A canonical protected default Theme is always available. If a selected Theme cannot be safely resolved or applied, Theme Manager falls back deterministically to that bundled presentation.
 
-Persisted Themes cross a provider-agnostic `ThemeRepository` boundary. Persisted and imported JSON is untrusted until parsed, schema-validated and semantically validated.
+Persisted Themes cross a provider-agnostic `ThemeRepository` boundary. Persisted and imported JSON is untrusted until parsed, schema-validated and semantically validated. See the [Theme Persistence Integration Guide](docs/persistence-integration-guide.md) for implementing and registering a host repository adapter, database-provider boundaries, fallback behaviour and integration verification.
 
 Theme Definitions may contain semantic asset references. Physical upload, storage, processing and binary lifecycle remain external responsibilities.
 
@@ -93,7 +93,7 @@ Undocumented internal paths are private implementation details.
 Reference documentation:
 
 - [Public Contract](docs/contracts.md) — supported capability and TypeScript boundaries.
-- [Composition Contract](docs/composition-contract.md) — host responsibilities, adapters and failure boundaries.
+- [Composition Contract](docs/composition-contract.md) — host responsibilities, adapters and failure boundaries.\n- [Theme Persistence Integration Guide](docs/persistence-integration-guide.md) — implementing provider-neutral persistence and composing a repository adapter.
 - [Semantic Presentation Consumer Contract](docs/semantic-presentation-consumer-contract.md) — presentation dependency direction and consumer obligations.
 - [Semantic Presentation Guide](docs/semantic-presentation-guide.md) — practical vocabulary, pairing, palette and accessibility guidance.
 
@@ -118,7 +118,7 @@ Platform-wide architecture is maintained separately in the `nuxt4-layers/platfor
 
 The completed TM-0 through TM-10 migration records are retained under [`docs/archive/migration/`](docs/archive/migration/) as engineering provenance. They are historical records, **not current usage documentation or public API authority**.
 
-Current users and contributors should start with this README and the four reference documents above.
+Current users and contributors should start with this README and the reference documents above.
 
 ## Contributing, security and licence
 
