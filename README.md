@@ -1,178 +1,25 @@
 # Theme Manager
 
-Theme Manager is the Nuxt 4 platform capability responsible for defining, validating, resolving, applying and managing semantic presentation themes.
+Theme Manager is a Nuxt 4 Layer for defining, validating, applying and managing runtime-configurable semantic presentation themes.
 
-It provides a stable presentation contract between theme definitions and consuming UI while keeping application components independent of concrete theme values. Tailwind CSS is the presentation mechanism through which the semantic theme vocabulary is exposed.
+It provides one Theme authority between Theme Definitions and consuming UI. Applications consume semantic presentation meaning through Tailwind CSS rather than hard-coded colour, typography, spacing, radius or effect values.
 
-> **Status:** The Theme Manager re-baselining programme **TM-0 through TM-10 is complete**. This repository is the implementation baseline for future composition. The legacy Theme Manager remains unchanged as immutable migration evidence.
+> **Project status:** active pre-release development. The implementation is integration-tested, but no stable public release is currently declared.
 
-## Architecture
+## What it provides
 
-The core presentation pipeline is:
+Theme Manager owns:
 
-```text
-Theme Definition
-      ↓
-Raw runtime representation
-      ↓
-Semantic Theme API
-      ↓
-Tailwind CSS presentation vocabulary
-      ↓
-UI-owned component composition
-```
+- versioned Theme Definitions, runtime validation and deterministic fallback;
+- semantic colour, typography, spacing, radius, effects/shadows, responsive and asset-reference values;
+- effective Theme resolution, runtime application, selection and switching;
+- provider-agnostic Theme persistence contracts and canonical JSON import/export;
+- Theme ownership, visibility, sharing and lifecycle semantics;
+- Theme management workflows and an optional self-contained administration projection.
 
-A consuming UI works with semantic presentation meaning rather than hard-coded theme values. Runtime theme changes therefore do not require UI components to understand how a theme is stored, selected or constructed.
+It deliberately does **not** own reusable application components, authentication, authorization policy, application routing, database technology or physical asset storage.
 
-The resolved **Effective Theme** is the canonical runtime result. It may originate from the bundled default, an accessible selected theme, preference resolution or deterministic fallback.
-
-## What Theme Manager Owns
-
-Theme Manager owns the Theme domain and presentation contract, including:
-
-- versioned Theme Definitions and runtime validation;
-- semantic colour, typography, spacing, radius and effects/shadow values;
-- responsive breakpoint and container values;
-- presentation modes;
-- semantic theme-asset references and bindings;
-- theme resolution, fallback, runtime application and switching;
-- theme preference semantics;
-- Theme resource ownership, visibility, sharing and lifecycle semantics;
-- the Theme Manager action/resource vocabulary used by external Authorization;
-- provider-agnostic persistence contracts and canonical Theme Definition JSON;
-- Theme Definition import and export;
-- Theme Library, Theme Editor, live preview and other Theme administration workflows.
-
-The Theme Manager remains one bounded Nuxt 4 Layer. Internal separation between its kernel, contracts, server integration and optional management projection does not create separate capabilities.
-
-## Capability Boundaries
-
-Theme Manager deliberately does **not** own:
-
-- reusable application UI components or component-specific styling;
-- authentication;
-- identity implementation or membership semantics;
-- authorization policy, role assignment or permission assignment;
-- application-specific route/layout policy;
-- database or storage-provider technology;
-- physical image/asset storage, upload or binary processing;
-- consuming application or UI repository topology.
-
-Identity supplies opaque actor, user, group or organisation references where required. Theme Manager records Theme-domain ownership and sharing semantics against those references without owning the external identity model.
-
-Theme Manager defines operations such as `theme.read`, `theme.create`, `theme.edit`, `theme.delete`, `theme.use`, `theme.publish`, `theme.share`, `theme.import`, `theme.export` and `theme.assign`. An external Authorization capability determines whether an actor may perform those actions.
-
-## Theme Administration
-
-Theme Manager includes an **optional self-contained administration projection** for Theme-specific workflows.
-
-The management experience may provide:
-
-- Theme Library and discovery;
-- colour editing;
-- typography editing;
-- spacing, radius and effects editing;
-- responsive-value editing;
-- semantic asset management;
-- raw Theme Definition editing;
-- import/export;
-- live preview;
-- ownership, visibility and publishing operations.
-
-This projection may use Vue/Nuxt and Theme Manager's own semantic Tailwind presentation contract, but it does not depend on the platform UI capability.
-
-The consuming composition application decides where Theme administration views are routed and exposed. It is not required to reconstruct Theme Manager workflows from individual buttons or controls.
-
-## Ownership, Visibility and Theme Libraries
-
-Theme ownership, visibility, authorization and selection are distinct concepts:
-
-- **ownership** identifies who controls a Theme resource;
-- **visibility** identifies who may discover or access it;
-- **authorization** determines what an actor may do with it;
-- **selection** identifies which accessible theme an actor or context wants applied.
-
-Theme Manager supports private, group, organisation, explicitly shared, public and protected system visibility semantics.
-
-Theme libraries are projections over the same Theme resources rather than separate storage systems. Depending on actor context and authorization, projections can include **My Themes**, **Group Themes**, **Organisation Themes**, **Shared With Me**, **Public Themes** and **System Themes**.
-
-Public and system themes may be made available to anonymous consumers without transferring ownership.
-
-## Persistence
-
-Theme persistence is provider agnostic.
-
-Theme Manager defines the repository contract and owns the canonical, versioned JSON representation crossing that boundary. A composition application supplies the persistence adapter, which may use PostgreSQL, a filesystem, a remote service, in-memory storage or another compatible provider.
-
-Persisted data is validated in both directions:
-
-```text
-Theme Definition
-      ↓
-validate + normalise
-      ↓
-canonical JSON
-      ↓
-Theme Repository
-      ↓
-Storage Provider
-```
-
-Data read from storage is treated as untrusted persisted input and must be parsed, schema-validated and semantically validated before becoming a Theme domain object.
-
-Storage providers store and retrieve the representation; they do not define Theme semantics.
-
-## Theme Assets
-
-Theme Definitions contain **semantic asset references**, not embedded image binaries.
-
-Theme Manager owns the semantic role, association, validation, resolution and fallback of an asset reference. An external Asset/Resource provider may own physical upload, storage, MIME/type checks, size controls, processing, retrieval and binary lifecycle.
-
-Semantic roles describe presentation purpose rather than UI component names, for example:
-
-- `background-page`;
-- `background-surface`;
-- `background-feature`;
-- `background-prominent`.
-
-## Import and Export
-
-Theme import/export is a Theme Manager kernel capability.
-
-Imported JSON is untrusted input. Before persistence it is subject to safe parsing, schema/version validation, semantic validation, asset-reference validation, authorization and ownership checks, normalisation and identifier/collision handling.
-
-Ownership, visibility or privileged lifecycle metadata supplied by an imported file is not automatically trusted. Trusted Theme Manager operations assign or constrain security-sensitive resource metadata according to actor context and external authorization decisions.
-
-Export produces a valid versioned Theme Definition representation suitable for validation and later import.
-
-## Default and Fallback
-
-Theme Manager provides a canonical protected default theme that is always available, complete and schema-valid.
-
-The default cannot be modified through normal CRUD operations. If a selected theme cannot be resolved or safely applied, Theme Manager falls back deterministically to the bundled default presentation.
-
-## Documentation and Architecture Authority
-
-The platform-wide architectural authority is maintained in the `nuxt4-layers/platform-architecture` repository.
-
-Theme Manager migration and target-architecture records are maintained under:
-
-```text
-docs/migration_plan/
-├── tm-0-legacy-assets-architecture-audit.md
-├── ...
-└── tm-10-composition-legacy-retirement.md
-```
-
-TM-0 and TM-1 record the recovered presentation and functional surface. TM-2 defines the target architecture and explicit migration dispositions. TM-3 through TM-9 implement the staged capability. TM-10 records final composition and legacy-retirement reconciliation.
-
-## Semantic Presentation Guide
-
-Consumers and maintainers should read the [Semantic Presentation Guide](docs/semantic-presentation-guide.md) before composing Theme Manager presentation tokens.
-
-It defines the Fill/Pen/Edge/Effects grammar, semantic role and state pairing, palette responsibilities, WCAG/accessibility review order, shadow treatment, and the distinction between semantic-application and palette defects.
-
-## Installation and Composition
+## Installation
 
 The package identity is:
 
@@ -180,15 +27,59 @@ The package identity is:
 @nuxt4-layers/theme-manager
 ```
 
-During early independent development, a consuming application may install the repository as a pinned Git-backed package dependency. Stable releases are intended to be consumed as versioned packages.
+The project is currently pre-release. During development, consumers may install a pinned Git revision. Do not follow a mutable default branch in an integration or deployment baseline.
 
-The Nuxt Layer is the package root export and is composed using Nuxt `extends` after installation. Production applications must pin and integration-test the exact dependency revision rather than follow a changing default branch.
+Compose the installed package root using Nuxt `extends`. The host application remains the composition root and is responsible for selecting and integration-testing the complete dependency set.
 
-The host application is the composition root. It supplies persistence and external access-control adapters, chooses compatible peer capabilities and integration-tests the composed system. See `docs/composition-contract.md`.
+## Using the presentation vocabulary
 
-## Public Exports
+The public presentation pipeline is:
 
-The capability exposes four deliberate package entry points:
+```text
+Theme Definition
+      ↓
+runtime --ui-* values
+      ↓
+Semantic Theme API
+      ↓
+Tailwind semantic vocabulary
+      ↓
+consuming UI
+```
+
+Consumers style by semantic meaning rather than by selecting concrete colours. For example:
+
+```html
+<button class="border border-edge-primary-default bg-fill-primary-default text-pen-primary-default">
+  Save
+</button>
+```
+
+Read the [Semantic Presentation Guide](docs/semantic-presentation-guide.md) before composing presentation tokens. It defines Fill/Pen/Edge/Effects grammar, semantic roles and states, palette responsibilities, accessibility review order and correct treatment of shadows.
+
+For the strict consumer boundary, see the [Semantic Presentation Consumer Contract](docs/semantic-presentation-consumer-contract.md).
+
+## Runtime Themes
+
+Theme Manager owns the effective Theme. Runtime Theme values are validated and applied through Theme Manager rather than independently by consuming components.
+
+A canonical protected default Theme is always available. If a selected Theme cannot be safely resolved or applied, Theme Manager falls back deterministically to that bundled presentation.
+
+Persisted Themes cross a provider-agnostic `ThemeRepository` boundary. Persisted and imported JSON is untrusted until parsed, schema-validated and semantically validated.
+
+Theme Definitions may contain semantic asset references. Physical upload, storage, processing and binary lifecycle remain external responsibilities.
+
+## Theme management
+
+The optional management projection provides Theme-specific workflows such as Theme Library/discovery, editing, live preview, import/export and lifecycle operations.
+
+Theme Manager defines Theme-domain actions such as `theme.read`, `theme.create`, `theme.edit`, `theme.delete`, `theme.use`, `theme.publish`, `theme.share`, `theme.import`, `theme.export` and `theme.assign`. External Authorization decides whether an actor may perform them.
+
+The host decides whether and where management routes are exposed. Management operations fail closed when required actor-context or authorization providers are absent.
+
+## Public API and contracts
+
+Supported package entry points are:
 
 ```text
 @nuxt4-layers/theme-manager
@@ -197,11 +88,18 @@ The capability exposes four deliberate package entry points:
 @nuxt4-layers/theme-manager/presentation.css
 ```
 
-The root is the Nuxt Layer entry point, `/contracts` is the supported TypeScript contract surface, `/capability` exposes machine-readable capability metadata, and `/presentation.css` is the supported semantic presentation stylesheet. Undocumented internal paths are not public contracts.
+Undocumented internal paths are private implementation details.
 
-## Development and Testing
+Reference documentation:
 
-The repository uses pnpm.
+- [Public Contract](docs/contracts.md) — supported capability and TypeScript boundaries.
+- [Composition Contract](docs/composition-contract.md) — host responsibilities, adapters and failure boundaries.
+- [Semantic Presentation Consumer Contract](docs/semantic-presentation-consumer-contract.md) — presentation dependency direction and consumer obligations.
+- [Semantic Presentation Guide](docs/semantic-presentation-guide.md) — practical vocabulary, pairing, palette and accessibility guidance.
+
+## Development and verification
+
+The repository uses pnpm:
 
 ```sh
 pnpm install
@@ -210,12 +108,20 @@ pnpm test
 pnpm check
 ```
 
-`pnpm check` runs the complete Theme Manager quality gate. Pull requests and pushes to `master` run the same quality checks in GitHub Actions.
+`pnpm check` is the complete repository quality gate and is also run by GitHub Actions.
 
-A minimal `playground/` application extends the repository root as a local capability fixture. Final composed applications remain responsible for testing their selected external adapters and peer capabilities.
+The local `playground/` is a capability fixture. Release acceptance additionally requires integration verification from an independent consuming application.
 
-## Development Status
+## Architecture and project history
 
-**TM-10 — Composition and Legacy Retirement is complete.** The TM-0/TM-1 recovered surface has been reconciled against the implemented dispositions, the final composition contract is documented, and the legacy repository is retired from future implementation use while remaining unchanged as immutable evidence.
+Platform-wide architecture is maintained separately in the `nuxt4-layers/platform-architecture` repository.
 
-Future work occurs through normal capability evolution and downstream composition, including the separate UI migration to consume `SemanticPresentationTheme`.
+The completed TM-0 through TM-10 migration records are retained under [`docs/archive/migration/`](docs/archive/migration/) as engineering provenance. They are historical records, **not current usage documentation or public API authority**.
+
+Current users and contributors should start with this README and the four reference documents above.
+
+## Security and contributing
+
+Theme Manager is being prepared for public open-source use. Security policy, vulnerability reporting, contributor guidance and repository/supply-chain hardening will be completed before public release.
+
+Until that work is complete, no stable public release is declared.
