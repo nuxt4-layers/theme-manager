@@ -166,6 +166,12 @@ docs/migration_plan/
 
 TM-0 and TM-1 record the recovered presentation and functional surface. TM-2 defines the target architecture and explicit migration dispositions. TM-3 through TM-9 implement the staged capability. TM-10 records final composition and legacy-retirement reconciliation.
 
+## Semantic Presentation Guide
+
+Consumers and maintainers should read the [Semantic Presentation Guide](docs/semantic-presentation-guide.md) before composing Theme Manager presentation tokens.
+
+It defines the Fill/Pen/Edge/Effects grammar, semantic role and state pairing, palette responsibilities, WCAG/accessibility review order, shadow treatment, and the distinction between semantic-application and palette defects.
+
 ## Installation and Composition
 
 The package identity is:
