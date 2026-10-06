@@ -104,8 +104,8 @@ const props = defineProps<{ theme: ThemeDefinition; isNew?: boolean; saving?: bo
 const emit = defineEmits<{ save: [theme: ThemeDefinition]; cancel: []; delete: []; preview: [theme: ThemeDefinition]; stopPreview: [] }>()
 
 const model = reactive(structuredClone(toRaw(props.theme)))
-const activeTab = ref<'colours' | 'typography' | 'spacing' | 'radii' | 'effects' | 'responsive' | 'assets' | 'raw'>('colours')
-const tabs = ['colours', 'typography', 'spacing', 'radii', 'effects', 'responsive', 'assets', 'raw'] as const
+const activeTab = ref<'colours' | 'typography' | 'spacing' | 'radii' | 'borders' | 'effects' | 'responsive' | 'assets' | 'raw'>('colours')
+const tabs = ['colours', 'typography', 'spacing', 'radii', 'borders', 'effects', 'responsive', 'assets', 'raw'] as const
 const categories = [
   { id: 'fill', label: 'Fill (Backgrounds)' },
   { id: 'pen', label: 'Pen (Text & Icons)' },
@@ -127,8 +127,8 @@ const visibleColourRoles = computed(() =>
 const presentationEntries = computed(() => {
   if (activeTab.value === 'colours' || activeTab.value === 'raw' || activeTab.value === 'assets') return []
   const familyKey = activeTab.value as Exclude<typeof activeTab.value, 'colours' | 'raw' | 'assets'>
-  const family = model.presentation[familyKey] as Record<string, unknown>
-  return flattenPresentation(family)
+  const family = model.presentation[familyKey] as Record<string, unknown> | undefined
+  return family ? flattenPresentation(family) : []
 })
 
 function flattenPresentation(value: Record<string, unknown>, prefix = ''): Array<[string, string]> {

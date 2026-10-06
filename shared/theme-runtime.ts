@@ -19,6 +19,8 @@ export interface RuntimeThemePresentation {
   radii: Record<string, unknown>
   effects: Record<string, unknown>
   responsive: Record<string, unknown>
+  /** Optional so themes stored before border widths existed stay valid. */
+  borders?: Record<string, unknown>
 }
 
 export interface RuntimeTheme {
@@ -125,6 +127,36 @@ export function runtimePresentationVariables(presentation: RuntimeThemePresentat
   add('text-shadow', effects.textShadow, 'effects.textShadow')
   add('breakpoint', responsive.breakpoints, 'responsive.breakpoints')
   add('container', responsive.containers, 'responsive.containers')
+  if (presentation.borders !== undefined) entries.push(...borderVariables(presentation.borders))
+  return entries
+}
+
+const BORDER_KEYS = ['widths', 'focusRing', 'ring'] as const
+const FOCUS_RING_KEYS = ['width', 'offset'] as const
+const RING_KEYS = ['width'] as const
+
+// Border, outline and ring widths. Unlike radii, the widths DEFAULT maps to the bare
+// --ui-border-width, which is the name theme-default.css and theme-api.css use.
+function borderVariables(value: unknown): Array<[string, string]> {
+  const borders = presentationRecord(value, 'borders')
+  for (const key of Object.keys(borders)) {
+    if (!(BORDER_KEYS as readonly string[]).includes(key)) throw new TypeError(`Invalid presentation key 'borders.${key}'.`)
+  }
+  const entries: Array<[string, string]> = []
+  if (borders.widths !== undefined) {
+    for (const [key, cssValue] of presentationValues(borders.widths, 'borders.widths')) {
+      entries.push([key === 'DEFAULT' ? '--ui-border-width' : `--ui-border-width-${key}`, cssValue])
+    }
+  }
+  const fixed = (group: 'focusRing' | 'ring', keys: readonly string[], prefix: string) => {
+    if (borders[group] === undefined) return
+    for (const [key, cssValue] of presentationValues(borders[group], `borders.${group}`)) {
+      if (!keys.includes(key)) throw new TypeError(`Invalid presentation key 'borders.${group}.${key}'.`)
+      entries.push([`--ui-${prefix}-${key}`, cssValue])
+    }
+  }
+  fixed('focusRing', FOCUS_RING_KEYS, 'focus-ring')
+  fixed('ring', RING_KEYS, 'ring')
   return entries
 }
 

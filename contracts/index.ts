@@ -44,6 +44,8 @@ export interface ThemePresentation {
   radii: Record<string, unknown>
   effects: Record<string, unknown>
   responsive: Record<string, unknown>
+  /** Border, focus outline and ring widths; optional, the bundled defaults apply when absent. */
+  borders?: Record<string, unknown>
   assets: Record<string, ThemeAssetReference>
 }
 

@@ -3,6 +3,7 @@ import {
   assertRuntimeTheme,
   createThemeApplication,
   legacyColourThemeToRuntime,
+  runtimePresentationVariables,
   runtimeVariableName,
   type RuntimeTheme,
   type ThemeStyleTarget,
@@ -16,6 +17,8 @@ const states = {
   visited: '#000005',
   disabled: '#000006',
 }
+
+const emptyPresentation = { typography: { families: {}, sizes: {}, weights: {} }, spacing: {}, radii: {}, effects: { shadow: {}, insetShadow: {}, dropShadow: {}, textShadow: {} }, responsive: { breakpoints: {}, containers: {} } }
 
 const theme = (id = 'theme-a'): RuntimeTheme => ({
   id,
@@ -89,6 +92,44 @@ describe('TM-5 runtime application engine', () => {
     expect(values.get('--ui-breakpoint-md')).toBe('800px')
     expect(values.get('--ui-container-2xl')).toBe('1600px')
     expect(application.appliedVariables).toHaveLength(25)
+  })
+
+  it('applies border, focus outline and ring widths when a theme sets them', () => {
+    const { style, values } = target()
+    const application = createThemeApplication(style)
+    const runtime = theme()
+    runtime.presentation = {
+      ...emptyPresentation,
+      borders: {
+        widths: { DEFAULT: '1px', xs: '0.5px', lg: '5px' },
+        focusRing: { width: '4px', offset: '1px' },
+        ring: { width: '3px' },
+      },
+    }
+
+    application.apply(runtime)
+
+    expect(values.get('--ui-border-width')).toBe('1px')
+    expect(values.get('--ui-border-width-xs')).toBe('0.5px')
+    expect(values.get('--ui-border-width-lg')).toBe('5px')
+    expect(values.get('--ui-focus-ring-width')).toBe('4px')
+    expect(values.get('--ui-focus-ring-offset')).toBe('1px')
+    expect(values.get('--ui-ring-width')).toBe('3px')
+    expect(values.has('--ui-border-width-DEFAULT')).toBe(false)
+    expect(application.appliedVariables).toHaveLength(14 + 6)
+  })
+
+  it('leaves the bundled widths in place when a theme has no borders group', () => {
+    expect(runtimePresentationVariables(emptyPresentation)).toEqual([])
+  })
+
+  it('rejects unknown or unsafe border width keys', () => {
+    const base = emptyPresentation
+    expect(() => runtimePresentationVariables({ ...base, borders: { style: {} } })).toThrow(/borders\.style/)
+    expect(() => runtimePresentationVariables({ ...base, borders: { focusRing: { colour: 'red' } } })).toThrow(/borders\.focusRing\.colour/)
+    expect(() => runtimePresentationVariables({ ...base, borders: { widths: { 'x--y': '1px' } } })).toThrow(/borders\.widths/)
+    expect(() => runtimePresentationVariables({ ...base, borders: { widths: { sm: '' } } })).toThrow(/non-empty/)
+    expect(() => runtimePresentationVariables({ ...base, borders: [] })).toThrow(/borders/)
   })
 
   it('clears every previous override before applying a replacement', () => {
