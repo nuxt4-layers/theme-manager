@@ -4,10 +4,13 @@ import { describe, expect, it } from 'vitest'
 
 const root = resolve(import.meta.dirname, '..')
 const read = (path: string) => readFileSync(resolve(root, path), 'utf8')
+// Comments document the grammar with placeholders such as var(--ui-<name>-light); only
+// declarations and references in real CSS count.
+const readCss = (path: string) => read(path).replace(/\/\*[\s\S]*?\*\//g, '')
 
-const defaultCss = read('assets/css/theme/theme-default.css')
-const apiCss = read('assets/css/theme/theme-api.css')
-const tailwindCss = read('assets/css/tailwindcss/tailwind-config.css')
+const defaultCss = readCss('assets/css/theme/theme-default.css')
+const apiCss = readCss('assets/css/theme/theme-api.css')
+const tailwindCss = readCss('assets/css/tailwindcss/tailwind-config.css')
 const mainCss = read('assets/css/main.css')
 
 const declarations = (css: string, prefix: string) =>
@@ -60,52 +63,84 @@ const requireOpaquePair = (
   return { ratio: contrastRatio(partner.value, surface.value) }
 }
 
+// Tailwind names that cannot share the --api-* suffix: partner properties use Tailwind's
+// double-hyphen form, and plain utilities read --default-* names. Everything else is
+// --<name>: var(--api-<name>).
+const RENAMED_TAILWIND: Record<string, string> = {
+  '--font-mono--font-feature-settings': '--api-font-mono-feature-settings',
+  '--default-border-width': '--api-border-width',
+  '--default-outline-width': '--api-focus-ring-width',
+  '--outline-width-focus': '--api-focus-ring-width',
+  '--outline-offset-focus': '--api-focus-ring-offset',
+  '--default-ring-width': '--api-ring-width',
+  '--ring-width-focus': '--api-ring-width',
+  '--default-transition-duration': '--api-duration-base',
+  '--default-transition-timing-function': '--api-ease-standard',
+}
+
+const expectedApiFor = (tailwind: string) => {
+  if (RENAMED_TAILWIND[tailwind]) return RENAMED_TAILWIND[tailwind]!
+  const lineHeight = tailwind.match(/^--text-([\w-]+)--line-height$/)
+  if (lineHeight) return `--api-text-${lineHeight[1]}-line-height`
+  return `--api-${tailwind.slice(2)}`
+}
+
+// --api-* names with no Tailwind namespace, used as arbitrary values instead
+// (rotate-y-(--api-tilt-md), duration-(--api-duration-fast)); breakpoints are literal.
+const ARBITRARY_VALUE_API = /^--api-(?:tilt|duration)-/
+
 describe('TM-4 presentation engine', () => {
   it('preserves the recovered raw colour cardinality', () => {
     const raw = declarations(defaultCss, '--ui-').filter(name => /--ui-(fill|pen|edge)-/.test(name ?? ''))
-    expect(raw).toHaveLength(560)
-    expect(new Set(raw)).toHaveLength(560)
+    expect(raw).toHaveLength(980)
+    expect(new Set(raw)).toHaveLength(980)
   })
 
   it('preserves the recovered semantic colour cardinality', () => {
     const semantic = declarations(apiCss, '--api-').filter(name => /--api-(fill|pen|edge)-/.test(name ?? ''))
-    expect(semantic).toHaveLength(560)
-    expect(new Set(semantic)).toHaveLength(280)
+    expect(semantic).toHaveLength(980)
+    expect(new Set(semantic)).toHaveLength(490)
   })
 
   it('preserves the recovered Tailwind colour vocabulary cardinality', () => {
     const colours = declarations(tailwindCss, '--color-')
-    expect(colours).toHaveLength(280)
-    expect(new Set(colours)).toHaveLength(280)
+    expect(colours).toHaveLength(490)
+    expect(new Set(colours)).toHaveLength(490)
   })
 
   it('keeps every Tailwind colour mapped to a semantic API property', () => {
     const semanticNames = new Set(declarations(apiCss, '--api-'))
     const mappings = [...tailwindCss.matchAll(/(--color-[\w-]+)\s*:\s*var\((--api-[\w-]+)\)/g)]
-    expect(mappings).toHaveLength(280)
+    expect(mappings).toHaveLength(490)
     expect(mappings.every(([, , api]) => semanticNames.has(api))).toBe(true)
   })
 
   it('keeps every semantic API property backed by raw light and dark values', () => {
     const rawNames = new Set(declarations(defaultCss, '--ui-'))
     const mappings = [...apiCss.matchAll(/(--api-(?:fill|pen|edge)-[\w-]+)\s*:\s*var\((--ui-(?:fill|pen|edge)-[\w-]+)-(light|dark)\)/g)]
-    expect(mappings).toHaveLength(560)
+    expect(mappings).toHaveLength(980)
     expect(mappings.every(([, , rawBase, mode]) => rawNames.has(`${rawBase}-${mode}`))).toBe(true)
   })
 
   it('preserves the recovered non-colour Tailwind vocabulary', () => {
-    expect(declarations(tailwindCss, '--font-')).toHaveLength(10)
-    expect(declarations(tailwindCss, '--text-').filter(name => !name?.startsWith('--text-shadow-'))).toHaveLength(7)
-    expect(declarations(tailwindCss, '--font-weight-')).toHaveLength(7)
-    expect(declarations(tailwindCss, '--breakpoint-')).toHaveLength(8)
-    expect(declarations(tailwindCss, '--container-')).toHaveLength(2)
-    expect(declarations(tailwindCss, '--spacing-')).toHaveLength(31)
-    expect(declarations(tailwindCss, '--radius-')).toHaveLength(5)
+    // --font- also matches the four --font-weight-* names.
+    expect(declarations(tailwindCss, '--font-')).toHaveLength(8)
+    expect(declarations(tailwindCss, '--text-').filter(name => !name?.startsWith('--text-shadow-'))).toHaveLength(28)
+    expect(declarations(tailwindCss, '--font-weight-')).toHaveLength(4)
+    expect(declarations(tailwindCss, '--breakpoint-')).toHaveLength(7)
+    expect(declarations(tailwindCss, '--container-')).toHaveLength(16)
+    expect(declarations(tailwindCss, '--spacing-')).toHaveLength(9)
+    expect(declarations(tailwindCss, '--radius-')).toHaveLength(15)
     expect(tailwindCss).toContain('--radius: var(--api-radius);')
-    expect(declarations(tailwindCss, '--shadow-')).toHaveLength(56)
-    expect(declarations(tailwindCss, '--inset-shadow-')).toHaveLength(60)
-    expect(declarations(tailwindCss, '--drop-shadow-')).toHaveLength(56)
-    expect(declarations(tailwindCss, '--text-shadow-')).toHaveLength(56)
+    expect(declarations(tailwindCss, '--shadow-')).toHaveLength(79)
+    expect(declarations(tailwindCss, '--inset-shadow-')).toHaveLength(75)
+    expect(declarations(tailwindCss, '--drop-shadow-')).toHaveLength(75)
+    expect(declarations(tailwindCss, '--text-shadow-')).toHaveLength(75)
+    expect(declarations(tailwindCss, '--border-width-')).toHaveLength(5)
+    expect(declarations(tailwindCss, '--tracking-')).toHaveLength(4)
+    expect(declarations(tailwindCss, '--leading-')).toHaveLength(5)
+    expect(declarations(tailwindCss, '--ease-')).toHaveLength(7)
+    expect(declarations(tailwindCss, '--animate-')).toHaveLength(7)
   })
 
   it('backs the complete non-colour Tailwind vocabulary through runtime API and defaults', () => {
@@ -117,13 +152,15 @@ describe('TM-4 presentation engine', () => {
     const runtimeTailwindNames = tailwindNames.filter(name => !name?.startsWith('--breakpoint-'))
     const breakpoints = tailwindNames.filter(name => name?.startsWith('--breakpoint-'))
 
-    expect(tailwindNames).toHaveLength(292)
-    expect(runtimeTailwindNames).toHaveLength(284)
-    expect(breakpoints).toHaveLength(8)
-    expect(mappings).toHaveLength(284)
-    expect(mappings.every(([, tailwind, api]) => api === `--api-${tailwind!.slice(2)}`)).toBe(true)
-    expect(tailwindNames.every(name => apiNames.has(`--api-${name!.slice(2)}`))).toBe(true)
-    expect(tailwindNames.every(name => defaultNames.has(`--ui-${name!.slice(2)}`))).toBe(true)
+    expect(tailwindNames).toHaveLength(438)
+    expect(runtimeTailwindNames).toHaveLength(431)
+    expect(breakpoints).toHaveLength(7)
+    expect(mappings).toHaveLength(431)
+    expect(mappings.every(([, tailwind, api]) => api === expectedApiFor(tailwind!))).toBe(true)
+    expect(runtimeTailwindNames.every(name => apiNames.has(expectedApiFor(name!)))).toBe(true)
+    expect(breakpoints.every(name => apiNames.has(`--api-${name!.slice(2)}`))).toBe(true)
+    expect([...apiNames].every(name => defaultNames.has(`--ui-${name.slice('--api-'.length)}`)
+      || (defaultNames.has(`--ui-${name.slice('--api-'.length)}-light`) && defaultNames.has(`--ui-${name.slice('--api-'.length)}-dark`)))).toBe(true)
     expect(breakpoints.every(name => {
       const declaration = tailwindCss.match(new RegExp(`${name}\\s*:\\s*([^;]+);`))
       return declaration && !declaration[1]?.includes('var(')
@@ -141,30 +178,35 @@ describe('TM-4 presentation engine', () => {
     const downstreamReference = /var\(--(?:api-|color-|spacing-|radius-)/
     expect(defaultCss).not.toMatch(downstreamReference)
 
-    expect(defaultCss).toContain('--ui-spacing-1: var(--ui-spacing-p-xs);')
-    expect(defaultCss).toContain('--tm-shadow-color-fill-base: var(--ui-fill-base-shadow-light);')
-    expect(defaultCss).toContain('--tm-shadow-color-pen-base: var(--ui-pen-base-shadow-light);')
-    expect(defaultCss).toContain('--tm-shadow-color-fill-base: var(--ui-fill-base-shadow-dark);')
-    expect(defaultCss).toContain('--tm-shadow-color-pen-base: var(--ui-pen-base-shadow-dark);')
+    // One :root block of --ui-* tokens: mode selection belongs to theme-api.css.
+    expect(defaultCss).not.toContain('html.dark')
+    expect(defaultCss).not.toContain('--tm-')
+    expect(declarations(defaultCss, '--').every(name => name!.startsWith('--ui-'))).toBe(true)
+
+    // Shadow shapes take their colour from the role's shadow tokens in the same mode.
+    const shadowShapes = [...defaultCss.matchAll(/--ui-((?:inset-|drop-|text-)?shadow)-(?:xs|sm|md|lg|xl)-([a-z]+)-(light|dark)\s*:\s*([^;]+);/g)]
+    expect(shadowShapes).toHaveLength(560)
+    expect(shadowShapes.every(([, type, role, mode, value]) =>
+      value!.includes(`var(--ui-${type === 'text-shadow' ? 'pen' : 'fill'}-${role}-shadow-${mode})`))).toBe(true)
   })
 
   it('parses the complete concrete Default Theme colour palette including alpha colours', () => {
-    expect(defaultColourEntries).toHaveLength(560)
-    expect(defaultColourEntries.filter(entry => entry.family === 'fill')).toHaveLength(196)
-    expect(defaultColourEntries.filter(entry => entry.family === 'pen')).toHaveLength(196)
-    expect(defaultColourEntries.filter(entry => entry.family === 'edge')).toHaveLength(168)
+    expect(defaultColourEntries).toHaveLength(980)
+    expect(defaultColourEntries.filter(entry => entry.family === 'fill')).toHaveLength(336)
+    expect(defaultColourEntries.filter(entry => entry.family === 'pen')).toHaveLength(336)
+    expect(defaultColourEntries.filter(entry => entry.family === 'edge')).toHaveLength(308)
 
+    // Shadow colours are translucent tints; every other colour is opaque.
     const transparent = defaultColourEntries.filter(entry => entry.alpha !== 1)
-    expect(transparent.map(({ family, roleState, mode, value }) => ({ family, roleState, mode, value }))).toEqual([
-      { family: 'fill', roleState: 'input-shadow', mode: 'light', value: '#00000000' },
-      { family: 'fill', roleState: 'input-shadow', mode: 'dark', value: '#00000000' },
-    ])
+    expect(transparent).toHaveLength(56)
+    expect(transparent.every(entry => stateOf(entry.roleState) === 'shadow')).toBe(true)
+    expect(transparent.every(entry => entry.alpha > 0)).toBe(true)
   })
 
   it('keeps every statically computable non-disabled same-role Pen/Fill pair at WCAG AA normal-text contrast', () => {
     const fills = defaultColourEntries.filter(entry => entry.family === 'fill')
     const applicable = fills.filter(entry => !['shadow', 'disabled'].includes(stateOf(entry.roleState)))
-    expect(applicable).toHaveLength(140)
+    expect(applicable).toHaveLength(280)
 
     const failures = applicable.flatMap(({ roleState, mode, value, alpha }) => {
       const result = requireOpaquePair('pen', roleState, mode, { value, alpha })
@@ -176,15 +218,35 @@ describe('TM-4 presentation engine', () => {
   })
 
   it('keeps every statically computable non-disabled same-role Edge/Fill pair at WCAG non-text contrast', () => {
+    // The focus ring is drawn outside the control with an offset, so it is checked
+    // against the page layers instead (next test).
     const fills = defaultColourEntries.filter(entry => entry.family === 'fill')
-    const applicable = fills.filter(entry => !['shadow', 'disabled'].includes(stateOf(entry.roleState)))
-    expect(applicable).toHaveLength(140)
+    const applicable = fills.filter(entry => !['shadow', 'disabled', 'focus'].includes(stateOf(entry.roleState)))
+    expect(applicable).toHaveLength(252)
 
     const failures = applicable.flatMap(({ roleState, mode, value, alpha }) => {
       const result = requireOpaquePair('edge', roleState, mode, { value, alpha })
       if (result.error) return [result.error]
       return result.ratio! < 3 ? [`${mode} ${roleState}: ${result.ratio!.toFixed(3)}:1`] : []
     })
+
+    expect(failures).toEqual([])
+  })
+
+  it('keeps every focus ring at WCAG non-text contrast against every page layer it can sit on', () => {
+    const layers = ['floor', 'base', 'primary', 'secondary', 'tertiary']
+    const failures: string[] = []
+
+    for (const mode of ['light', 'dark']) {
+      for (const focus of defaultColourEntries.filter(entry =>
+        entry.family === 'edge' && entry.mode === mode && stateOf(entry.roleState) === 'focus')) {
+        for (const layer of layers) {
+          const surface = defaultColour('fill', `${layer}-default`, mode)!
+          const ratio = contrastRatio(focus.value, surface.value)
+          if (ratio < 3) failures.push(`${mode} ${focus.roleState} on ${layer}: ${ratio.toFixed(3)}:1`)
+        }
+      }
+    }
 
     expect(failures).toEqual([])
   })
@@ -199,7 +261,7 @@ describe('TM-4 presentation engine', () => {
     expect(shadows.filter(entry => entry.family === 'fill')).toHaveLength(28)
     expect(shadows.filter(entry => entry.family === 'pen')).toHaveLength(28)
     expect(shadows.filter(entry => entry.family === 'edge')).toHaveLength(0)
-    expect(shadows.filter(entry => entry.alpha !== 1)).toHaveLength(2)
+    expect(shadows.filter(entry => entry.alpha !== 1)).toHaveLength(56)
   })
 
   it('preserves chromatic identity for semantic default edges', () => {
@@ -235,14 +297,15 @@ describe('TM-4 presentation engine', () => {
       declarations(tailwindCss, '--breakpoint-').map(name => `--api-${name!.slice(2)}`),
     )
 
-    expect(defaultUi.size).toBe(852)
-    expect(api.size).toBe(572)
+    expect(defaultUi.size).toBe(1731)
+    expect(api.size).toBe(937)
 
     // Closure is proved from the references actually written in the CSS, not by
     // guessing naming transformations between the three namespaces.
     expect([...defaultUi].filter(name => !apiUiReferences.has(name))).toEqual([])
     expect([...apiUiReferences].filter(name => !defaultUi.has(name))).toEqual([])
-    expect([...api].filter(name => !tailwindApiReferences.has(name) && !breakpointApi.has(name))).toEqual([])
+    expect([...api].filter(name =>
+      !tailwindApiReferences.has(name) && !breakpointApi.has(name) && !ARBITRARY_VALUE_API.test(name))).toEqual([])
     expect([...tailwindApiReferences].filter(name => !api.has(name))).toEqual([])
   })
 
@@ -256,11 +319,12 @@ describe('TM-4 presentation engine', () => {
     const apiDuplicates = duplicates(apiCss, '--')
     const tailwindDuplicates = duplicates(tailwindCss, '--')
 
-    expect(defaultDuplicates).toHaveLength(28)
-    expect(defaultDuplicates.every(name => /^--tm-shadow-color-(?:fill|pen)-/.test(name))).toBe(true)
+    expect(defaultDuplicates).toEqual([])
 
-    expect(apiDuplicates).toHaveLength(280)
-    expect(apiDuplicates.every(name => /^--api-(?:fill|pen|edge)-/.test(name))).toBe(true)
+    // Mode-dependent tokens are declared once in :root (light) and once in html.dark.
+    expect(apiDuplicates).toHaveLength(794)
+    expect(apiDuplicates.every(name => /^--api-(?:fill|pen|edge|shadow|inset-shadow|drop-shadow|text-shadow)-/.test(name))).toBe(true)
+    expect(apiDuplicates.every(name => declarations(apiCss, '--').filter(declared => declared === name).length === 2)).toBe(true)
 
     expect(tailwindDuplicates).toEqual([])
   })
@@ -272,15 +336,15 @@ describe('TM-4 presentation engine', () => {
     const light = [...rawColour].filter(name => name.endsWith('-light'))
     const dark = [...rawColour].filter(name => name.endsWith('-dark'))
 
-    expect(light).toHaveLength(280)
-    expect(dark).toHaveLength(280)
+    expect(light).toHaveLength(490)
+    expect(dark).toHaveLength(490)
     expect(light.map(name => name.replace(/-light$/, '')).sort())
       .toEqual(dark.map(name => name.replace(/-dark$/, '')).sort())
 
     const semanticColour = new Set(
       declarations(apiCss, '--api-').filter(name => /^--api-(?:fill|pen|edge)-/.test(name)),
     )
-    expect(semanticColour.size).toBe(280)
+    expect(semanticColour.size).toBe(490)
 
     for (const semantic of semanticColour) {
       const rawBase = semantic.replace(/^--api-/, '--ui-')
