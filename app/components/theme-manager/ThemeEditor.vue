@@ -104,8 +104,8 @@ const props = defineProps<{ theme: ThemeDefinition; isNew?: boolean; saving?: bo
 const emit = defineEmits<{ save: [theme: ThemeDefinition]; cancel: []; delete: []; preview: [theme: ThemeDefinition]; stopPreview: [] }>()
 
 const model = reactive(structuredClone(toRaw(props.theme)))
-const activeTab = ref<'colours' | 'typography' | 'spacing' | 'radii' | 'borders' | 'effects' | 'responsive' | 'assets' | 'raw'>('colours')
-const tabs = ['colours', 'typography', 'spacing', 'radii', 'borders', 'effects', 'responsive', 'assets', 'raw'] as const
+const activeTab = ref<'colours' | 'typography' | 'spacing' | 'radii' | 'borders' | 'effects' | 'motion' | 'responsive' | 'assets' | 'raw'>('colours')
+const tabs = ['colours', 'typography', 'spacing', 'radii', 'borders', 'effects', 'motion', 'responsive', 'assets', 'raw'] as const
 const categories = [
   { id: 'fill', label: 'Fill (Backgrounds)' },
   { id: 'pen', label: 'Pen (Text & Icons)' },

@@ -51,7 +51,9 @@ function presentation(value: unknown): ThemePresentation {
   if (!isRecord(value)) validation('presentation must be an object.')
   const required = ['colour', 'typography', 'spacing', 'radii', 'effects', 'responsive', 'assets'] as const
   for (const key of required) if (!isRecord(value[key])) validation(`presentation.${key} must be an object.`)
-  if (value.borders !== undefined && !isRecord(value.borders)) validation('presentation.borders must be an object.')
+  for (const key of ['borders', 'motion'] as const) {
+    if (value[key] !== undefined && !isRecord(value[key])) validation(`presentation.${key} must be an object.`)
+  }
   return value as unknown as ThemePresentation
 }
 

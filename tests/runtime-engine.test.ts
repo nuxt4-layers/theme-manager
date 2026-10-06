@@ -129,6 +129,44 @@ describe('TM-5 runtime application engine', () => {
     expect(names).toEqual(['--ui-spacing-DEFAULT'])
   })
 
+  it('applies tracking, leading, effect and motion groups when a theme sets them', () => {
+    const entries = new Map(runtimePresentationVariables({
+      ...emptyPresentation,
+      typography: { ...emptyPresentation.typography, tracking: { caps: '0.08em' }, leading: { snug: '1.4' } },
+      effects: {
+        ...emptyPresentation.effects,
+        blur: { md: '10px' },
+        perspective: { near: '250px' },
+        tilt: { sm: '12deg' },
+        aspect: { photo: '3 / 2' },
+      },
+      motion: {
+        ease: { standard: 'cubic-bezier(0.2, 0, 0, 1)' },
+        duration: { fast: '90ms', 'fast-exit': '60ms' },
+        animate: { 'fade-in': 'fade-in 200ms ease-out both' },
+      },
+    }))
+    expect(Object.fromEntries(entries)).toEqual({
+      '--ui-tracking-caps': '0.08em',
+      '--ui-leading-snug': '1.4',
+      '--ui-blur-md': '10px',
+      '--ui-perspective-near': '250px',
+      '--ui-tilt-sm': '12deg',
+      '--ui-aspect-photo': '3 / 2',
+      '--ui-ease-standard': 'cubic-bezier(0.2, 0, 0, 1)',
+      '--ui-duration-fast': '90ms',
+      '--ui-duration-fast-exit': '60ms',
+      '--ui-animate-fade-in': 'fade-in 200ms ease-out both',
+    })
+  })
+
+  it('rejects unknown motion keys and malformed optional groups', () => {
+    expect(() => runtimePresentationVariables({ ...emptyPresentation, motion: { keyframes: {} } })).toThrow(/motion\.keyframes/)
+    expect(() => runtimePresentationVariables({ ...emptyPresentation, motion: { ease: { 'a--b': 'linear' } } })).toThrow(/motion\.ease/)
+    expect(() => runtimePresentationVariables({ ...emptyPresentation, effects: { ...emptyPresentation.effects, blur: 'big' } })).toThrow(/effects\.blur/)
+    expect(() => runtimePresentationVariables({ ...emptyPresentation, typography: { ...emptyPresentation.typography, leading: { tight: ' ' } } })).toThrow(/non-empty/)
+  })
+
   it('rejects unknown or unsafe border width keys', () => {
     const base = emptyPresentation
     expect(() => runtimePresentationVariables({ ...base, borders: { style: {} } })).toThrow(/borders\.style/)

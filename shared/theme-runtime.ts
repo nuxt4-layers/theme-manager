@@ -21,6 +21,8 @@ export interface RuntimeThemePresentation {
   responsive: Record<string, unknown>
   /** Optional so themes stored before border widths existed stay valid. */
   borders?: Record<string, unknown>
+  /** Optional: easing curves, durations and animation shorthands. */
+  motion?: Record<string, unknown>
 }
 
 export interface RuntimeTheme {
@@ -131,10 +133,31 @@ export function runtimePresentationVariables(presentation: RuntimeThemePresentat
   add('text-shadow', effects.textShadow, 'effects.textShadow')
   add('breakpoint', responsive.breakpoints, 'responsive.breakpoints')
   add('container', responsive.containers, 'responsive.containers')
+  // Groups added after themes were first stored: each is optional, and an omitted
+  // group keeps the bundled values from theme-default.css.
+  const addOptional = (prefix: string, value: unknown, path: string) => {
+    if (value !== undefined) add(prefix, value, path)
+  }
+  addOptional('tracking', typography.tracking, 'typography.tracking')
+  addOptional('leading', typography.leading, 'typography.leading')
+  addOptional('blur', effects.blur, 'effects.blur')
+  addOptional('perspective', effects.perspective, 'effects.perspective')
+  addOptional('tilt', effects.tilt, 'effects.tilt')
+  addOptional('aspect', effects.aspect, 'effects.aspect')
+  if (presentation.motion !== undefined) {
+    const motion = presentationRecord(presentation.motion, 'motion')
+    for (const key of Object.keys(motion)) {
+      if (!(MOTION_KEYS as readonly string[]).includes(key)) throw new TypeError(`Invalid presentation key 'motion.${key}'.`)
+    }
+    addOptional('ease', motion.ease, 'motion.ease')
+    addOptional('duration', motion.duration, 'motion.duration')
+    addOptional('animate', motion.animate, 'motion.animate')
+  }
   if (presentation.borders !== undefined) entries.push(...borderVariables(presentation.borders))
   return entries
 }
 
+const MOTION_KEYS = ['ease', 'duration', 'animate'] as const
 const BORDER_KEYS = ['widths', 'focusRing', 'ring'] as const
 const FOCUS_RING_KEYS = ['width', 'offset'] as const
 const RING_KEYS = ['width'] as const
