@@ -60,7 +60,7 @@
                 {{ state }}
                 <div class="mt-1.5 flex items-center gap-2 rounded-lg border border-edge-input-default bg-fill-input-default p-1.5 focus-within:ring-2 focus-within:ring-edge-primary-default">
                   <div class="relative size-8 shrink-0 overflow-hidden rounded-md border border-edge-base-default">
-                    <input type="color" class="absolute left-1/2 top-1/2 size-12 -translate-x-1/2 -translate-y-1/2 cursor-pointer border-0 p-0" :value="colourInput(value)" @input="setColour(role, state, ($event.target as HTMLInputElement).value)" />
+                    <input type="color" class="absolute left-1/2 top-1/2 size-12 -translate-x-1/2 -translate-y-1/2 cursor-pointer border-0 p-0" :value="colourInput(value)" @input="setColour(role, state, withAlpha(($event.target as HTMLInputElement).value, value))" />
                   </div>
                   <input :value="value" maxlength="32" class="min-w-0 flex-1 bg-transparent px-1 py-1 font-mono text-sm text-pen-base-default outline-none" @input="setColour(role, state, ($event.target as HTMLInputElement).value)" />
                 </div>
@@ -168,8 +168,15 @@ function orderedStates(states: Record<string, string>) {
   })
 }
 
+// The picker handles #rrggbb only; theme colours may carry alpha as #rrggbbaa.
 function colourInput(value: string) {
-  return /^#[0-9a-f]{6}$/i.test(value) ? value : '#000000'
+  return /^#[0-9a-f]{6}(?:[0-9a-f]{2})?$/i.test(value) ? value.slice(0, 7) : '#000000'
+}
+
+// Keep the current alpha when a colour is picked, so translucent shadow colours stay translucent.
+function withAlpha(picked: string, current: string) {
+  const alpha = /^#[0-9a-f]{8}$/i.test(current) ? current.slice(7) : ''
+  return `${picked}${alpha}`
 }
 
 function syncRaw() {
