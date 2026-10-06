@@ -19,6 +19,10 @@ export interface RuntimeThemePresentation {
   radii: Record<string, unknown>
   effects: Record<string, unknown>
   responsive: Record<string, unknown>
+  /** Optional so themes stored before border widths existed stay valid. */
+  borders?: Record<string, unknown>
+  /** Optional: easing curves, durations and animation shorthands. */
+  motion?: Record<string, unknown>
 }
 
 export interface RuntimeTheme {
@@ -110,21 +114,75 @@ export function runtimePresentationVariables(presentation: RuntimeThemePresentat
   const effects = presentationRecord(presentation.effects, 'effects')
   const responsive = presentationRecord(presentation.responsive, 'responsive')
   const entries: Array<[string, string]> = []
-  const add = (prefix: string, value: unknown, path: string) => {
-    for (const [key, cssValue] of presentationValues(value, path)) entries.push([`--ui-${prefix}-${key}`, cssValue])
+  // In groups whose bare name is a theme default (--ui-radius), DEFAULT writes that bare
+  // name. Elsewhere it stays a suffix, so spacing.DEFAULT can never move --ui-spacing.
+  const add = (prefix: string, value: unknown, path: string, bareDefault = false) => {
+    for (const [key, cssValue] of presentationValues(value, path)) {
+      entries.push([bareDefault && key === 'DEFAULT' ? `--ui-${prefix}` : `--ui-${prefix}-${key}`, cssValue])
+    }
   }
 
   add('font', typography.families, 'typography.families')
   add('text', typography.sizes, 'typography.sizes')
   add('font-weight', typography.weights, 'typography.weights')
   add('spacing', presentation.spacing, 'spacing')
-  add('radius', presentation.radii, 'radii')
+  add('radius', presentation.radii, 'radii', true)
   add('shadow', effects.shadow, 'effects.shadow')
   add('inset-shadow', effects.insetShadow, 'effects.insetShadow')
   add('drop-shadow', effects.dropShadow, 'effects.dropShadow')
   add('text-shadow', effects.textShadow, 'effects.textShadow')
   add('breakpoint', responsive.breakpoints, 'responsive.breakpoints')
   add('container', responsive.containers, 'responsive.containers')
+  // Groups added after themes were first stored: each is optional, and an omitted
+  // group keeps the bundled values from theme-default.css.
+  const addOptional = (prefix: string, value: unknown, path: string) => {
+    if (value !== undefined) add(prefix, value, path)
+  }
+  addOptional('tracking', typography.tracking, 'typography.tracking')
+  addOptional('leading', typography.leading, 'typography.leading')
+  addOptional('blur', effects.blur, 'effects.blur')
+  addOptional('perspective', effects.perspective, 'effects.perspective')
+  addOptional('tilt', effects.tilt, 'effects.tilt')
+  addOptional('aspect', effects.aspect, 'effects.aspect')
+  if (presentation.motion !== undefined) {
+    const motion = presentationRecord(presentation.motion, 'motion')
+    for (const key of Object.keys(motion)) {
+      if (!(MOTION_KEYS as readonly string[]).includes(key)) throw new TypeError(`Invalid presentation key 'motion.${key}'.`)
+    }
+    addOptional('ease', motion.ease, 'motion.ease')
+    addOptional('duration', motion.duration, 'motion.duration')
+    addOptional('animate', motion.animate, 'motion.animate')
+  }
+  if (presentation.borders !== undefined) entries.push(...borderVariables(presentation.borders))
+  return entries
+}
+
+const MOTION_KEYS = ['ease', 'duration', 'animate'] as const
+const BORDER_KEYS = ['widths', 'focusRing', 'ring'] as const
+const FOCUS_RING_KEYS = ['width', 'offset'] as const
+const RING_KEYS = ['width'] as const
+
+// Border, outline and ring widths; the widths DEFAULT writes the bare --ui-border-width.
+function borderVariables(value: unknown): Array<[string, string]> {
+  const borders = presentationRecord(value, 'borders')
+  for (const key of Object.keys(borders)) {
+    if (!(BORDER_KEYS as readonly string[]).includes(key)) throw new TypeError(`Invalid presentation key 'borders.${key}'.`)
+  }
+  const entries: Array<[string, string]> = []
+  if (borders.widths !== undefined) {
+    for (const [key, cssValue] of presentationValues(borders.widths, 'borders.widths')) {
+      entries.push([key === 'DEFAULT' ? '--ui-border-width' : `--ui-border-width-${key}`, cssValue])
+    }
+  }
+  const fixed = (group: 'focusRing' | 'ring', keys: readonly string[], prefix: string) => {
+    if (borders[group] === undefined) return
+    for (const [key, cssValue] of presentationValues(borders[group], `borders.${group}`)) {
+      if (!keys.includes(key)) throw new TypeError(`Invalid presentation key 'borders.${group}.${key}'.`)
+      entries.push([`--ui-${prefix}-${key}`, cssValue])
+    }
+  }
+  fixed('focusRing', FOCUS_RING_KEYS, 'focus-ring')
+  fixed('ring', RING_KEYS, 'ring')
   return entries
 }
 

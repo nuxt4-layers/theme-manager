@@ -3,7 +3,7 @@
  *
  * @project-manager    @monorepo/theme-manager
  * @file       ~/layers/theme-manager/assets/css/tailwindcss/tailwind-config.css
- * @version    1.8.0
+ * @version    2.1.0
  * @createDate 2025 Jun 11
  * @createTime 15:02
  * @author     Steve R Lewis
@@ -11,20 +11,62 @@
  * ================================================================================
  *
  * @description
- * This file configures and extends the Tailwind CSS v4 engine using pure CSS.
- * It instructs Tailwind to generate new utility classes (e.g., `bg-ui-accent-00`)
- * that are linked to our application's semantic theme variables defined in
- * `theme-api.css`. This is the final link in the chain that makes the dynamic
- * theme manager work with Tailwind's class-based system.
+ * The last step of the theme pipeline: maps Tailwind CSS v4's theme namespaces to
+ * the --api-* tokens of theme-api.css, so every utility reads the mode-selected,
+ * runtime-switchable value.
  *
- * The `@theme inline` directive is crucial here. It tells Tailwind that the
- * values for these utilities are not static, but are instead references to
- * other CSS variables that will be defined at runtime (by our theme manager).
+ *   theme-default.css   --ui-* source values (-light / -dark where modes differ)
+ *   theme-api.css       --api-* stable names; light in :root, dark in html.dark
+ *   tailwind-config.css THIS FILE: @theme inline { --<namespace>-<name>: var(--api-...) }
+ *
+ * `@theme inline` makes each utility use the referenced value directly
+ * (e.g. `.bg-fill-base-default { background-color: var(--api-fill-base-default) }`),
+ * so a runtime theme or a mode switch changes every utility without a rebuild.
+ *
+ * What is NOT runtime-switchable here, by design:
+ *   - Breakpoints are literal values copied from theme-default.css: media queries
+ *     cannot read var(), so `md:` and friends are fixed at build time.
+ *   - @keyframes are build-time; a theme can change an animation's timing tokens,
+ *     never what its keyframes do.
+ * Widths: use the named border, outline and ring widths (`border-lg`,
+ * `outline-focus`, `ring-focus`) or the plain utilities, which read the theme's
+ * defaults. Numbered widths (`border-2`, `ring-4`) compile to literal pixels and
+ * never follow a theme.
+ *
+ * Tilt angles and durations have no Tailwind namespace; use them as arbitrary
+ * values: `rotate-y-(--api-tilt-md)`, `duration-(--api-duration-fast)`.
+ *
+ * Partner properties use Tailwind's double-hyphen form, mapped from engine-safe
+ * single-hyphen tokens: --text-sm--line-height from --api-text-sm-line-height,
+ * --font-mono--font-feature-settings from --api-font-mono-feature-settings.
+ *
+ * Tailwind's default theme stays available underneath (main.css imports
+ * 'tailwindcss' first); where a name exists in both, this file wins.
+ *
+ * This file is generated from theme-default.css by scripts/generate-theme-api.mjs.
+ * Edit this header by hand; never edit the mappings below it.
  *
  * ================================================================================
  *
  * @notes
  * Revision History
+ *
+ * v2.1.0 - 2026-10-06
+ * - Border widths: --default-border-width and --border-width-xs/sm/md/lg/xl;
+ *   focus outline via --default-outline-width, --outline-width-focus and
+ *   --outline-offset-focus; rings via --default-ring-width and --ring-width-focus.
+ *
+ * v2.0.0 - 2026-10-06
+ * - Regenerated for the Calm Sky vocabulary: colours for fill, pen and edge across
+ *   14 roles x 12 states (edge 11); box, inset, drop and text shadows (xs-xl, per
+ *   role, defaults and elevation roles); fonts with mono font features; text sizes
+ *   with paired line heights and type roles; weights 400-700; tracking; leading;
+ *   rem breakpoints xs-3xl as literals; containers; spacing (base unit and step-*);
+ *   radius (default, scale, roles); blur; perspective; aspect; easing; animations
+ *   with their @keyframes; transition defaults from duration-base / ease-standard.
+ * - Removed the previous vocabulary (spacing p-*, 1-9, screen-*, full and widths;
+ *   radius DEFAULT; container-center; weights light, extrabold, heavy;
+ *   breakpoints 4xl and 5xl; role-only shadows).
  *
  * v1.8.0 - 2025-06-18
  * - Implemented the final descriptive naming convention from `types/theme.ts v1.8.0`.
@@ -45,944 +87,1084 @@
  *
  * v1.0.1 - 2025-06-15
  * Initial setup with basic theme variables.
- *
- * v1.0.1 - 2025-06-15
- * Initial setup of this file.
  * ================================================================================
  */
 
 @theme inline {
-  /**
-   * Description:
-   * Revision update: v1.0.1 2025-06-15 11:33
-   *
-   * Theme variable namespaces
-   * Theme variables are defined in namespaces and each namespace corresponds to one or more utility class or
-   * variant APIs.
-   *
-   * Defining new theme variables in these namespaces will make new corresponding utilities and variants
-   * available in the project-manager:
-   *
-   * Namespace utility classes
-   * --color-*	Color utilities like bg-red-500, text-sky-300, and many more
-   * --font-*	Font family utilities like font-sans
-   * --text-*	Font size utilities like text-xl
-   * --font-weight-*	Font weight utilities like font-bold
-   * --tracking-*	Letter spacing utilities like tracking-wide
-   * --leading-*	Line height utilities like leading-tight
-   * --breakpoint-*	Responsive breakpoint variants like sm:*
-   * --container-*	Container query variants like @sm:* and size utilities like max-w-md
-   * --spacing-*	Spacing and sizing utilities like px-4, max-h-16, and many more
-   * --radius-*	Border radius utilities like rounded-sm
-   * --shadow-*	Box shadow utilities like shadow-md
-   * --inset-shadow-*	Inset box shadow utilities like inset-shadow-xs
-   * --drop-shadow-*	Drop shadow filter utilities like drop-shadow-md
-   * --blur-*	Blur filter utilities like blur-md
-   * --perspective-*	Perspective utilities like perspective-near
-   * --aspect-*	Aspect ratio utilities like aspect-video
-   * --ease-*	Transition timing function utilities like ease-out
-   * --animate-*	Animation utilities like animate-spin
-   */
-
-  /**
-   * @namespace: --color-*
-   * @description: Maps all semantic --ui-* variables to Tailwind's color
-   * utilities (`bg-*`, `text-*`, `border-*`, etc.).
-   */
-  /* --- Fill colours for named page area options --- */
   /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-  /*~~~~~~~~~~~~~~ 1. FILL (Backgrounds & Shadows) ~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ COLOUR (--color-*) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
   /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-  /* --- 'base' fill --- */
-  --color-fill-base-default: var(--api-fill-base-default);
-  --color-fill-base-hover: var(--api-fill-base-hover);
-  --color-fill-base-active: var(--api-fill-base-active);
-  --color-fill-base-selected: var(--api-fill-base-selected);
-  --color-fill-base-visited: var(--api-fill-base-visited);
-  --color-fill-base-disabled: var(--api-fill-base-disabled);
-  --color-fill-base-shadow: var(--api-fill-base-shadow);
+  /* utilities: bg-fill-*, text-pen-*, border-, outline-, ring-, divide-edge-* */
 
-  /* --- 'primary' (Primary fill --- */
-  --color-fill-primary-default: var(--api-fill-primary-default);
-  --color-fill-primary-hover: var(--api-fill-primary-hover);
-  --color-fill-primary-active: var(--api-fill-primary-active);
-  --color-fill-primary-selected: var(--api-fill-primary-selected);
-  --color-fill-primary-visited: var(--api-fill-primary-visited);
-  --color-fill-primary-disabled: var(--api-fill-primary-disabled);
-  --color-fill-primary-shadow: var(--api-fill-primary-shadow);
-
-  /* --- 'secondary' fill --- */
-  --color-fill-secondary-default: var(--api-fill-secondary-default);
-  --color-fill-secondary-hover: var(--api-fill-secondary-hover);
-  --color-fill-secondary-active: var(--api-fill-secondary-active);
-  --color-fill-secondary-selected: var(--api-fill-secondary-selected);
-  --color-fill-secondary-visited: var(--api-fill-secondary-visited);
-  --color-fill-secondary-disabled: var(--api-fill-secondary-disabled);
-  --color-fill-secondary-shadow: var(--api-fill-secondary-shadow);
-
-  /* --- 'tertiary'  fill --- */
-  --color-fill-tertiary-default: var(--api-fill-tertiary-default);
-  --color-fill-tertiary-hover: var(--api-fill-tertiary-hover);
-  --color-fill-tertiary-active: var(--api-fill-tertiary-active);
-  --color-fill-tertiary-selected: var(--api-fill-tertiary-selected);
-  --color-fill-tertiary-visited: var(--api-fill-tertiary-visited);
-  --color-fill-tertiary-disabled: var(--api-fill-tertiary-disabled);
-  --color-fill-tertiary-shadow: var(--api-fill-tertiary-shadow);
-
-  /* --- 'accent' (Special highlights, on - component items) --- */
-  --color-fill-accent-default: var(--api-fill-accent-default);
-  --color-fill-accent-hover: var(--api-fill-accent-hover);
-  --color-fill-accent-active: var(--api-fill-accent-active);
-  --color-fill-accent-selected: var(--api-fill-accent-selected);
-  --color-fill-accent-visited: var(--api-fill-accent-visited);
-  --color-fill-accent-disabled: var(--api-fill-accent-disabled);
-  --color-fill-accent-shadow: var(--api-fill-accent-shadow);
-
-  /* --- 'muted' (For placeholders fill) --- */
-  --color-fill-muted-default: var(--api-fill-muted-default);
-  --color-fill-muted-hover: var(--api-fill-muted-hover);
-  --color-fill-muted-active: var(--api-fill-muted-active);
-  --color-fill-muted-selected: var(--api-fill-muted-selected);
-  --color-fill-muted-visited: var(--api-fill-muted-visited);
-  --color-fill-muted-disabled: var(--api-fill-muted-disabled);
-  --color-fill-muted-shadow: var(--api-fill-muted-shadow);
-
-  /* --- 'floor' (The very bottom layer, behind 'base') --- */
+  /* 1. FILL (Backgrounds) */
   --color-fill-floor-default: var(--api-fill-floor-default);
   --color-fill-floor-hover: var(--api-fill-floor-hover);
   --color-fill-floor-active: var(--api-fill-floor-active);
   --color-fill-floor-selected: var(--api-fill-floor-selected);
   --color-fill-floor-visited: var(--api-fill-floor-visited);
   --color-fill-floor-disabled: var(--api-fill-floor-disabled);
+  --color-fill-floor-focus: var(--api-fill-floor-focus);
+  --color-fill-floor-pressed: var(--api-fill-floor-pressed);
+  --color-fill-floor-on: var(--api-fill-floor-on);
+  --color-fill-floor-error: var(--api-fill-floor-error);
+  --color-fill-floor-loading: var(--api-fill-floor-loading);
   --color-fill-floor-shadow: var(--api-fill-floor-shadow);
-
-  /* --- 'input' (For form inputs, textareas etc.) --- */
+  --color-fill-base-default: var(--api-fill-base-default);
+  --color-fill-base-hover: var(--api-fill-base-hover);
+  --color-fill-base-active: var(--api-fill-base-active);
+  --color-fill-base-selected: var(--api-fill-base-selected);
+  --color-fill-base-visited: var(--api-fill-base-visited);
+  --color-fill-base-disabled: var(--api-fill-base-disabled);
+  --color-fill-base-focus: var(--api-fill-base-focus);
+  --color-fill-base-pressed: var(--api-fill-base-pressed);
+  --color-fill-base-on: var(--api-fill-base-on);
+  --color-fill-base-error: var(--api-fill-base-error);
+  --color-fill-base-loading: var(--api-fill-base-loading);
+  --color-fill-base-shadow: var(--api-fill-base-shadow);
+  --color-fill-primary-default: var(--api-fill-primary-default);
+  --color-fill-primary-hover: var(--api-fill-primary-hover);
+  --color-fill-primary-active: var(--api-fill-primary-active);
+  --color-fill-primary-selected: var(--api-fill-primary-selected);
+  --color-fill-primary-visited: var(--api-fill-primary-visited);
+  --color-fill-primary-disabled: var(--api-fill-primary-disabled);
+  --color-fill-primary-focus: var(--api-fill-primary-focus);
+  --color-fill-primary-pressed: var(--api-fill-primary-pressed);
+  --color-fill-primary-on: var(--api-fill-primary-on);
+  --color-fill-primary-error: var(--api-fill-primary-error);
+  --color-fill-primary-loading: var(--api-fill-primary-loading);
+  --color-fill-primary-shadow: var(--api-fill-primary-shadow);
+  --color-fill-secondary-default: var(--api-fill-secondary-default);
+  --color-fill-secondary-hover: var(--api-fill-secondary-hover);
+  --color-fill-secondary-active: var(--api-fill-secondary-active);
+  --color-fill-secondary-selected: var(--api-fill-secondary-selected);
+  --color-fill-secondary-visited: var(--api-fill-secondary-visited);
+  --color-fill-secondary-disabled: var(--api-fill-secondary-disabled);
+  --color-fill-secondary-focus: var(--api-fill-secondary-focus);
+  --color-fill-secondary-pressed: var(--api-fill-secondary-pressed);
+  --color-fill-secondary-on: var(--api-fill-secondary-on);
+  --color-fill-secondary-error: var(--api-fill-secondary-error);
+  --color-fill-secondary-loading: var(--api-fill-secondary-loading);
+  --color-fill-secondary-shadow: var(--api-fill-secondary-shadow);
+  --color-fill-tertiary-default: var(--api-fill-tertiary-default);
+  --color-fill-tertiary-hover: var(--api-fill-tertiary-hover);
+  --color-fill-tertiary-active: var(--api-fill-tertiary-active);
+  --color-fill-tertiary-selected: var(--api-fill-tertiary-selected);
+  --color-fill-tertiary-visited: var(--api-fill-tertiary-visited);
+  --color-fill-tertiary-disabled: var(--api-fill-tertiary-disabled);
+  --color-fill-tertiary-focus: var(--api-fill-tertiary-focus);
+  --color-fill-tertiary-pressed: var(--api-fill-tertiary-pressed);
+  --color-fill-tertiary-on: var(--api-fill-tertiary-on);
+  --color-fill-tertiary-error: var(--api-fill-tertiary-error);
+  --color-fill-tertiary-loading: var(--api-fill-tertiary-loading);
+  --color-fill-tertiary-shadow: var(--api-fill-tertiary-shadow);
+  --color-fill-accent-default: var(--api-fill-accent-default);
+  --color-fill-accent-hover: var(--api-fill-accent-hover);
+  --color-fill-accent-active: var(--api-fill-accent-active);
+  --color-fill-accent-selected: var(--api-fill-accent-selected);
+  --color-fill-accent-visited: var(--api-fill-accent-visited);
+  --color-fill-accent-disabled: var(--api-fill-accent-disabled);
+  --color-fill-accent-focus: var(--api-fill-accent-focus);
+  --color-fill-accent-pressed: var(--api-fill-accent-pressed);
+  --color-fill-accent-on: var(--api-fill-accent-on);
+  --color-fill-accent-error: var(--api-fill-accent-error);
+  --color-fill-accent-loading: var(--api-fill-accent-loading);
+  --color-fill-accent-shadow: var(--api-fill-accent-shadow);
+  --color-fill-muted-default: var(--api-fill-muted-default);
+  --color-fill-muted-hover: var(--api-fill-muted-hover);
+  --color-fill-muted-active: var(--api-fill-muted-active);
+  --color-fill-muted-selected: var(--api-fill-muted-selected);
+  --color-fill-muted-visited: var(--api-fill-muted-visited);
+  --color-fill-muted-disabled: var(--api-fill-muted-disabled);
+  --color-fill-muted-focus: var(--api-fill-muted-focus);
+  --color-fill-muted-pressed: var(--api-fill-muted-pressed);
+  --color-fill-muted-on: var(--api-fill-muted-on);
+  --color-fill-muted-error: var(--api-fill-muted-error);
+  --color-fill-muted-loading: var(--api-fill-muted-loading);
+  --color-fill-muted-shadow: var(--api-fill-muted-shadow);
   --color-fill-input-default: var(--api-fill-input-default);
   --color-fill-input-hover: var(--api-fill-input-hover);
   --color-fill-input-active: var(--api-fill-input-active);
   --color-fill-input-selected: var(--api-fill-input-selected);
   --color-fill-input-visited: var(--api-fill-input-visited);
   --color-fill-input-disabled: var(--api-fill-input-disabled);
+  --color-fill-input-focus: var(--api-fill-input-focus);
+  --color-fill-input-pressed: var(--api-fill-input-pressed);
+  --color-fill-input-on: var(--api-fill-input-on);
+  --color-fill-input-error: var(--api-fill-input-error);
+  --color-fill-input-loading: var(--api-fill-input-loading);
   --color-fill-input-shadow: var(--api-fill-input-shadow);
-
-  /* --- 'link' text/icons --- */
   --color-fill-link-default: var(--api-fill-link-default);
   --color-fill-link-hover: var(--api-fill-link-hover);
   --color-fill-link-active: var(--api-fill-link-active);
   --color-fill-link-selected: var(--api-fill-link-selected);
   --color-fill-link-visited: var(--api-fill-link-visited);
   --color-fill-link-disabled: var(--api-fill-link-disabled);
+  --color-fill-link-focus: var(--api-fill-link-focus);
+  --color-fill-link-pressed: var(--api-fill-link-pressed);
+  --color-fill-link-on: var(--api-fill-link-on);
+  --color-fill-link-error: var(--api-fill-link-error);
+  --color-fill-link-loading: var(--api-fill-link-loading);
   --color-fill-link-shadow: var(--api-fill-link-shadow);
-
-  /* --- Status Fills --- */
+  /* Status roles */
   --color-fill-success-default: var(--api-fill-success-default);
   --color-fill-success-hover: var(--api-fill-success-hover);
   --color-fill-success-active: var(--api-fill-success-active);
   --color-fill-success-selected: var(--api-fill-success-selected);
   --color-fill-success-visited: var(--api-fill-success-visited);
   --color-fill-success-disabled: var(--api-fill-success-disabled);
+  --color-fill-success-focus: var(--api-fill-success-focus);
+  --color-fill-success-pressed: var(--api-fill-success-pressed);
+  --color-fill-success-on: var(--api-fill-success-on);
+  --color-fill-success-error: var(--api-fill-success-error);
+  --color-fill-success-loading: var(--api-fill-success-loading);
   --color-fill-success-shadow: var(--api-fill-success-shadow);
-
   --color-fill-info-default: var(--api-fill-info-default);
   --color-fill-info-hover: var(--api-fill-info-hover);
   --color-fill-info-active: var(--api-fill-info-active);
   --color-fill-info-selected: var(--api-fill-info-selected);
   --color-fill-info-visited: var(--api-fill-info-visited);
   --color-fill-info-disabled: var(--api-fill-info-disabled);
+  --color-fill-info-focus: var(--api-fill-info-focus);
+  --color-fill-info-pressed: var(--api-fill-info-pressed);
+  --color-fill-info-on: var(--api-fill-info-on);
+  --color-fill-info-error: var(--api-fill-info-error);
+  --color-fill-info-loading: var(--api-fill-info-loading);
   --color-fill-info-shadow: var(--api-fill-info-shadow);
-
   --color-fill-warning-default: var(--api-fill-warning-default);
   --color-fill-warning-hover: var(--api-fill-warning-hover);
   --color-fill-warning-active: var(--api-fill-warning-active);
   --color-fill-warning-selected: var(--api-fill-warning-selected);
   --color-fill-warning-visited: var(--api-fill-warning-visited);
   --color-fill-warning-disabled: var(--api-fill-warning-disabled);
+  --color-fill-warning-focus: var(--api-fill-warning-focus);
+  --color-fill-warning-pressed: var(--api-fill-warning-pressed);
+  --color-fill-warning-on: var(--api-fill-warning-on);
+  --color-fill-warning-error: var(--api-fill-warning-error);
+  --color-fill-warning-loading: var(--api-fill-warning-loading);
   --color-fill-warning-shadow: var(--api-fill-warning-shadow);
-
   --color-fill-error-default: var(--api-fill-error-default);
   --color-fill-error-hover: var(--api-fill-error-hover);
   --color-fill-error-active: var(--api-fill-error-active);
   --color-fill-error-selected: var(--api-fill-error-selected);
   --color-fill-error-visited: var(--api-fill-error-visited);
   --color-fill-error-disabled: var(--api-fill-error-disabled);
+  --color-fill-error-focus: var(--api-fill-error-focus);
+  --color-fill-error-pressed: var(--api-fill-error-pressed);
+  --color-fill-error-on: var(--api-fill-error-on);
+  --color-fill-error-error: var(--api-fill-error-error);
+  --color-fill-error-loading: var(--api-fill-error-loading);
   --color-fill-error-shadow: var(--api-fill-error-shadow);
-
   --color-fill-notification-default: var(--api-fill-notification-default);
   --color-fill-notification-hover: var(--api-fill-notification-hover);
   --color-fill-notification-active: var(--api-fill-notification-active);
   --color-fill-notification-selected: var(--api-fill-notification-selected);
   --color-fill-notification-visited: var(--api-fill-notification-visited);
   --color-fill-notification-disabled: var(--api-fill-notification-disabled);
+  --color-fill-notification-focus: var(--api-fill-notification-focus);
+  --color-fill-notification-pressed: var(--api-fill-notification-pressed);
+  --color-fill-notification-on: var(--api-fill-notification-on);
+  --color-fill-notification-error: var(--api-fill-notification-error);
+  --color-fill-notification-loading: var(--api-fill-notification-loading);
   --color-fill-notification-shadow: var(--api-fill-notification-shadow);
 
-  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-  /*~~~~~~~~~~~~~~ 2. PEN (Text, Icons & Shadows) ~~~~~~~~~~~~~~~~~~~~ */
-  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-
-  /* --- 'base' text/icons --- */
-  --color-pen-base-default: var(--api-pen-base-default);
-  --color-pen-base-hover: var(--api-pen-base-hover);
-  --color-pen-base-active: var(--api-pen-base-active);
-  --color-pen-base-selected: var(--api-pen-base-selected);
-  --color-pen-base-visited: var(--api-pen-base-visited);
-  --color-pen-base-disabled: var(--api-pen-base-disabled);
-  --color-pen-base-shadow: var(--api-pen-base-shadow);
-
-  /* --- 'primary' (Primary text/icons --- */
-  --color-pen-primary-default: var(--api-pen-primary-default);
-  --color-pen-primary-hover: var(--api-pen-primary-hover);
-  --color-pen-primary-active: var(--api-pen-primary-active);
-  --color-pen-primary-selected: var(--api-pen-primary-selected);
-  --color-pen-primary-visited: var(--api-pen-primary-visited);
-  --color-pen-primary-disabled: var(--api-pen-primary-disabled);
-  --color-pen-primary-shadow: var(--api-pen-primary-shadow);
-
-  /* --- 'secondary' text/icons --- */
-  --color-pen-secondary-default: var(--api-pen-secondary-default);
-  --color-pen-secondary-hover: var(--api-pen-secondary-hover);
-  --color-pen-secondary-active: var(--api-pen-secondary-active);
-  --color-pen-secondary-selected: var(--api-pen-secondary-selected);
-  --color-pen-secondary-visited: var(--api-pen-secondary-visited);
-  --color-pen-secondary-disabled: var(--api-pen-secondary-disabled);
-  --color-pen-secondary-shadow: var(--api-pen-secondary-shadow);
-
-  /* --- 'tertiary'  text/icons --- */
-  --color-pen-tertiary-default: var(--api-pen-tertiary-default);
-  --color-pen-tertiary-hover: var(--api-pen-tertiary-hover);
-  --color-pen-tertiary-active: var(--api-pen-tertiary-active);
-  --color-pen-tertiary-selected: var(--api-pen-tertiary-selected);
-  --color-pen-tertiary-visited: var(--api-pen-tertiary-visited);
-  --color-pen-tertiary-disabled: var(--api-pen-tertiary-disabled);
-  --color-pen-tertiary-shadow: var(--api-pen-tertiary-shadow);
-
-  /* --- 'accent' (Special highlights, on - component items) --- */
-  --color-pen-accent-default: var(--api-pen-accent-default);
-  --color-pen-accent-hover: var(--api-pen-accent-hover);
-  --color-pen-accent-active: var(--api-pen-accent-active);
-  --color-pen-accent-selected: var(--api-pen-accent-selected);
-  --color-pen-accent-visited: var(--api-pen-accent-visited);
-  --color-pen-accent-disabled: var(--api-pen-accent-disabled);
-  --color-pen-accent-shadow: var(--api-pen-accent-shadow);
-
-  /* --- 'muted' (For placeholders text/icons) --- */
-  --color-pen-muted-default: var(--api-pen-muted-default);
-  --color-pen-muted-hover: var(--api-pen-muted-hover);
-  --color-pen-muted-active: var(--api-pen-muted-active);
-  --color-pen-muted-selected: var(--api-pen-muted-selected);
-  --color-pen-muted-visited: var(--api-pen-muted-visited);
-  --color-pen-muted-disabled: var(--api-pen-muted-disabled);
-  --color-pen-muted-shadow: var(--api-pen-muted-shadow);
-
-  /* --- 'floor' (The very bottom layer, behind 'base') --- */
+  /* 2. PEN (Text, Icons) */
   --color-pen-floor-default: var(--api-pen-floor-default);
   --color-pen-floor-hover: var(--api-pen-floor-hover);
   --color-pen-floor-active: var(--api-pen-floor-active);
   --color-pen-floor-selected: var(--api-pen-floor-selected);
   --color-pen-floor-visited: var(--api-pen-floor-visited);
   --color-pen-floor-disabled: var(--api-pen-floor-disabled);
+  --color-pen-floor-focus: var(--api-pen-floor-focus);
+  --color-pen-floor-pressed: var(--api-pen-floor-pressed);
+  --color-pen-floor-on: var(--api-pen-floor-on);
+  --color-pen-floor-error: var(--api-pen-floor-error);
+  --color-pen-floor-loading: var(--api-pen-floor-loading);
   --color-pen-floor-shadow: var(--api-pen-floor-shadow);
-
-  /* --- 'input' (For form inputs, textareas etc.) --- */
+  --color-pen-base-default: var(--api-pen-base-default);
+  --color-pen-base-hover: var(--api-pen-base-hover);
+  --color-pen-base-active: var(--api-pen-base-active);
+  --color-pen-base-selected: var(--api-pen-base-selected);
+  --color-pen-base-visited: var(--api-pen-base-visited);
+  --color-pen-base-disabled: var(--api-pen-base-disabled);
+  --color-pen-base-focus: var(--api-pen-base-focus);
+  --color-pen-base-pressed: var(--api-pen-base-pressed);
+  --color-pen-base-on: var(--api-pen-base-on);
+  --color-pen-base-error: var(--api-pen-base-error);
+  --color-pen-base-loading: var(--api-pen-base-loading);
+  --color-pen-base-shadow: var(--api-pen-base-shadow);
+  --color-pen-primary-default: var(--api-pen-primary-default);
+  --color-pen-primary-hover: var(--api-pen-primary-hover);
+  --color-pen-primary-active: var(--api-pen-primary-active);
+  --color-pen-primary-selected: var(--api-pen-primary-selected);
+  --color-pen-primary-visited: var(--api-pen-primary-visited);
+  --color-pen-primary-disabled: var(--api-pen-primary-disabled);
+  --color-pen-primary-focus: var(--api-pen-primary-focus);
+  --color-pen-primary-pressed: var(--api-pen-primary-pressed);
+  --color-pen-primary-on: var(--api-pen-primary-on);
+  --color-pen-primary-error: var(--api-pen-primary-error);
+  --color-pen-primary-loading: var(--api-pen-primary-loading);
+  --color-pen-primary-shadow: var(--api-pen-primary-shadow);
+  --color-pen-secondary-default: var(--api-pen-secondary-default);
+  --color-pen-secondary-hover: var(--api-pen-secondary-hover);
+  --color-pen-secondary-active: var(--api-pen-secondary-active);
+  --color-pen-secondary-selected: var(--api-pen-secondary-selected);
+  --color-pen-secondary-visited: var(--api-pen-secondary-visited);
+  --color-pen-secondary-disabled: var(--api-pen-secondary-disabled);
+  --color-pen-secondary-focus: var(--api-pen-secondary-focus);
+  --color-pen-secondary-pressed: var(--api-pen-secondary-pressed);
+  --color-pen-secondary-on: var(--api-pen-secondary-on);
+  --color-pen-secondary-error: var(--api-pen-secondary-error);
+  --color-pen-secondary-loading: var(--api-pen-secondary-loading);
+  --color-pen-secondary-shadow: var(--api-pen-secondary-shadow);
+  --color-pen-tertiary-default: var(--api-pen-tertiary-default);
+  --color-pen-tertiary-hover: var(--api-pen-tertiary-hover);
+  --color-pen-tertiary-active: var(--api-pen-tertiary-active);
+  --color-pen-tertiary-selected: var(--api-pen-tertiary-selected);
+  --color-pen-tertiary-visited: var(--api-pen-tertiary-visited);
+  --color-pen-tertiary-disabled: var(--api-pen-tertiary-disabled);
+  --color-pen-tertiary-focus: var(--api-pen-tertiary-focus);
+  --color-pen-tertiary-pressed: var(--api-pen-tertiary-pressed);
+  --color-pen-tertiary-on: var(--api-pen-tertiary-on);
+  --color-pen-tertiary-error: var(--api-pen-tertiary-error);
+  --color-pen-tertiary-loading: var(--api-pen-tertiary-loading);
+  --color-pen-tertiary-shadow: var(--api-pen-tertiary-shadow);
+  --color-pen-accent-default: var(--api-pen-accent-default);
+  --color-pen-accent-hover: var(--api-pen-accent-hover);
+  --color-pen-accent-active: var(--api-pen-accent-active);
+  --color-pen-accent-selected: var(--api-pen-accent-selected);
+  --color-pen-accent-visited: var(--api-pen-accent-visited);
+  --color-pen-accent-disabled: var(--api-pen-accent-disabled);
+  --color-pen-accent-focus: var(--api-pen-accent-focus);
+  --color-pen-accent-pressed: var(--api-pen-accent-pressed);
+  --color-pen-accent-on: var(--api-pen-accent-on);
+  --color-pen-accent-error: var(--api-pen-accent-error);
+  --color-pen-accent-loading: var(--api-pen-accent-loading);
+  --color-pen-accent-shadow: var(--api-pen-accent-shadow);
+  --color-pen-muted-default: var(--api-pen-muted-default);
+  --color-pen-muted-hover: var(--api-pen-muted-hover);
+  --color-pen-muted-active: var(--api-pen-muted-active);
+  --color-pen-muted-selected: var(--api-pen-muted-selected);
+  --color-pen-muted-visited: var(--api-pen-muted-visited);
+  --color-pen-muted-disabled: var(--api-pen-muted-disabled);
+  --color-pen-muted-focus: var(--api-pen-muted-focus);
+  --color-pen-muted-pressed: var(--api-pen-muted-pressed);
+  --color-pen-muted-on: var(--api-pen-muted-on);
+  --color-pen-muted-error: var(--api-pen-muted-error);
+  --color-pen-muted-loading: var(--api-pen-muted-loading);
+  --color-pen-muted-shadow: var(--api-pen-muted-shadow);
   --color-pen-input-default: var(--api-pen-input-default);
   --color-pen-input-hover: var(--api-pen-input-hover);
   --color-pen-input-active: var(--api-pen-input-active);
   --color-pen-input-selected: var(--api-pen-input-selected);
   --color-pen-input-visited: var(--api-pen-input-visited);
   --color-pen-input-disabled: var(--api-pen-input-disabled);
+  --color-pen-input-focus: var(--api-pen-input-focus);
+  --color-pen-input-pressed: var(--api-pen-input-pressed);
+  --color-pen-input-on: var(--api-pen-input-on);
+  --color-pen-input-error: var(--api-pen-input-error);
+  --color-pen-input-loading: var(--api-pen-input-loading);
   --color-pen-input-shadow: var(--api-pen-input-shadow);
-
-  /* --- 'link' text/icons --- */
   --color-pen-link-default: var(--api-pen-link-default);
   --color-pen-link-hover: var(--api-pen-link-hover);
   --color-pen-link-active: var(--api-pen-link-active);
   --color-pen-link-selected: var(--api-pen-link-selected);
   --color-pen-link-visited: var(--api-pen-link-visited);
   --color-pen-link-disabled: var(--api-pen-link-disabled);
+  --color-pen-link-focus: var(--api-pen-link-focus);
+  --color-pen-link-pressed: var(--api-pen-link-pressed);
+  --color-pen-link-on: var(--api-pen-link-on);
+  --color-pen-link-error: var(--api-pen-link-error);
+  --color-pen-link-loading: var(--api-pen-link-loading);
   --color-pen-link-shadow: var(--api-pen-link-shadow);
-
-  /* --- Status Pens --- */
+  /* Status roles */
   --color-pen-success-default: var(--api-pen-success-default);
   --color-pen-success-hover: var(--api-pen-success-hover);
   --color-pen-success-active: var(--api-pen-success-active);
   --color-pen-success-selected: var(--api-pen-success-selected);
   --color-pen-success-visited: var(--api-pen-success-visited);
   --color-pen-success-disabled: var(--api-pen-success-disabled);
+  --color-pen-success-focus: var(--api-pen-success-focus);
+  --color-pen-success-pressed: var(--api-pen-success-pressed);
+  --color-pen-success-on: var(--api-pen-success-on);
+  --color-pen-success-error: var(--api-pen-success-error);
+  --color-pen-success-loading: var(--api-pen-success-loading);
   --color-pen-success-shadow: var(--api-pen-success-shadow);
-
   --color-pen-info-default: var(--api-pen-info-default);
   --color-pen-info-hover: var(--api-pen-info-hover);
   --color-pen-info-active: var(--api-pen-info-active);
   --color-pen-info-selected: var(--api-pen-info-selected);
   --color-pen-info-visited: var(--api-pen-info-visited);
   --color-pen-info-disabled: var(--api-pen-info-disabled);
+  --color-pen-info-focus: var(--api-pen-info-focus);
+  --color-pen-info-pressed: var(--api-pen-info-pressed);
+  --color-pen-info-on: var(--api-pen-info-on);
+  --color-pen-info-error: var(--api-pen-info-error);
+  --color-pen-info-loading: var(--api-pen-info-loading);
   --color-pen-info-shadow: var(--api-pen-info-shadow);
-
   --color-pen-warning-default: var(--api-pen-warning-default);
   --color-pen-warning-hover: var(--api-pen-warning-hover);
   --color-pen-warning-active: var(--api-pen-warning-active);
   --color-pen-warning-selected: var(--api-pen-warning-selected);
   --color-pen-warning-visited: var(--api-pen-warning-visited);
   --color-pen-warning-disabled: var(--api-pen-warning-disabled);
+  --color-pen-warning-focus: var(--api-pen-warning-focus);
+  --color-pen-warning-pressed: var(--api-pen-warning-pressed);
+  --color-pen-warning-on: var(--api-pen-warning-on);
+  --color-pen-warning-error: var(--api-pen-warning-error);
+  --color-pen-warning-loading: var(--api-pen-warning-loading);
   --color-pen-warning-shadow: var(--api-pen-warning-shadow);
-
   --color-pen-error-default: var(--api-pen-error-default);
   --color-pen-error-hover: var(--api-pen-error-hover);
   --color-pen-error-active: var(--api-pen-error-active);
   --color-pen-error-selected: var(--api-pen-error-selected);
   --color-pen-error-visited: var(--api-pen-error-visited);
   --color-pen-error-disabled: var(--api-pen-error-disabled);
+  --color-pen-error-focus: var(--api-pen-error-focus);
+  --color-pen-error-pressed: var(--api-pen-error-pressed);
+  --color-pen-error-on: var(--api-pen-error-on);
+  --color-pen-error-error: var(--api-pen-error-error);
+  --color-pen-error-loading: var(--api-pen-error-loading);
   --color-pen-error-shadow: var(--api-pen-error-shadow);
-
   --color-pen-notification-default: var(--api-pen-notification-default);
   --color-pen-notification-hover: var(--api-pen-notification-hover);
   --color-pen-notification-active: var(--api-pen-notification-active);
   --color-pen-notification-selected: var(--api-pen-notification-selected);
   --color-pen-notification-visited: var(--api-pen-notification-visited);
   --color-pen-notification-disabled: var(--api-pen-notification-disabled);
+  --color-pen-notification-focus: var(--api-pen-notification-focus);
+  --color-pen-notification-pressed: var(--api-pen-notification-pressed);
+  --color-pen-notification-on: var(--api-pen-notification-on);
+  --color-pen-notification-error: var(--api-pen-notification-error);
+  --color-pen-notification-loading: var(--api-pen-notification-loading);
   --color-pen-notification-shadow: var(--api-pen-notification-shadow);
 
-  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-  /*~~~~~~~~~~~~~~ 3. EDGE (Borders) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-
-  /* --- 'base' edge --- */
-  --color-edge-base-default: var(--api-edge-base-default);
-  --color-edge-base-hover: var(--api-edge-base-hover);
-  --color-edge-base-active: var(--api-edge-base-active);
-  --color-edge-base-selected: var(--api-edge-base-selected);
-  --color-edge-base-visited: var(--api-edge-base-visited);
-  --color-edge-base-disabled: var(--api-edge-base-disabled);
-
-  /* --- 'primary' (Primary edge --- */
-  --color-edge-primary-default: var(--api-edge-primary-default);
-  --color-edge-primary-hover: var(--api-edge-primary-hover);
-  --color-edge-primary-active: var(--api-edge-primary-active);
-  --color-edge-primary-selected: var(--api-edge-primary-selected);
-  --color-edge-primary-visited: var(--api-edge-primary-visited);
-  --color-edge-primary-disabled: var(--api-edge-primary-disabled);
-
-  /* --- 'secondary' edge --- */
-  --color-edge-secondary-default: var(--api-edge-secondary-default);
-  --color-edge-secondary-hover: var(--api-edge-secondary-hover);
-  --color-edge-secondary-active: var(--api-edge-secondary-active);
-  --color-edge-secondary-selected: var(--api-edge-secondary-selected);
-  --color-edge-secondary-visited: var(--api-edge-secondary-visited);
-  --color-edge-secondary-disabled: var(--api-edge-secondary-disabled);
-
-  /* --- 'tertiary'  edge --- */
-  --color-edge-tertiary-default: var(--api-edge-tertiary-default);
-  --color-edge-tertiary-hover: var(--api-edge-tertiary-hover);
-  --color-edge-tertiary-active: var(--api-edge-tertiary-active);
-  --color-edge-tertiary-selected: var(--api-edge-tertiary-selected);
-  --color-edge-tertiary-visited: var(--api-edge-tertiary-visited);
-  --color-edge-tertiary-disabled: var(--api-edge-tertiary-disabled);
-
-  /* --- 'accent' (Special highlights, on - component items) --- */
-  --color-edge-accent-default: var(--api-edge-accent-default);
-  --color-edge-accent-hover: var(--api-edge-accent-hover);
-  --color-edge-accent-active: var(--api-edge-accent-active);
-  --color-edge-accent-selected: var(--api-edge-accent-selected);
-  --color-edge-accent-visited: var(--api-edge-accent-visited);
-  --color-edge-accent-disabled: var(--api-edge-accent-disabled);
-
-  /* --- 'muted' (For placeholders edge) --- */
-  --color-edge-muted-default: var(--api-edge-muted-default);
-  --color-edge-muted-hover: var(--api-edge-muted-hover);
-  --color-edge-muted-active: var(--api-edge-muted-active);
-  --color-edge-muted-selected: var(--api-edge-muted-selected);
-  --color-edge-muted-visited: var(--api-edge-muted-visited);
-  --color-edge-muted-disabled: var(--api-edge-muted-disabled);
-
-  /* --- 'floor' (The very bottom layer, behind 'base') --- */
+  /* 3. EDGE (Borders, outlines, rings, dividers) */
   --color-edge-floor-default: var(--api-edge-floor-default);
   --color-edge-floor-hover: var(--api-edge-floor-hover);
   --color-edge-floor-active: var(--api-edge-floor-active);
   --color-edge-floor-selected: var(--api-edge-floor-selected);
   --color-edge-floor-visited: var(--api-edge-floor-visited);
   --color-edge-floor-disabled: var(--api-edge-floor-disabled);
-
-  /* --- 'input' (For form inputs, textareas etc.) --- */
+  --color-edge-floor-focus: var(--api-edge-floor-focus);
+  --color-edge-floor-pressed: var(--api-edge-floor-pressed);
+  --color-edge-floor-on: var(--api-edge-floor-on);
+  --color-edge-floor-error: var(--api-edge-floor-error);
+  --color-edge-floor-loading: var(--api-edge-floor-loading);
+  --color-edge-base-default: var(--api-edge-base-default);
+  --color-edge-base-hover: var(--api-edge-base-hover);
+  --color-edge-base-active: var(--api-edge-base-active);
+  --color-edge-base-selected: var(--api-edge-base-selected);
+  --color-edge-base-visited: var(--api-edge-base-visited);
+  --color-edge-base-disabled: var(--api-edge-base-disabled);
+  --color-edge-base-focus: var(--api-edge-base-focus);
+  --color-edge-base-pressed: var(--api-edge-base-pressed);
+  --color-edge-base-on: var(--api-edge-base-on);
+  --color-edge-base-error: var(--api-edge-base-error);
+  --color-edge-base-loading: var(--api-edge-base-loading);
+  --color-edge-primary-default: var(--api-edge-primary-default);
+  --color-edge-primary-hover: var(--api-edge-primary-hover);
+  --color-edge-primary-active: var(--api-edge-primary-active);
+  --color-edge-primary-selected: var(--api-edge-primary-selected);
+  --color-edge-primary-visited: var(--api-edge-primary-visited);
+  --color-edge-primary-disabled: var(--api-edge-primary-disabled);
+  --color-edge-primary-focus: var(--api-edge-primary-focus);
+  --color-edge-primary-pressed: var(--api-edge-primary-pressed);
+  --color-edge-primary-on: var(--api-edge-primary-on);
+  --color-edge-primary-error: var(--api-edge-primary-error);
+  --color-edge-primary-loading: var(--api-edge-primary-loading);
+  --color-edge-secondary-default: var(--api-edge-secondary-default);
+  --color-edge-secondary-hover: var(--api-edge-secondary-hover);
+  --color-edge-secondary-active: var(--api-edge-secondary-active);
+  --color-edge-secondary-selected: var(--api-edge-secondary-selected);
+  --color-edge-secondary-visited: var(--api-edge-secondary-visited);
+  --color-edge-secondary-disabled: var(--api-edge-secondary-disabled);
+  --color-edge-secondary-focus: var(--api-edge-secondary-focus);
+  --color-edge-secondary-pressed: var(--api-edge-secondary-pressed);
+  --color-edge-secondary-on: var(--api-edge-secondary-on);
+  --color-edge-secondary-error: var(--api-edge-secondary-error);
+  --color-edge-secondary-loading: var(--api-edge-secondary-loading);
+  --color-edge-tertiary-default: var(--api-edge-tertiary-default);
+  --color-edge-tertiary-hover: var(--api-edge-tertiary-hover);
+  --color-edge-tertiary-active: var(--api-edge-tertiary-active);
+  --color-edge-tertiary-selected: var(--api-edge-tertiary-selected);
+  --color-edge-tertiary-visited: var(--api-edge-tertiary-visited);
+  --color-edge-tertiary-disabled: var(--api-edge-tertiary-disabled);
+  --color-edge-tertiary-focus: var(--api-edge-tertiary-focus);
+  --color-edge-tertiary-pressed: var(--api-edge-tertiary-pressed);
+  --color-edge-tertiary-on: var(--api-edge-tertiary-on);
+  --color-edge-tertiary-error: var(--api-edge-tertiary-error);
+  --color-edge-tertiary-loading: var(--api-edge-tertiary-loading);
+  --color-edge-accent-default: var(--api-edge-accent-default);
+  --color-edge-accent-hover: var(--api-edge-accent-hover);
+  --color-edge-accent-active: var(--api-edge-accent-active);
+  --color-edge-accent-selected: var(--api-edge-accent-selected);
+  --color-edge-accent-visited: var(--api-edge-accent-visited);
+  --color-edge-accent-disabled: var(--api-edge-accent-disabled);
+  --color-edge-accent-focus: var(--api-edge-accent-focus);
+  --color-edge-accent-pressed: var(--api-edge-accent-pressed);
+  --color-edge-accent-on: var(--api-edge-accent-on);
+  --color-edge-accent-error: var(--api-edge-accent-error);
+  --color-edge-accent-loading: var(--api-edge-accent-loading);
+  --color-edge-muted-default: var(--api-edge-muted-default);
+  --color-edge-muted-hover: var(--api-edge-muted-hover);
+  --color-edge-muted-active: var(--api-edge-muted-active);
+  --color-edge-muted-selected: var(--api-edge-muted-selected);
+  --color-edge-muted-visited: var(--api-edge-muted-visited);
+  --color-edge-muted-disabled: var(--api-edge-muted-disabled);
+  --color-edge-muted-focus: var(--api-edge-muted-focus);
+  --color-edge-muted-pressed: var(--api-edge-muted-pressed);
+  --color-edge-muted-on: var(--api-edge-muted-on);
+  --color-edge-muted-error: var(--api-edge-muted-error);
+  --color-edge-muted-loading: var(--api-edge-muted-loading);
   --color-edge-input-default: var(--api-edge-input-default);
   --color-edge-input-hover: var(--api-edge-input-hover);
   --color-edge-input-active: var(--api-edge-input-active);
   --color-edge-input-selected: var(--api-edge-input-selected);
   --color-edge-input-visited: var(--api-edge-input-visited);
   --color-edge-input-disabled: var(--api-edge-input-disabled);
-
-  /* --- 'link' text/icons --- */
+  --color-edge-input-focus: var(--api-edge-input-focus);
+  --color-edge-input-pressed: var(--api-edge-input-pressed);
+  --color-edge-input-on: var(--api-edge-input-on);
+  --color-edge-input-error: var(--api-edge-input-error);
+  --color-edge-input-loading: var(--api-edge-input-loading);
   --color-edge-link-default: var(--api-edge-link-default);
   --color-edge-link-hover: var(--api-edge-link-hover);
   --color-edge-link-active: var(--api-edge-link-active);
   --color-edge-link-selected: var(--api-edge-link-selected);
   --color-edge-link-visited: var(--api-edge-link-visited);
   --color-edge-link-disabled: var(--api-edge-link-disabled);
-
-  /* --- Status for Edges --- */
+  --color-edge-link-focus: var(--api-edge-link-focus);
+  --color-edge-link-pressed: var(--api-edge-link-pressed);
+  --color-edge-link-on: var(--api-edge-link-on);
+  --color-edge-link-error: var(--api-edge-link-error);
+  --color-edge-link-loading: var(--api-edge-link-loading);
+  /* Status roles */
   --color-edge-success-default: var(--api-edge-success-default);
   --color-edge-success-hover: var(--api-edge-success-hover);
   --color-edge-success-active: var(--api-edge-success-active);
   --color-edge-success-selected: var(--api-edge-success-selected);
   --color-edge-success-visited: var(--api-edge-success-visited);
   --color-edge-success-disabled: var(--api-edge-success-disabled);
-
+  --color-edge-success-focus: var(--api-edge-success-focus);
+  --color-edge-success-pressed: var(--api-edge-success-pressed);
+  --color-edge-success-on: var(--api-edge-success-on);
+  --color-edge-success-error: var(--api-edge-success-error);
+  --color-edge-success-loading: var(--api-edge-success-loading);
   --color-edge-info-default: var(--api-edge-info-default);
   --color-edge-info-hover: var(--api-edge-info-hover);
   --color-edge-info-active: var(--api-edge-info-active);
   --color-edge-info-selected: var(--api-edge-info-selected);
   --color-edge-info-visited: var(--api-edge-info-visited);
   --color-edge-info-disabled: var(--api-edge-info-disabled);
-
+  --color-edge-info-focus: var(--api-edge-info-focus);
+  --color-edge-info-pressed: var(--api-edge-info-pressed);
+  --color-edge-info-on: var(--api-edge-info-on);
+  --color-edge-info-error: var(--api-edge-info-error);
+  --color-edge-info-loading: var(--api-edge-info-loading);
   --color-edge-warning-default: var(--api-edge-warning-default);
   --color-edge-warning-hover: var(--api-edge-warning-hover);
   --color-edge-warning-active: var(--api-edge-warning-active);
   --color-edge-warning-selected: var(--api-edge-warning-selected);
   --color-edge-warning-visited: var(--api-edge-warning-visited);
   --color-edge-warning-disabled: var(--api-edge-warning-disabled);
-
+  --color-edge-warning-focus: var(--api-edge-warning-focus);
+  --color-edge-warning-pressed: var(--api-edge-warning-pressed);
+  --color-edge-warning-on: var(--api-edge-warning-on);
+  --color-edge-warning-error: var(--api-edge-warning-error);
+  --color-edge-warning-loading: var(--api-edge-warning-loading);
   --color-edge-error-default: var(--api-edge-error-default);
   --color-edge-error-hover: var(--api-edge-error-hover);
   --color-edge-error-active: var(--api-edge-error-active);
   --color-edge-error-selected: var(--api-edge-error-selected);
   --color-edge-error-visited: var(--api-edge-error-visited);
   --color-edge-error-disabled: var(--api-edge-error-disabled);
-
+  --color-edge-error-focus: var(--api-edge-error-focus);
+  --color-edge-error-pressed: var(--api-edge-error-pressed);
+  --color-edge-error-on: var(--api-edge-error-on);
+  --color-edge-error-error: var(--api-edge-error-error);
+  --color-edge-error-loading: var(--api-edge-error-loading);
   --color-edge-notification-default: var(--api-edge-notification-default);
   --color-edge-notification-hover: var(--api-edge-notification-hover);
   --color-edge-notification-active: var(--api-edge-notification-active);
   --color-edge-notification-selected: var(--api-edge-notification-selected);
   --color-edge-notification-visited: var(--api-edge-notification-visited);
   --color-edge-notification-disabled: var(--api-edge-notification-disabled);
+  --color-edge-notification-focus: var(--api-edge-notification-focus);
+  --color-edge-notification-pressed: var(--api-edge-notification-pressed);
+  --color-edge-notification-on: var(--api-edge-notification-on);
+  --color-edge-notification-error: var(--api-edge-notification-error);
+  --color-edge-notification-loading: var(--api-edge-notification-loading);
 
-  /**
-   * @namespace: --font-*
-   * @creates:
-   * @description: Font family utilities like font-sans
-   */
-  --font-sans: var(--api-font-sans);
-  --font-serif: var(--api-font-serif);
-  --font-mono: var(--api-font-mono);
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ SHADOW (Box shadows, elevation) (--shadow-*) ~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-  /**
-   * @namespace: --text-*
-   * @creates:
-   * @description: Font size utilities like text-xl
-   */
-  --text-sm: var(--api-text-sm);
-  --text-base: var(--api-text-base);
-  --text-lg: var(--api-text-lg);
-  --text-xl: var(--api-text-xl);
-  --text-2xl: var(--api-text-2xl);
-  --text-3xl: var(--api-text-3xl);
-  --text-4xl: var(--api-text-4xl);
-
-  /**
-   * @namespace: --font-weight-*
-   * @creates:
-   * @description: Font weight utilities like font-bold
-   */
-  --font-weight-light: var(--api-font-weight-light);
-  --font-weight-normal: var(--api-font-weight-normal);
-  --font-weight-medium: var(--api-font-weight-medium);
-  --font-weight-semibold: var(--api-font-weight-semibold);
-  --font-weight-bold: var(--api-font-weight-bold);
-  --font-weight-extrabold: var(--api-font-weight-extrabold);
-  --font-weight-heavy: var(--api-font-weight-heavy);
-
-  /**
-   * @namespace: --tracking-*
-   * @creates:
-   * @description: Letter spacing utilities like tracking-wide
-   */
-
-  /**
-   * @namespace: --leading-*
-   * @creates:
-   * @description: Line height utilities like leading-tight
-   */
-
-  /*
-   * @namespace: --breakpoint-*
-   * @creates: `sm:`, `md:`, `lg:`, etc. variants.
-   * @description: These values override Tailwind's default screen variants, allowing for a
-   * custom responsive design system tailored to the application's needs.
-   */
-  --breakpoint-sm: 640px;
-  --breakpoint-md: 768px;
-  --breakpoint-lg: 1024px;
-  --breakpoint-xl: 1280px;
-  --breakpoint-2xl: 1536px;
-  --breakpoint-3xl: 1920px;
-  --breakpoint-4xl: 2560px;
-  --breakpoint-5xl: 3840px;
-
-  /**
-   * @namespace: --container-*
-   * @creates:
-   * @description: Container query variants like @sm:* and size utilities like max-w-md
-   */
-  --container-center: var(--api-container-center);
-  /* ... (all your --container-padding-* and --container-sm/md/lg/xl lines) ... */
-  --container-2xl: var(--api-container-2xl);
-
-  /*
-   * @namespace: --spacing-*
-   * @creates: `p-*`, `m-*`, `w-*`, `h-*`, `gap-*`, etc. utilities.
-   * @description: This custom spacing scale provides consistent sizing
-   * units for padding, margins, width, height, and other layout properties.
-   */
-
-  --spacing-p-xs: var(--api-spacing-p-xs);
-  --spacing-p-sm: var(--api-spacing-p-sm);
-  --spacing-p-md: var(--api-spacing-p-md);
-  --spacing-p-lg: var(--api-spacing-p-lg);
-  --spacing-p-xl: var(--api-spacing-p-xl);
-
-  /* * ADDED the missing max-width scale keys.
-   * This will generate max-w-xl, max-w-4xl, etc. correctly.
-   */
-  --spacing-xs: var(--api-spacing-xs);
-  --spacing-sm: var(--api-spacing-sm);
-  --spacing-md: var(--api-spacing-md);
-  --spacing-lg: var(--api-spacing-lg);
-  --spacing-xl: var(--api-spacing-xl);  /* This will fix contact.vue (max-w-xl) */
-  --spacing-2xl: var(--api-spacing-2xl);
-  --spacing-3xl: var(--api-spacing-3xl);
-  --spacing-4xl: var(--api-spacing-4xl); /* This will fix about.vue (max-w-4xl) */
-  --spacing-5xl: var(--api-spacing-5xl);
-  --spacing-6xl: var(--api-spacing-6xl);
-  --spacing-7xl: var(--api-spacing-7xl);
-  --spacing-full: var(--api-spacing-full);
-  --spacing-screen-sm: var(--api-spacing-screen-sm);
-  --spacing-screen-md: var(--api-spacing-screen-md);
-  --spacing-screen-lg: var(--api-spacing-screen-lg);
-  --spacing-screen-xl: var(--api-spacing-screen-xl);
-  --spacing-screen-2xl: var(--api-spacing-screen-2xl);
-
-  /* Map Tailwind's defaults to your new 'p-*' scale */
-  --spacing-1: var(--api-spacing-1); /* 4px */
-  --spacing-2: var(--api-spacing-2); /* 8px */
-  --spacing-3: var(--api-spacing-3);
-  --spacing-4: var(--api-spacing-4); /* 16px */
-  --spacing-5: var(--api-spacing-5);
-  --spacing-6: var(--api-spacing-6); /* 24px */
-  --spacing-7: var(--api-spacing-7); /* 32px */
-  --spacing-8: var(--api-spacing-8);
-  --spacing-9: var(--api-spacing-9);
-
-  /**
-   * @namespace: --radius-*
-   * @creates:
-   * @description: Border radius utilities like rounded-sm
-   */
-  --radius-sm: var(--api-radius-sm);
-  --radius-md: var(--api-radius-md);
-  --radius-lg: var(--api-radius-lg);
-  --radius-xl: var(--api-radius-xl);
-  --radius-DEFAULT: var(--api-radius-DEFAULT);
-  --radius-full: var(--api-radius-full);
-
-  /**
-   * ==================================================================
-   * SHADOW COMPOSITION MATRIX
-   * ==================================================================
-   * Static Shapes + Dynamic Colors from your palette.
-   * This creates utilities like `shadow-md-base`, `shadow-lg-primary`,
-   * `inset-shadow-sm-input`, `drop-shadow-lg-success`, etc.
-   */
-
-  /**
-   * @namespace: --shadow-*
-   * @creates:
-   * @description: Box shadow utilities like shadow-md
-   */
-
-  /* --- Base --- */
-  --shadow-sm-base: var(--api-shadow-sm-base);
-  --shadow-md-base: var(--api-shadow-md-base);
-  --shadow-lg-base: var(--api-shadow-lg-base);
-  --shadow-xl-base: var(--api-shadow-xl-base);
-
-  /* --- Primary --- */
-  --shadow-sm-primary: var(--api-shadow-sm-primary);
-  --shadow-md-primary: var(--api-shadow-md-primary);
-  --shadow-lg-primary: var(--api-shadow-lg-primary);
-  --shadow-xl-primary: var(--api-shadow-xl-primary);
-
-  /* --- Secondary --- */
-  --shadow-sm-secondary: var(--api-shadow-sm-secondary);
-  --shadow-md-secondary: var(--api-shadow-md-secondary);
-  --shadow-lg-secondary: var(--api-shadow-lg-secondary);
-  --shadow-xl-secondary: var(--api-shadow-xl-secondary);
-
-  /* --- Tertiary --- */
-  --shadow-sm-tertiary: var(--api-shadow-sm-tertiary);
-  --shadow-md-tertiary: var(--api-shadow-md-tertiary);
-  --shadow-lg-tertiary: var(--api-shadow-lg-tertiary);
-  --shadow-xl-tertiary: var(--api-shadow-xl-tertiary);
-
-  /* --- Accent --- */
-  --shadow-sm-accent: var(--api-shadow-sm-accent);
-  --shadow-md-accent: var(--api-shadow-md-accent);
-  --shadow-lg-accent: var(--api-shadow-lg-accent);
-  --shadow-xl-accent: var(--api-shadow-xl-accent);
-
-  /* --- Muted --- */
-  --shadow-sm-muted: var(--api-shadow-sm-muted);
-  --shadow-md-muted: var(--api-shadow-md-muted);
-  --shadow-lg-muted: var(--api-shadow-lg-muted);
-  --shadow-xl-muted: var(--api-shadow-xl-muted);
-
-  /* --- Floor --- */
+  --shadow-xs: var(--api-shadow-xs);
+  --shadow-sm: var(--api-shadow-sm);
+  --shadow-md: var(--api-shadow-md);
+  --shadow-lg: var(--api-shadow-lg);
+  --shadow-xl: var(--api-shadow-xl);
+  --shadow-raised: var(--api-shadow-raised);
+  --shadow-lifted: var(--api-shadow-lifted);
+  --shadow-overlay: var(--api-shadow-overlay);
+  --shadow-modal: var(--api-shadow-modal);
+  --shadow-xs-floor: var(--api-shadow-xs-floor);
   --shadow-sm-floor: var(--api-shadow-sm-floor);
   --shadow-md-floor: var(--api-shadow-md-floor);
   --shadow-lg-floor: var(--api-shadow-lg-floor);
   --shadow-xl-floor: var(--api-shadow-xl-floor);
-
-  /* --- Input (note: your shadow color is transparent) --- */
+  --shadow-xs-base: var(--api-shadow-xs-base);
+  --shadow-sm-base: var(--api-shadow-sm-base);
+  --shadow-md-base: var(--api-shadow-md-base);
+  --shadow-lg-base: var(--api-shadow-lg-base);
+  --shadow-xl-base: var(--api-shadow-xl-base);
+  --shadow-xs-primary: var(--api-shadow-xs-primary);
+  --shadow-sm-primary: var(--api-shadow-sm-primary);
+  --shadow-md-primary: var(--api-shadow-md-primary);
+  --shadow-lg-primary: var(--api-shadow-lg-primary);
+  --shadow-xl-primary: var(--api-shadow-xl-primary);
+  --shadow-xs-secondary: var(--api-shadow-xs-secondary);
+  --shadow-sm-secondary: var(--api-shadow-sm-secondary);
+  --shadow-md-secondary: var(--api-shadow-md-secondary);
+  --shadow-lg-secondary: var(--api-shadow-lg-secondary);
+  --shadow-xl-secondary: var(--api-shadow-xl-secondary);
+  --shadow-xs-tertiary: var(--api-shadow-xs-tertiary);
+  --shadow-sm-tertiary: var(--api-shadow-sm-tertiary);
+  --shadow-md-tertiary: var(--api-shadow-md-tertiary);
+  --shadow-lg-tertiary: var(--api-shadow-lg-tertiary);
+  --shadow-xl-tertiary: var(--api-shadow-xl-tertiary);
+  --shadow-xs-accent: var(--api-shadow-xs-accent);
+  --shadow-sm-accent: var(--api-shadow-sm-accent);
+  --shadow-md-accent: var(--api-shadow-md-accent);
+  --shadow-lg-accent: var(--api-shadow-lg-accent);
+  --shadow-xl-accent: var(--api-shadow-xl-accent);
+  --shadow-xs-muted: var(--api-shadow-xs-muted);
+  --shadow-sm-muted: var(--api-shadow-sm-muted);
+  --shadow-md-muted: var(--api-shadow-md-muted);
+  --shadow-lg-muted: var(--api-shadow-lg-muted);
+  --shadow-xl-muted: var(--api-shadow-xl-muted);
+  --shadow-xs-input: var(--api-shadow-xs-input);
   --shadow-sm-input: var(--api-shadow-sm-input);
   --shadow-md-input: var(--api-shadow-md-input);
   --shadow-lg-input: var(--api-shadow-lg-input);
   --shadow-xl-input: var(--api-shadow-xl-input);
-
-  /* --- Link --- */
+  --shadow-xs-link: var(--api-shadow-xs-link);
   --shadow-sm-link: var(--api-shadow-sm-link);
   --shadow-md-link: var(--api-shadow-md-link);
   --shadow-lg-link: var(--api-shadow-lg-link);
   --shadow-xl-link: var(--api-shadow-xl-link);
-
-  /* --- Status: Success --- */
+  --shadow-xs-success: var(--api-shadow-xs-success);
   --shadow-sm-success: var(--api-shadow-sm-success);
   --shadow-md-success: var(--api-shadow-md-success);
   --shadow-lg-success: var(--api-shadow-lg-success);
   --shadow-xl-success: var(--api-shadow-xl-success);
-
-  /* --- Status: Info --- */
+  --shadow-xs-info: var(--api-shadow-xs-info);
   --shadow-sm-info: var(--api-shadow-sm-info);
   --shadow-md-info: var(--api-shadow-md-info);
   --shadow-lg-info: var(--api-shadow-lg-info);
   --shadow-xl-info: var(--api-shadow-xl-info);
-
-  /* --- Status: Warning --- */
+  --shadow-xs-warning: var(--api-shadow-xs-warning);
   --shadow-sm-warning: var(--api-shadow-sm-warning);
   --shadow-md-warning: var(--api-shadow-md-warning);
   --shadow-lg-warning: var(--api-shadow-lg-warning);
   --shadow-xl-warning: var(--api-shadow-xl-warning);
-
-  /* --- Status: Error --- */
+  --shadow-xs-error: var(--api-shadow-xs-error);
   --shadow-sm-error: var(--api-shadow-sm-error);
   --shadow-md-error: var(--api-shadow-md-error);
   --shadow-lg-error: var(--api-shadow-lg-error);
   --shadow-xl-error: var(--api-shadow-xl-error);
-
-  /* --- Status: Notification --- */
+  --shadow-xs-notification: var(--api-shadow-xs-notification);
   --shadow-sm-notification: var(--api-shadow-sm-notification);
   --shadow-md-notification: var(--api-shadow-md-notification);
   --shadow-lg-notification: var(--api-shadow-lg-notification);
   --shadow-xl-notification: var(--api-shadow-xl-notification);
 
-  /**
-   * @namespace: --inset-shadow-*
-   * @creates:
-   * @description: Inset box shadow utilities like inset-shadow-xs
-   */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ INSET SHADOW (--inset-shadow-*) ~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
+  --inset-shadow-xs: var(--api-inset-shadow-xs);
   --inset-shadow-sm: var(--api-inset-shadow-sm);
   --inset-shadow-md: var(--api-inset-shadow-md);
   --inset-shadow-lg: var(--api-inset-shadow-lg);
   --inset-shadow-xl: var(--api-inset-shadow-xl);
-
-  /* --- Base --- */
-  --inset-shadow-sm-base: var(--api-inset-shadow-sm-base);
-  --inset-shadow-md-base: var(--api-inset-shadow-md-base);
-  --inset-shadow-lg-base: var(--api-inset-shadow-lg-base);
-  --inset-shadow-xl-base: var(--api-inset-shadow-xl-base);
-
-  /* --- Primary --- */
-  --inset-shadow-sm-primary: var(--api-inset-shadow-sm-primary);
-  --inset-shadow-md-primary: var(--api-inset-shadow-md-primary);
-  --inset-shadow-lg-primary: var(--api-inset-shadow-lg-primary);
-  --inset-shadow-xl-primary: var(--api-inset-shadow-xl-primary);
-
-  /* --- Secondary --- */
-  --inset-shadow-sm-secondary: var(--api-inset-shadow-sm-secondary);
-  --inset-shadow-md-secondary: var(--api-inset-shadow-md-secondary);
-  --inset-shadow-lg-secondary: var(--api-inset-shadow-lg-secondary);
-  --inset-shadow-xl-secondary: var(--api-inset-shadow-xl-secondary);
-
-  /* --- Tertiary --- */
-  --inset-shadow-sm-tertiary: var(--api-inset-shadow-sm-tertiary);
-  --inset-shadow-md-tertiary: var(--api-inset-shadow-md-tertiary);
-  --inset-shadow-lg-tertiary: var(--api-inset-shadow-lg-tertiary);
-  --inset-shadow-xl-tertiary: var(--api-inset-shadow-xl-tertiary);
-
-  /* --- Accent --- */
-  --inset-shadow-sm-accent: var(--api-inset-shadow-sm-accent);
-  --inset-shadow-md-accent: var(--api-inset-shadow-md-accent);
-  --inset-shadow-lg-accent: var(--api-inset-shadow-lg-accent);
-  --inset-shadow-xl-accent: var(--api-inset-shadow-xl-accent);
-
-  /* --- Muted --- */
-  --inset-shadow-sm-muted: var(--api-inset-shadow-sm-muted);
-  --inset-shadow-md-muted: var(--api-inset-shadow-md-muted);
-  --inset-shadow-lg-muted: var(--api-inset-shadow-lg-muted);
-  --inset-shadow-xl-muted: var(--api-inset-shadow-xl-muted);
-
-  /* --- Floor --- */
+  --inset-shadow-xs-floor: var(--api-inset-shadow-xs-floor);
   --inset-shadow-sm-floor: var(--api-inset-shadow-sm-floor);
   --inset-shadow-md-floor: var(--api-inset-shadow-md-floor);
   --inset-shadow-lg-floor: var(--api-inset-shadow-lg-floor);
   --inset-shadow-xl-floor: var(--api-inset-shadow-xl-floor);
-
-  /* --- Input --- */
+  --inset-shadow-xs-base: var(--api-inset-shadow-xs-base);
+  --inset-shadow-sm-base: var(--api-inset-shadow-sm-base);
+  --inset-shadow-md-base: var(--api-inset-shadow-md-base);
+  --inset-shadow-lg-base: var(--api-inset-shadow-lg-base);
+  --inset-shadow-xl-base: var(--api-inset-shadow-xl-base);
+  --inset-shadow-xs-primary: var(--api-inset-shadow-xs-primary);
+  --inset-shadow-sm-primary: var(--api-inset-shadow-sm-primary);
+  --inset-shadow-md-primary: var(--api-inset-shadow-md-primary);
+  --inset-shadow-lg-primary: var(--api-inset-shadow-lg-primary);
+  --inset-shadow-xl-primary: var(--api-inset-shadow-xl-primary);
+  --inset-shadow-xs-secondary: var(--api-inset-shadow-xs-secondary);
+  --inset-shadow-sm-secondary: var(--api-inset-shadow-sm-secondary);
+  --inset-shadow-md-secondary: var(--api-inset-shadow-md-secondary);
+  --inset-shadow-lg-secondary: var(--api-inset-shadow-lg-secondary);
+  --inset-shadow-xl-secondary: var(--api-inset-shadow-xl-secondary);
+  --inset-shadow-xs-tertiary: var(--api-inset-shadow-xs-tertiary);
+  --inset-shadow-sm-tertiary: var(--api-inset-shadow-sm-tertiary);
+  --inset-shadow-md-tertiary: var(--api-inset-shadow-md-tertiary);
+  --inset-shadow-lg-tertiary: var(--api-inset-shadow-lg-tertiary);
+  --inset-shadow-xl-tertiary: var(--api-inset-shadow-xl-tertiary);
+  --inset-shadow-xs-accent: var(--api-inset-shadow-xs-accent);
+  --inset-shadow-sm-accent: var(--api-inset-shadow-sm-accent);
+  --inset-shadow-md-accent: var(--api-inset-shadow-md-accent);
+  --inset-shadow-lg-accent: var(--api-inset-shadow-lg-accent);
+  --inset-shadow-xl-accent: var(--api-inset-shadow-xl-accent);
+  --inset-shadow-xs-muted: var(--api-inset-shadow-xs-muted);
+  --inset-shadow-sm-muted: var(--api-inset-shadow-sm-muted);
+  --inset-shadow-md-muted: var(--api-inset-shadow-md-muted);
+  --inset-shadow-lg-muted: var(--api-inset-shadow-lg-muted);
+  --inset-shadow-xl-muted: var(--api-inset-shadow-xl-muted);
+  --inset-shadow-xs-input: var(--api-inset-shadow-xs-input);
   --inset-shadow-sm-input: var(--api-inset-shadow-sm-input);
   --inset-shadow-md-input: var(--api-inset-shadow-md-input);
   --inset-shadow-lg-input: var(--api-inset-shadow-lg-input);
   --inset-shadow-xl-input: var(--api-inset-shadow-xl-input);
-
-  /* --- Link --- */
+  --inset-shadow-xs-link: var(--api-inset-shadow-xs-link);
   --inset-shadow-sm-link: var(--api-inset-shadow-sm-link);
   --inset-shadow-md-link: var(--api-inset-shadow-md-link);
   --inset-shadow-lg-link: var(--api-inset-shadow-lg-link);
   --inset-shadow-xl-link: var(--api-inset-shadow-xl-link);
-
-  /* --- Status: Success --- */
+  --inset-shadow-xs-success: var(--api-inset-shadow-xs-success);
   --inset-shadow-sm-success: var(--api-inset-shadow-sm-success);
   --inset-shadow-md-success: var(--api-inset-shadow-md-success);
   --inset-shadow-lg-success: var(--api-inset-shadow-lg-success);
   --inset-shadow-xl-success: var(--api-inset-shadow-xl-success);
-
-  /* --- Status: Info --- */
+  --inset-shadow-xs-info: var(--api-inset-shadow-xs-info);
   --inset-shadow-sm-info: var(--api-inset-shadow-sm-info);
   --inset-shadow-md-info: var(--api-inset-shadow-md-info);
   --inset-shadow-lg-info: var(--api-inset-shadow-lg-info);
   --inset-shadow-xl-info: var(--api-inset-shadow-xl-info);
-
-  /* --- Status: Warning --- */
+  --inset-shadow-xs-warning: var(--api-inset-shadow-xs-warning);
   --inset-shadow-sm-warning: var(--api-inset-shadow-sm-warning);
   --inset-shadow-md-warning: var(--api-inset-shadow-md-warning);
   --inset-shadow-lg-warning: var(--api-inset-shadow-lg-warning);
   --inset-shadow-xl-warning: var(--api-inset-shadow-xl-warning);
-
-  /* --- Status: Error --- */
+  --inset-shadow-xs-error: var(--api-inset-shadow-xs-error);
   --inset-shadow-sm-error: var(--api-inset-shadow-sm-error);
   --inset-shadow-md-error: var(--api-inset-shadow-md-error);
   --inset-shadow-lg-error: var(--api-inset-shadow-lg-error);
   --inset-shadow-xl-error: var(--api-inset-shadow-xl-error);
-
-  /* --- Status: Notification --- */
+  --inset-shadow-xs-notification: var(--api-inset-shadow-xs-notification);
   --inset-shadow-sm-notification: var(--api-inset-shadow-sm-notification);
   --inset-shadow-md-notification: var(--api-inset-shadow-md-notification);
   --inset-shadow-lg-notification: var(--api-inset-shadow-lg-notification);
   --inset-shadow-xl-notification: var(--api-inset-shadow-xl-notification);
 
-  /**
-   * @namespace: --drop-shadow-*
-   * @creates:
-   * @description: Drop shadow filter utilities like drop-shadow-md
-   */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ DROP SHADOW (--drop-shadow-*) ~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-  /* --- Base --- */
-  --drop-shadow-sm-base: var(--api-drop-shadow-sm-base);
-  --drop-shadow-md-base: var(--api-drop-shadow-md-base);
-  --drop-shadow-lg-base: var(--api-drop-shadow-lg-base);
-  --drop-shadow-xl-base: var(--api-drop-shadow-xl-base);
-
-  /* --- Primary --- */
-  --drop-shadow-sm-primary: var(--api-drop-shadow-sm-primary);
-  --drop-shadow-md-primary: var(--api-drop-shadow-md-primary);
-  --drop-shadow-lg-primary: var(--api-drop-shadow-lg-primary);
-  --drop-shadow-xl-primary: var(--api-drop-shadow-xl-primary);
-
-  /* --- Secondary --- */
-  --drop-shadow-sm-secondary: var(--api-drop-shadow-sm-secondary);
-  --drop-shadow-md-secondary: var(--api-drop-shadow-md-secondary);
-  --drop-shadow-lg-secondary: var(--api-drop-shadow-lg-secondary);
-  --drop-shadow-xl-secondary: var(--api-drop-shadow-xl-secondary);
-
-  /* --- Tertiary --- */
-  --drop-shadow-sm-tertiary: var(--api-drop-shadow-sm-tertiary);
-  --drop-shadow-md-tertiary: var(--api-drop-shadow-md-tertiary);
-  --drop-shadow-lg-tertiary: var(--api-drop-shadow-lg-tertiary);
-  --drop-shadow-xl-tertiary: var(--api-drop-shadow-xl-tertiary);
-
-  /* --- Accent --- */
-  --drop-shadow-sm-accent: var(--api-drop-shadow-sm-accent);
-  --drop-shadow-md-accent: var(--api-drop-shadow-md-accent);
-  --drop-shadow-lg-accent: var(--api-drop-shadow-lg-accent);
-  --drop-shadow-xl-accent: var(--api-drop-shadow-xl-accent);
-
-  /* --- Muted --- */
-  --drop-shadow-sm-muted: var(--api-drop-shadow-sm-muted);
-  --drop-shadow-md-muted: var(--api-drop-shadow-md-muted);
-  --drop-shadow-lg-muted: var(--api-drop-shadow-lg-muted);
-  --drop-shadow-xl-muted: var(--api-drop-shadow-xl-muted);
-
-  /* --- Floor --- */
+  --drop-shadow-xs: var(--api-drop-shadow-xs);
+  --drop-shadow-sm: var(--api-drop-shadow-sm);
+  --drop-shadow-md: var(--api-drop-shadow-md);
+  --drop-shadow-lg: var(--api-drop-shadow-lg);
+  --drop-shadow-xl: var(--api-drop-shadow-xl);
+  --drop-shadow-xs-floor: var(--api-drop-shadow-xs-floor);
   --drop-shadow-sm-floor: var(--api-drop-shadow-sm-floor);
   --drop-shadow-md-floor: var(--api-drop-shadow-md-floor);
   --drop-shadow-lg-floor: var(--api-drop-shadow-lg-floor);
   --drop-shadow-xl-floor: var(--api-drop-shadow-xl-floor);
-
-  /* --- Input --- */
+  --drop-shadow-xs-base: var(--api-drop-shadow-xs-base);
+  --drop-shadow-sm-base: var(--api-drop-shadow-sm-base);
+  --drop-shadow-md-base: var(--api-drop-shadow-md-base);
+  --drop-shadow-lg-base: var(--api-drop-shadow-lg-base);
+  --drop-shadow-xl-base: var(--api-drop-shadow-xl-base);
+  --drop-shadow-xs-primary: var(--api-drop-shadow-xs-primary);
+  --drop-shadow-sm-primary: var(--api-drop-shadow-sm-primary);
+  --drop-shadow-md-primary: var(--api-drop-shadow-md-primary);
+  --drop-shadow-lg-primary: var(--api-drop-shadow-lg-primary);
+  --drop-shadow-xl-primary: var(--api-drop-shadow-xl-primary);
+  --drop-shadow-xs-secondary: var(--api-drop-shadow-xs-secondary);
+  --drop-shadow-sm-secondary: var(--api-drop-shadow-sm-secondary);
+  --drop-shadow-md-secondary: var(--api-drop-shadow-md-secondary);
+  --drop-shadow-lg-secondary: var(--api-drop-shadow-lg-secondary);
+  --drop-shadow-xl-secondary: var(--api-drop-shadow-xl-secondary);
+  --drop-shadow-xs-tertiary: var(--api-drop-shadow-xs-tertiary);
+  --drop-shadow-sm-tertiary: var(--api-drop-shadow-sm-tertiary);
+  --drop-shadow-md-tertiary: var(--api-drop-shadow-md-tertiary);
+  --drop-shadow-lg-tertiary: var(--api-drop-shadow-lg-tertiary);
+  --drop-shadow-xl-tertiary: var(--api-drop-shadow-xl-tertiary);
+  --drop-shadow-xs-accent: var(--api-drop-shadow-xs-accent);
+  --drop-shadow-sm-accent: var(--api-drop-shadow-sm-accent);
+  --drop-shadow-md-accent: var(--api-drop-shadow-md-accent);
+  --drop-shadow-lg-accent: var(--api-drop-shadow-lg-accent);
+  --drop-shadow-xl-accent: var(--api-drop-shadow-xl-accent);
+  --drop-shadow-xs-muted: var(--api-drop-shadow-xs-muted);
+  --drop-shadow-sm-muted: var(--api-drop-shadow-sm-muted);
+  --drop-shadow-md-muted: var(--api-drop-shadow-md-muted);
+  --drop-shadow-lg-muted: var(--api-drop-shadow-lg-muted);
+  --drop-shadow-xl-muted: var(--api-drop-shadow-xl-muted);
+  --drop-shadow-xs-input: var(--api-drop-shadow-xs-input);
   --drop-shadow-sm-input: var(--api-drop-shadow-sm-input);
   --drop-shadow-md-input: var(--api-drop-shadow-md-input);
   --drop-shadow-lg-input: var(--api-drop-shadow-lg-input);
   --drop-shadow-xl-input: var(--api-drop-shadow-xl-input);
-
-  /* --- Link --- */
+  --drop-shadow-xs-link: var(--api-drop-shadow-xs-link);
   --drop-shadow-sm-link: var(--api-drop-shadow-sm-link);
   --drop-shadow-md-link: var(--api-drop-shadow-md-link);
   --drop-shadow-lg-link: var(--api-drop-shadow-lg-link);
   --drop-shadow-xl-link: var(--api-drop-shadow-xl-link);
-
-  /* --- Success --- */
+  --drop-shadow-xs-success: var(--api-drop-shadow-xs-success);
   --drop-shadow-sm-success: var(--api-drop-shadow-sm-success);
   --drop-shadow-md-success: var(--api-drop-shadow-md-success);
   --drop-shadow-lg-success: var(--api-drop-shadow-lg-success);
   --drop-shadow-xl-success: var(--api-drop-shadow-xl-success);
-
-  /* --- Info --- */
+  --drop-shadow-xs-info: var(--api-drop-shadow-xs-info);
   --drop-shadow-sm-info: var(--api-drop-shadow-sm-info);
   --drop-shadow-md-info: var(--api-drop-shadow-md-info);
   --drop-shadow-lg-info: var(--api-drop-shadow-lg-info);
   --drop-shadow-xl-info: var(--api-drop-shadow-xl-info);
-
-  /* --- Warning --- */
+  --drop-shadow-xs-warning: var(--api-drop-shadow-xs-warning);
   --drop-shadow-sm-warning: var(--api-drop-shadow-sm-warning);
   --drop-shadow-md-warning: var(--api-drop-shadow-md-warning);
   --drop-shadow-lg-warning: var(--api-drop-shadow-lg-warning);
   --drop-shadow-xl-warning: var(--api-drop-shadow-xl-warning);
-
-  /* --- Error --- */
+  --drop-shadow-xs-error: var(--api-drop-shadow-xs-error);
   --drop-shadow-sm-error: var(--api-drop-shadow-sm-error);
   --drop-shadow-md-error: var(--api-drop-shadow-md-error);
   --drop-shadow-lg-error: var(--api-drop-shadow-lg-error);
   --drop-shadow-xl-error: var(--api-drop-shadow-xl-error);
-
-  /* --- Notification --- */
+  --drop-shadow-xs-notification: var(--api-drop-shadow-xs-notification);
   --drop-shadow-sm-notification: var(--api-drop-shadow-sm-notification);
   --drop-shadow-md-notification: var(--api-drop-shadow-md-notification);
   --drop-shadow-lg-notification: var(--api-drop-shadow-lg-notification);
   --drop-shadow-xl-notification: var(--api-drop-shadow-xl-notification);
 
-  /**
-   * @namespace: --text-shadow-*
-   * @description: Text shadow filter utilities.
-   * Built using the dynamic 'pen' shadow color palette.
-   */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ TEXT SHADOW (--text-shadow-*) ~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-  /* --- Base --- */
-  --text-shadow-sm-base: var(--api-text-shadow-sm-base);
-  --text-shadow-md-base: var(--api-text-shadow-md-base);
-  --text-shadow-lg-base: var(--api-text-shadow-lg-base);
-  --text-shadow-xl-base: var(--api-text-shadow-xl-base);
-
-  /* --- Primary --- */
-  --text-shadow-sm-primary: var(--api-text-shadow-sm-primary);
-  --text-shadow-md-primary: var(--api-text-shadow-md-primary);
-  --text-shadow-lg-primary: var(--api-text-shadow-lg-primary);
-  --text-shadow-xl-primary: var(--api-text-shadow-xl-primary);
-
-  /* --- Secondary --- */
-  --text-shadow-sm-secondary: var(--api-text-shadow-sm-secondary);
-  --text-shadow-md-secondary: var(--api-text-shadow-md-secondary);
-  --text-shadow-lg-secondary: var(--api-text-shadow-lg-secondary);
-  --text-shadow-xl-secondary: var(--api-text-shadow-xl-secondary);
-
-  /* --- Tertiary --- */
-  --text-shadow-sm-tertiary: var(--api-text-shadow-sm-tertiary);
-  --text-shadow-md-tertiary: var(--api-text-shadow-md-tertiary);
-  --text-shadow-lg-tertiary: var(--api-text-shadow-lg-tertiary);
-  --text-shadow-xl-tertiary: var(--api-text-shadow-xl-tertiary);
-
-  /* --- Accent --- */
-  --text-shadow-sm-accent: var(--api-text-shadow-sm-accent);
-  --text-shadow-md-accent: var(--api-text-shadow-md-accent);
-  --text-shadow-lg-accent: var(--api-text-shadow-lg-accent);
-  --text-shadow-xl-accent: var(--api-text-shadow-xl-accent);
-
-  /* --- Muted --- */
-  --text-shadow-sm-muted: var(--api-text-shadow-sm-muted);
-  --text-shadow-md-muted: var(--api-text-shadow-md-muted);
-  --text-shadow-lg-muted: var(--api-text-shadow-lg-muted);
-  --text-shadow-xl-muted: var(--api-text-shadow-xl-muted);
-
-  /* --- Floor --- */
+  --text-shadow-xs: var(--api-text-shadow-xs);
+  --text-shadow-sm: var(--api-text-shadow-sm);
+  --text-shadow-md: var(--api-text-shadow-md);
+  --text-shadow-lg: var(--api-text-shadow-lg);
+  --text-shadow-xl: var(--api-text-shadow-xl);
+  --text-shadow-xs-floor: var(--api-text-shadow-xs-floor);
   --text-shadow-sm-floor: var(--api-text-shadow-sm-floor);
   --text-shadow-md-floor: var(--api-text-shadow-md-floor);
   --text-shadow-lg-floor: var(--api-text-shadow-lg-floor);
   --text-shadow-xl-floor: var(--api-text-shadow-xl-floor);
-
-  /* --- Input --- */
+  --text-shadow-xs-base: var(--api-text-shadow-xs-base);
+  --text-shadow-sm-base: var(--api-text-shadow-sm-base);
+  --text-shadow-md-base: var(--api-text-shadow-md-base);
+  --text-shadow-lg-base: var(--api-text-shadow-lg-base);
+  --text-shadow-xl-base: var(--api-text-shadow-xl-base);
+  --text-shadow-xs-primary: var(--api-text-shadow-xs-primary);
+  --text-shadow-sm-primary: var(--api-text-shadow-sm-primary);
+  --text-shadow-md-primary: var(--api-text-shadow-md-primary);
+  --text-shadow-lg-primary: var(--api-text-shadow-lg-primary);
+  --text-shadow-xl-primary: var(--api-text-shadow-xl-primary);
+  --text-shadow-xs-secondary: var(--api-text-shadow-xs-secondary);
+  --text-shadow-sm-secondary: var(--api-text-shadow-sm-secondary);
+  --text-shadow-md-secondary: var(--api-text-shadow-md-secondary);
+  --text-shadow-lg-secondary: var(--api-text-shadow-lg-secondary);
+  --text-shadow-xl-secondary: var(--api-text-shadow-xl-secondary);
+  --text-shadow-xs-tertiary: var(--api-text-shadow-xs-tertiary);
+  --text-shadow-sm-tertiary: var(--api-text-shadow-sm-tertiary);
+  --text-shadow-md-tertiary: var(--api-text-shadow-md-tertiary);
+  --text-shadow-lg-tertiary: var(--api-text-shadow-lg-tertiary);
+  --text-shadow-xl-tertiary: var(--api-text-shadow-xl-tertiary);
+  --text-shadow-xs-accent: var(--api-text-shadow-xs-accent);
+  --text-shadow-sm-accent: var(--api-text-shadow-sm-accent);
+  --text-shadow-md-accent: var(--api-text-shadow-md-accent);
+  --text-shadow-lg-accent: var(--api-text-shadow-lg-accent);
+  --text-shadow-xl-accent: var(--api-text-shadow-xl-accent);
+  --text-shadow-xs-muted: var(--api-text-shadow-xs-muted);
+  --text-shadow-sm-muted: var(--api-text-shadow-sm-muted);
+  --text-shadow-md-muted: var(--api-text-shadow-md-muted);
+  --text-shadow-lg-muted: var(--api-text-shadow-lg-muted);
+  --text-shadow-xl-muted: var(--api-text-shadow-xl-muted);
+  --text-shadow-xs-input: var(--api-text-shadow-xs-input);
   --text-shadow-sm-input: var(--api-text-shadow-sm-input);
   --text-shadow-md-input: var(--api-text-shadow-md-input);
   --text-shadow-lg-input: var(--api-text-shadow-lg-input);
   --text-shadow-xl-input: var(--api-text-shadow-xl-input);
-
-  /* --- Link --- */
+  --text-shadow-xs-link: var(--api-text-shadow-xs-link);
   --text-shadow-sm-link: var(--api-text-shadow-sm-link);
   --text-shadow-md-link: var(--api-text-shadow-md-link);
   --text-shadow-lg-link: var(--api-text-shadow-lg-link);
   --text-shadow-xl-link: var(--api-text-shadow-xl-link);
-
-  /* --- Status: Success --- */
+  --text-shadow-xs-success: var(--api-text-shadow-xs-success);
   --text-shadow-sm-success: var(--api-text-shadow-sm-success);
   --text-shadow-md-success: var(--api-text-shadow-md-success);
   --text-shadow-lg-success: var(--api-text-shadow-lg-success);
   --text-shadow-xl-success: var(--api-text-shadow-xl-success);
-
-  /* --- Status: Info --- */
+  --text-shadow-xs-info: var(--api-text-shadow-xs-info);
   --text-shadow-sm-info: var(--api-text-shadow-sm-info);
   --text-shadow-md-info: var(--api-text-shadow-md-info);
   --text-shadow-lg-info: var(--api-text-shadow-lg-info);
   --text-shadow-xl-info: var(--api-text-shadow-xl-info);
-
-  /* --- Status: Warning --- */
+  --text-shadow-xs-warning: var(--api-text-shadow-xs-warning);
   --text-shadow-sm-warning: var(--api-text-shadow-sm-warning);
   --text-shadow-md-warning: var(--api-text-shadow-md-warning);
   --text-shadow-lg-warning: var(--api-text-shadow-lg-warning);
   --text-shadow-xl-warning: var(--api-text-shadow-xl-warning);
-
-  /* --- Status: Error --- */
+  --text-shadow-xs-error: var(--api-text-shadow-xs-error);
   --text-shadow-sm-error: var(--api-text-shadow-sm-error);
   --text-shadow-md-error: var(--api-text-shadow-md-error);
   --text-shadow-lg-error: var(--api-text-shadow-lg-error);
   --text-shadow-xl-error: var(--api-text-shadow-xl-error);
-
-  /* --- Status: Notification --- */
+  --text-shadow-xs-notification: var(--api-text-shadow-xs-notification);
   --text-shadow-sm-notification: var(--api-text-shadow-sm-notification);
   --text-shadow-md-notification: var(--api-text-shadow-md-notification);
   --text-shadow-lg-notification: var(--api-text-shadow-lg-notification);
   --text-shadow-xl-notification: var(--api-text-shadow-xl-notification);
 
-  /**
-   * @namespace: --blur-*
-   * @creates:
-   * @description: Blur filter utilities like blur-md
-   */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ FONT (families, mono font features) ~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-  /**
-   * @namespace: --perspective-*
-   * @creates:
-   * @description: Perspective utilities like perspective-near
-   */
+  --font-sans: var(--api-font-sans);
+  --font-serif: var(--api-font-serif);
+  --font-mono: var(--api-font-mono);
+  --font-mono--font-feature-settings: var(--api-font-mono-feature-settings);
 
-  /**
-   * @namespace: --aspect-*
-   * @creates:
-   * @description: Aspect ratio utilities like aspect-video
-   */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ TEXT (sizes, paired line heights, type roles) ~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-  /**
-   * @namespace: --ease-*
-   * @creates:
-  * @description: Transition timing function utilities like ease-out
-   */
+  --text-xs: var(--api-text-xs);
+  --text-xs--line-height: var(--api-text-xs-line-height);
+  --text-sm: var(--api-text-sm);
+  --text-sm--line-height: var(--api-text-sm-line-height);
+  --text-base: var(--api-text-base);
+  --text-base--line-height: var(--api-text-base-line-height);
+  --text-lg: var(--api-text-lg);
+  --text-lg--line-height: var(--api-text-lg-line-height);
+  --text-xl: var(--api-text-xl);
+  --text-xl--line-height: var(--api-text-xl-line-height);
+  --text-2xl: var(--api-text-2xl);
+  --text-2xl--line-height: var(--api-text-2xl-line-height);
+  --text-3xl: var(--api-text-3xl);
+  --text-3xl--line-height: var(--api-text-3xl-line-height);
+  --text-4xl: var(--api-text-4xl);
+  --text-4xl--line-height: var(--api-text-4xl-line-height);
+  --text-5xl: var(--api-text-5xl);
+  --text-5xl--line-height: var(--api-text-5xl-line-height);
+  --text-body: var(--api-text-body);
+  --text-body--line-height: var(--api-text-body-line-height);
+  --text-label: var(--api-text-label);
+  --text-label--line-height: var(--api-text-label-line-height);
+  --text-caption: var(--api-text-caption);
+  --text-caption--line-height: var(--api-text-caption-line-height);
+  --text-heading: var(--api-text-heading);
+  --text-heading--line-height: var(--api-text-heading-line-height);
+  --text-title: var(--api-text-title);
+  --text-title--line-height: var(--api-text-title-line-height);
 
-  /**
-   * @namespace: --animate-*
-   * @creates:
-   * @description: Animation utilities like animate-spin
-   */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ FONT-WEIGHT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  --font-weight-normal: var(--api-font-weight-normal);
+  --font-weight-medium: var(--api-font-weight-medium);
+  --font-weight-semibold: var(--api-font-weight-semibold);
+  --font-weight-bold: var(--api-font-weight-bold);
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ TRACKING ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  --tracking-tight: var(--api-tracking-tight);
+  --tracking-normal: var(--api-tracking-normal);
+  --tracking-wide: var(--api-tracking-wide);
+  --tracking-caps: var(--api-tracking-caps);
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ LEADING ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  --leading-none: var(--api-leading-none);
+  --leading-tight: var(--api-leading-tight);
+  --leading-snug: var(--api-leading-snug);
+  --leading-normal: var(--api-leading-normal);
+  --leading-relaxed: var(--api-leading-relaxed);
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ BREAKPOINT (LITERAL VALUES: media queries cannot read var()) ~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  --breakpoint-xs: 30rem;
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 96rem;
+  --breakpoint-3xl: 120rem;
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ CONTAINER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  --container-xs: var(--api-container-xs);
+  --container-sm: var(--api-container-sm);
+  --container-md: var(--api-container-md);
+  --container-lg: var(--api-container-lg);
+  --container-xl: var(--api-container-xl);
+  --container-2xl: var(--api-container-2xl);
+  --container-3xl: var(--api-container-3xl);
+  --container-4xl: var(--api-container-4xl);
+  --container-5xl: var(--api-container-5xl);
+  --container-6xl: var(--api-container-6xl);
+  --container-7xl: var(--api-container-7xl);
+  --container-screen-sm: var(--api-container-screen-sm);
+  --container-screen-md: var(--api-container-screen-md);
+  --container-screen-lg: var(--api-container-screen-lg);
+  --container-screen-xl: var(--api-container-screen-xl);
+  --container-screen-2xl: var(--api-container-screen-2xl);
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ SPACING (base unit and named steps) ~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  --spacing: var(--api-spacing);
+  --spacing-step-3xs: var(--api-spacing-step-3xs);
+  --spacing-step-2xs: var(--api-spacing-step-2xs);
+  --spacing-step-xs: var(--api-spacing-step-xs);
+  --spacing-step-sm: var(--api-spacing-step-sm);
+  --spacing-step-md: var(--api-spacing-step-md);
+  --spacing-step-lg: var(--api-spacing-step-lg);
+  --spacing-step-xl: var(--api-spacing-step-xl);
+  --spacing-step-2xl: var(--api-spacing-step-2xl);
+  --spacing-step-3xl: var(--api-spacing-step-3xl);
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ RADIUS (default, scale, roles) ~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  --radius-none: var(--api-radius-none);
+  --radius-xs: var(--api-radius-xs);
+  --radius-sm: var(--api-radius-sm);
+  --radius-md: var(--api-radius-md);
+  --radius-lg: var(--api-radius-lg);
+  --radius-xl: var(--api-radius-xl);
+  --radius-2xl: var(--api-radius-2xl);
+  --radius-3xl: var(--api-radius-3xl);
+  --radius-full: var(--api-radius-full);
+  --radius: var(--api-radius);
+  --radius-tooltip: var(--api-radius-tooltip);
+  --radius-control: var(--api-radius-control);
+  --radius-card: var(--api-radius-card);
+  --radius-panel: var(--api-radius-panel);
+  --radius-dialog: var(--api-radius-dialog);
+  --radius-pill: var(--api-radius-pill);
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ BORDER WIDTH (borders, dividers, focus outline, rings) ~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  --default-border-width: var(--api-border-width);
+  --border-width-xs: var(--api-border-width-xs);
+  --border-width-sm: var(--api-border-width-sm);
+  --border-width-md: var(--api-border-width-md);
+  --border-width-lg: var(--api-border-width-lg);
+  --border-width-xl: var(--api-border-width-xl);
+  --default-outline-width: var(--api-focus-ring-width);
+  --outline-width-focus: var(--api-focus-ring-width);
+  --outline-offset-focus: var(--api-focus-ring-offset);
+  --default-ring-width: var(--api-ring-width);
+  --ring-width-focus: var(--api-ring-width);
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ BLUR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  --blur-xs: var(--api-blur-xs);
+  --blur-sm: var(--api-blur-sm);
+  --blur-md: var(--api-blur-md);
+  --blur-lg: var(--api-blur-lg);
+  --blur-xl: var(--api-blur-xl);
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ PERSPECTIVE and tilt angles ~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  --perspective-near: var(--api-perspective-near);
+  --perspective-normal: var(--api-perspective-normal);
+  --perspective-distant: var(--api-perspective-distant);
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ ASPECT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  --aspect-video: var(--api-aspect-video);
+  --aspect-photo: var(--api-aspect-photo);
+  --aspect-square: var(--api-aspect-square);
+  --aspect-portrait: var(--api-aspect-portrait);
+  --aspect-tall: var(--api-aspect-tall);
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ EASE and durations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  --ease-in: var(--api-ease-in);
+  --ease-out: var(--api-ease-out);
+  --ease-in-out: var(--api-ease-in-out);
+  --ease-standard: var(--api-ease-standard);
+  --ease-enter: var(--api-ease-enter);
+  --ease-exit: var(--api-ease-exit);
+  --ease-spring: var(--api-ease-spring);
+  /* `transition` utilities default to the base duration and the standard curve */
+  --default-transition-duration: var(--api-duration-base);
+  --default-transition-timing-function: var(--api-ease-standard);
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~ ANIMATE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  --animate-spin: var(--api-animate-spin);
+  --animate-ping: var(--api-animate-ping);
+  --animate-pulse: var(--api-animate-pulse);
+  --animate-skeleton: var(--api-animate-skeleton);
+  --animate-fade-in: var(--api-animate-fade-in);
+  --animate-slide-up: var(--api-animate-slide-up);
+  --animate-scale-in: var(--api-animate-scale-in);
+
+  /* Not a Tailwind namespace (mapped in theme-api.css only): tilt angles: use `rotate-x-(--api-tilt-*)` / `rotate-y-(--api-tilt-*)` */
+
+  /* Not a Tailwind namespace (mapped in theme-api.css only): durations: use `duration-(--api-duration-*)`; `transition` defaults to duration-base */
+}
+
+/* ====================================================================================
+   KEYFRAMES (build-time; plain CSS so Tailwind always emits them)
+   Used by the --animate-* tokens. A theme can change an animation's timing, not these.
+   ==================================================================================== */
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ping {
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+
+@keyframes pulse {
+  50% { opacity: 0.5; }
+}
+
+@keyframes skeleton {
+  0%, 100% { background-color: var(--color-fill-muted-pressed); }
+  50% { background-color: var(--color-fill-muted-hover); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(0.5rem); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
 }
