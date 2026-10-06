@@ -64,12 +64,13 @@ The theme manager's engine (`createThemeApplication` in `shared/theme-runtime.ts
 | Colours (fill, pen, edge × role × state × mode) | Settable | `modes.<mode>.<channel-role>.<state>`; the six base states are required, the other six optional |
 | Fonts, text sizes and line heights, type roles, weights | Settable | `presentation.typography` (`families`, `sizes`, `weights`) |
 | Spacing steps, content widths | Settable | `presentation.spacing`, `presentation.responsive.containers` |
-| Radius sizes and roles | Settable | `presentation.radii` |
+| Radius sizes and roles | Settable | `presentation.radii`; `DEFAULT` writes the bare `--ui-radius` (plain `rounded`) |
 | Shadow shapes and elevation roles (box, inset, drop, text) | Settable | `presentation.effects`; colour via `modes` (`fill-base` / `pen-base`, state `shadow`) |
-| Letter spacing, line-height overrides, border, outline and ring widths, blur, perspective, aspect, easing and durations, animation timing | Not yet | No engine group; the defaults always apply until the engine adds one |
+| Border, focus outline and ring widths | Settable | `presentation.borders` (optional): `widths` DEFAULT and xs–xl, `focusRing` width and offset, `ring` width; DEFAULT writes the bare --ui-border-width |
+| Letter spacing, line heights, blur, perspective and tilt, aspect, easing, durations, animation timing | Settable | Optional groups: `typography.tracking`, `typography.leading`; `effects.blur`, `.perspective`, `.tilt`, `.aspect`; `motion.ease`, `motion.duration` (with `-exit` keys), `motion.animate`. An omitted group keeps the defaults |
 | Breakpoints | Build-time only | Compiled into media queries; change `theme-default.css` and `tailwind-config.css`, then rebuild |
 | Animation keyframes | Build-time only | Live in `tailwind-config.css`; a theme can only ever change timing |
-| Base spacing unit, bare radius default | Not settable | No key after the prefix |
+| Base spacing unit | Not settable | By design: `spacing.DEFAULT` writes `--ui-spacing-DEFAULT`, never `--ui-spacing` |
 
 | # | Rule |
 | --- | --- |
