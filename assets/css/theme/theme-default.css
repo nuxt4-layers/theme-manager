@@ -146,6 +146,8 @@
  *   effects.blur, .perspective, .tilt and .aspect, and the new optional motion group
  *   (ease, duration, animate). Only breakpoints, @keyframes and --ui-spacing stay fixed.
  * - Radius: the bare default --ui-radius is now settable through presentation.radii.DEFAULT.
+ * - Accent edges: every non-focus accent edge now meets 3:1 against its own state's fill
+ *   (previously about 1.0-1.4:1): light tints in light mode, dark tones in dark mode.
  * - Border widths: new section with --ui-border-width (default),
  *   xs 0.5px (hairline), sm 1px, md 2px, lg 3px, xl 4px (the usual size scale),
  *   --ui-focus-ring-width 2px, --ui-focus-ring-offset 2px and --ui-ring-width
@@ -643,18 +645,20 @@
   --ui-edge-tertiary-error-light: #ba2b2eff;
   --ui-edge-tertiary-loading-light: #587783ff;
 
-  /* 'accent' edge - special highlights, 'on' and 'selected' items (on mid blue) */
-  --ui-edge-accent-default-light: #055181ff;
-  --ui-edge-accent-hover-light: #014975ff;
-  --ui-edge-accent-active-light: #034068ff;
-  --ui-edge-accent-selected-light: #034068ff;
-  --ui-edge-accent-visited-light: #055181ff;
+  /* 'accent' edge - special highlights, 'on' and 'selected' items. Drawn ON the mid-blue
+     fill, so the edges are light tints (3:1 against each state's fill); focus is the
+     exception: its ring sits outside, against the page, and keeps the shared focus blue. */
+  --ui-edge-accent-default-light: #83c5fcff;
+  --ui-edge-accent-hover-light: #7bb8ebff;
+  --ui-edge-accent-active-light: #77aedcff;
+  --ui-edge-accent-selected-light: #77aedcff;
+  --ui-edge-accent-visited-light: #83c5fcff;
   --ui-edge-accent-disabled-light: #c1c4c8ff;
   --ui-edge-accent-focus-light: #0c60a3ff;
-  --ui-edge-accent-pressed-light: #04385bff;
-  --ui-edge-accent-on-light: #04598eff;
-  --ui-edge-accent-error-light: #ba2b2eff;
-  --ui-edge-accent-loading-light: #055181ff;
+  --ui-edge-accent-pressed-light: #7fa0bcff;
+  --ui-edge-accent-on-light: #62a8e3ff;
+  --ui-edge-accent-error-light: #ecb0aaff;
+  --ui-edge-accent-loading-light: #83c5fcff;
 
   /* 'muted' edge - placeholders and disabled content (on light grey) */
   --ui-edge-muted-default-light: #81878dff;
@@ -1228,18 +1232,20 @@
   --ui-edge-tertiary-error-dark: #f47b74ff;
   --ui-edge-tertiary-loading-dark: #829da9ff;
 
-  /* 'accent' edge - special highlights, 'on' and 'selected' items (on light sky blue) */
-  --ui-edge-accent-default-dark: #abd7fdff;
-  --ui-edge-accent-hover-dark: #bce0ffff;
-  --ui-edge-accent-active-dark: #cfe8feff;
-  --ui-edge-accent-selected-dark: #cfe8feff;
-  --ui-edge-accent-visited-dark: #abd7fdff;
+  /* 'accent' edge - special highlights, 'on' and 'selected' items. Drawn ON the light sky
+     fill, so the edges are dark (3:1 against each state's fill); focus keeps the shared
+     page-facing focus blue. */
+  --ui-edge-accent-default-dark: #495d6fff;
+  --ui-edge-accent-hover-dark: #44647fff;
+  --ui-edge-accent-active-dark: #546a7dff;
+  --ui-edge-accent-selected-dark: #546a7dff;
+  --ui-edge-accent-visited-dark: #495d6fff;
   --ui-edge-accent-disabled-dark: #404345ff;
   --ui-edge-accent-focus-dark: #71bfffff;
-  --ui-edge-accent-pressed-dark: #e1f1ffff;
-  --ui-edge-accent-on-dark: #86c5faff;
-  --ui-edge-accent-error-dark: #f47b74ff;
-  --ui-edge-accent-loading-dark: #abd7fdff;
+  --ui-edge-accent-pressed-dark: #63717dff;
+  --ui-edge-accent-on-dark: #316fa0ff;
+  --ui-edge-accent-error-dark: #a33131ff;
+  --ui-edge-accent-loading-dark: #495d6fff;
 
   /* 'muted' edge - placeholders and disabled content (on dark grey) */
   --ui-edge-muted-default-dark: #70757cff;
