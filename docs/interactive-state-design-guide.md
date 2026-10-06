@@ -183,7 +183,7 @@ The default theme (`theme-default.css` v5.1.0) uses light blues, blue-greys and 
 | `primary` | `#eef7ff` / `#0f304a` / `#567896` | `#151f28` / `#dbeaf8` / `#7390a9` |
 | `secondary` | `#ebf8f0` / `#113623` / `#567f67` | `#18271e` / `#d8eee0` / `#769d85` |
 | `tertiary` | `#e5f1f6` / `#122f3a` / `#587783` | `#1f2c32` / `#deeef5` / `#829da9` |
-| `accent` | `#0668a4` / `#ffffff` / `#055181` | `#72b8f2` / `#06131e` / `#abd7fd` |
+| `accent` | `#0668a4` / `#ffffff` / `#83c5fc` | `#72b8f2` / `#06131e` / `#495d6f` |
 | `muted` | `#e8ebef` / `#5e646c` / `#81878d` | `#24272a` / `#a6abb2` / `#70757c` |
 | `input` | `#ffffff` / `#1d2229` / `#6d7580` | `#191c20` / `#ebeff4` / `#8a939f` |
 | `link` | `#fcfeff` / `#0a5f96` / `#0a5f96` | `#121518` / `#7fbef3` / `#7fbef3` |
@@ -196,7 +196,7 @@ The default theme (`theme-default.css` v5.1.0) uses light blues, blue-greys and 
 Shared edge colours apply to every role: focus `#0c60a3` light / `#71bfff` dark, error `#ba2b2e` / `#f47b74`, on `#04598e` / `#86c5fa`.
 
 - **State steps:** light-mode fills darken by one step per level of emphasis (hover 1, active and selected 2, pressed 3); dark-mode fills lighten. Disabled fills turn neutral grey.
-- **Contrast:** every pen meets 4.5:1 and every edge 3:1 on its own role's fill, in every state except disabled (about 2.5:1, exempt).
+- **Contrast:** every pen meets 4.5:1 and every edge 3:1 on its own role's fill, in every state except disabled (about 2.5:1, exempt). The focus ring is the exception: it sits outside the control, so it meets 3:1 against every page layer (floor to tertiary) instead. Accent edges are drawn on a saturated fill, so they run light in light mode and dark in dark mode.
 - **Shadows:** shadow definitions never hard-code colours. Box, inset and drop shadows use `--ui-fill-<role>-shadow-<mode>`; text shadows use `--ui-pen-<role>-shadow-<mode>`; unrolled shadows use `base`.
 
 ## State definitions
