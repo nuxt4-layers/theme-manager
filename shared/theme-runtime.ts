@@ -112,15 +112,19 @@ export function runtimePresentationVariables(presentation: RuntimeThemePresentat
   const effects = presentationRecord(presentation.effects, 'effects')
   const responsive = presentationRecord(presentation.responsive, 'responsive')
   const entries: Array<[string, string]> = []
-  const add = (prefix: string, value: unknown, path: string) => {
-    for (const [key, cssValue] of presentationValues(value, path)) entries.push([`--ui-${prefix}-${key}`, cssValue])
+  // In groups whose bare name is a theme default (--ui-radius), DEFAULT writes that bare
+  // name. Elsewhere it stays a suffix, so spacing.DEFAULT can never move --ui-spacing.
+  const add = (prefix: string, value: unknown, path: string, bareDefault = false) => {
+    for (const [key, cssValue] of presentationValues(value, path)) {
+      entries.push([bareDefault && key === 'DEFAULT' ? `--ui-${prefix}` : `--ui-${prefix}-${key}`, cssValue])
+    }
   }
 
   add('font', typography.families, 'typography.families')
   add('text', typography.sizes, 'typography.sizes')
   add('font-weight', typography.weights, 'typography.weights')
   add('spacing', presentation.spacing, 'spacing')
-  add('radius', presentation.radii, 'radii')
+  add('radius', presentation.radii, 'radii', true)
   add('shadow', effects.shadow, 'effects.shadow')
   add('inset-shadow', effects.insetShadow, 'effects.insetShadow')
   add('drop-shadow', effects.dropShadow, 'effects.dropShadow')
@@ -135,8 +139,7 @@ const BORDER_KEYS = ['widths', 'focusRing', 'ring'] as const
 const FOCUS_RING_KEYS = ['width', 'offset'] as const
 const RING_KEYS = ['width'] as const
 
-// Border, outline and ring widths. Unlike radii, the widths DEFAULT maps to the bare
-// --ui-border-width, which is the name theme-default.css and theme-api.css use.
+// Border, outline and ring widths; the widths DEFAULT writes the bare --ui-border-width.
 function borderVariables(value: unknown): Array<[string, string]> {
   const borders = presentationRecord(value, 'borders')
   for (const key of Object.keys(borders)) {

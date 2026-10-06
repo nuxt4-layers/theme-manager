@@ -87,7 +87,8 @@ describe('TM-5 runtime application engine', () => {
 
     expect(values.get('--ui-font-sans')).toBe('Runtime Sans, sans-serif')
     expect(values.get('--ui-spacing-4')).toBe('18px')
-    expect(values.get('--ui-radius-DEFAULT')).toBe('6px')
+    expect(values.get('--ui-radius')).toBe('6px')
+    expect(values.has('--ui-radius-DEFAULT')).toBe(false)
     expect(values.get('--ui-text-shadow-sm-base')).toBe('0 1px 2px #000')
     expect(values.get('--ui-breakpoint-md')).toBe('800px')
     expect(values.get('--ui-container-2xl')).toBe('1600px')
@@ -121,6 +122,11 @@ describe('TM-5 runtime application engine', () => {
 
   it('leaves the bundled widths in place when a theme has no borders group', () => {
     expect(runtimePresentationVariables(emptyPresentation)).toEqual([])
+  })
+
+  it('keeps DEFAULT as a suffix outside radii, so the base spacing unit stays fixed', () => {
+    const names = runtimePresentationVariables({ ...emptyPresentation, spacing: { DEFAULT: '1rem' } }).map(([name]) => name)
+    expect(names).toEqual(['--ui-spacing-DEFAULT'])
   })
 
   it('rejects unknown or unsafe border width keys', () => {

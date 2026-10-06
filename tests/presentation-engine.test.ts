@@ -100,7 +100,8 @@ describe('TM-4 presentation engine', () => {
     expect(declarations(tailwindCss, '--breakpoint-')).toHaveLength(8)
     expect(declarations(tailwindCss, '--container-')).toHaveLength(2)
     expect(declarations(tailwindCss, '--spacing-')).toHaveLength(31)
-    expect(declarations(tailwindCss, '--radius-')).toHaveLength(6)
+    expect(declarations(tailwindCss, '--radius-')).toHaveLength(5)
+    expect(tailwindCss).toContain('--radius: var(--api-radius);')
     expect(declarations(tailwindCss, '--shadow-')).toHaveLength(56)
     expect(declarations(tailwindCss, '--inset-shadow-')).toHaveLength(60)
     expect(declarations(tailwindCss, '--drop-shadow-')).toHaveLength(56)
@@ -130,7 +131,7 @@ describe('TM-4 presentation engine', () => {
   })
 
   it('keeps default radius values valid and upstream of the public API', () => {
-    expect(defaultCss).toContain('--ui-radius-DEFAULT: var(--ui-radius-md);')
+    expect(defaultCss).toContain('--ui-radius: var(--ui-radius-md);')
     expect(defaultCss).toContain('--ui-radius-full: calc(infinity * 1px);')
     expect(defaultCss).not.toMatch(/--ui-radius-[\w-]+\s*:\s*var\(--(?:api-)?radius-/)
     expect(defaultCss).not.toContain('var(calc(')
