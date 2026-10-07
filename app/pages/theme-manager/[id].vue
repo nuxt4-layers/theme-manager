@@ -1,5 +1,10 @@
 <template>
-  <p v-if="pending" role="status" class="p-8 text-pen-muted-default">Loading theme…</p>
+  <section v-if="readOnlyReason" class="mx-auto max-w-3xl space-y-step-sm px-step-md py-step-lg" aria-labelledby="theme-read-only-title">
+    <h1 id="theme-read-only-title" class="text-title font-bold text-pen-base-default">{{ readOnlyReason.title }}</h1>
+    <p role="note" class="rounded-card border border-edge-info-default bg-fill-info-default p-step-sm text-label text-pen-info-default">{{ readOnlyReason.body }}</p>
+    <NuxtLink to="/theme-manager" class="inline-block rounded-control border border-edge-base-default bg-fill-base-default px-step-sm py-step-2xs text-label text-pen-base-default transition-[background-color,border-color,color] hover:bg-fill-base-hover focus-visible:outline-focus focus-visible:outline-offset-focus focus-visible:outline-edge-base-focus">Back to the Theme Library</NuxtLink>
+  </section>
+  <p v-else-if="pending" role="status" class="p-8 text-pen-muted-default">Loading theme…</p>
   <div v-else-if="error && !theme" role="alert" class="m-8 rounded-lg border border-edge-error-default bg-fill-error-default p-4 text-pen-error-default">{{ error }}</div>
   <ThemeManagerThemeEditor
     v-else-if="theme"
@@ -24,6 +29,7 @@ import { assertCompleteThemeVocabulary, completeThemeVocabulary } from '../../..
 
 const route = useRoute()
 const management = useThemeManagement()
+const { storage } = await useThemeCapabilities()
 const id = computed(() => String(route.params.id))
 const isNew = computed(() => id.value === 'new')
 const pending = ref(true)
@@ -61,7 +67,20 @@ async function newTheme(): Promise<ThemeDefinition> {
   }
 }
 
+// Nothing can be saved without storage, and system themes ship with a release: neither
+// opens the editor. The server enforces the same (503 and 403).
+const isSystem = computed(() => theme.value?.ownership.ownerType === 'system' || theme.value?.visibility === 'system')
+const readOnlyReason = computed(() => {
+  if (!storage.value) return { title: 'Themes cannot be edited here', body: 'No theme store is configured, so themes cannot be created, edited or saved. The built-in default theme is in use.' }
+  if (isSystem.value) return { title: `${theme.value!.name} is read-only`, body: 'System themes ship with a release of Theme Manager and cannot be edited. Create a theme to make your own.' }
+  return null
+})
+
 onMounted(async () => {
+  if (!storage.value) {
+    pending.value = false
+    return
+  }
   try {
     theme.value = isNew.value ? await newTheme() : await management.loadTheme(id.value)
   }

@@ -5,6 +5,13 @@ Theme Definition. It edits a draft: nothing is stored until **Save**, and the re
 the application keeps the active Theme unless *Apply to the whole app while editing*
 is switched on.
 
+## Without storage, and system themes
+
+When the host composes no Theme repository the library shows only the built-in
+default Theme, with no *Create* or *Edit*, and the editor route explains that themes
+cannot be edited. System Themes, the built-in default included, are always read-only:
+the library offers *Use* only and the editor route refuses them.
+
 ## Locked files
 
 `theme-default.css`, `theme-api.css` and `tailwind-config.css` are final and locked by

@@ -29,7 +29,7 @@ The host application:
 
 - selects a compatible Theme Manager version;
 - composes Theme Manager and presentation consumers as peer capabilities;
-- supplies a `ThemeRepository` adapter;
+- supplies a `ThemeRepository` adapter when Themes are to be stored (optional: see Stand-alone operation);
 - supplies `ThemeActorContextProvider` and `ThemeAuthorizationService` for exposed management operations;
 - supplies application-specific routes/navigation policy where the default management projection is not appropriate;
 - supplies external physical Asset/Resource integration when semantic Theme asset references are used;
@@ -69,6 +69,12 @@ Theme Manager has no package dependency on UI, Identity, Authentication, Authori
 ## Runtime and Management Exposure
 
 Runtime Theme presentation can operate with the bundled deterministic default without persistence or Identity/AuthZ.
+
+### Stand-alone operation
+
+Without a repository adapter Theme Manager runs stand-alone: the built-in default Theme applies, the Theme Library offers only that default, and nothing can be created, edited or saved. `GET /api/theme-manager/capabilities` reports `{ "storage": false }`, the pages hide creating and editing, and the Theme HTTP operations answer 503 (*Theme storage is not configured*). There is no implicit in-memory or file fallback store.
+
+System Themes (the built-in default and any `ownerType: 'system'` Theme) ship with a release and are never editable through the management projection or HTTP operations, with or without storage.
 
 Persisted Theme resolution requires a composition-supplied repository adapter. The [Theme Persistence Integration Guide](persistence-integration-guide.md) defines the supported implementation pattern, registration procedure, trust boundary and database-provider separation.
 

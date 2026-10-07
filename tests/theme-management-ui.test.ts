@@ -10,6 +10,7 @@ describe('TM-7 management UI boundary', () => {
   const editor = read('app/components/theme-manager/ThemeEditor.vue')
   const indexPage = read('app/pages/theme-manager/index.vue')
   const editorPage = read('app/pages/theme-manager/[id].vue')
+  const libraryPage = read('app/pages/theme-manager/index.vue')
   const draft = read('app/composables/useThemeDraft.ts')
   const previewScope = read('app/components/theme-manager/ThemePreviewScope.vue')
   const colours = read('app/components/theme-manager/ThemeEditorColours.vue')
@@ -41,9 +42,9 @@ describe('TM-7 management UI boundary', () => {
 
   it('pairs semantic fill, pen and edge roles consistently in management states', () => {
     expect(editor).toContain('border-edge-primary-default bg-fill-primary-default font-bold text-pen-primary-default')
-    expect(library).toContain('border-edge-primary-default bg-fill-primary-default px-4 py-2 font-medium text-pen-primary-default')
+    expect(library).toContain('border-edge-primary-default bg-fill-primary-default font-bold text-pen-primary-default')
     expect(editor).toContain('border-edge-error-default bg-fill-error-default p-step-sm text-label text-pen-error-default')
-    expect(library).toContain('border-edge-error-default bg-fill-error-default p-4 text-pen-error-default')
+    expect(library).toContain('border-edge-error-default bg-fill-error-default p-step-sm text-label text-pen-error-default')
     expect(editorPage).toContain('border-edge-error-default bg-fill-error-default p-4 text-pen-error-default')
     expect(editor).not.toContain('bg-fill-primary-default px-4 py-2 font-bold text-pen-base-default')
     expect(library).not.toContain('bg-fill-primary-default px-4 py-2 font-medium text-pen-base-default')
@@ -217,5 +218,21 @@ describe('TM-7 management UI boundary', () => {
       expect(source).not.toMatch(/\b(?:rounded-(?:lg|xl)|text-(?:xs|sm|2xl))\b/)
       expect(source).not.toMatch(/(?<![\w-])transition(?![-\w])/)
     }
+  })
+
+  it('runs stand-alone without storage: default theme only, nothing editable', () => {
+    const capabilities = read('app/composables/useThemeCapabilities.ts')
+    expect(capabilities).toContain("'/api/theme-manager/capabilities'")
+    expect(capabilities).toContain('default: () => ({ storage: false })')
+    expect(library).toContain('<button v-if="storage"')
+    expect(library).toContain('No theme store is configured')
+    expect(libraryPage).toContain('if (!storage.value)')
+    expect(editorPage).toContain('readOnlyReason')
+  })
+
+  it('never offers editing for the built-in default or system themes', () => {
+    expect(library).toContain('built in · read-only')
+    expect(library).toContain('<button v-if="!isSystem(theme)"')
+    expect(editorPage).toContain('System themes ship with a release')
   })
 })
