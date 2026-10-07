@@ -25,7 +25,9 @@ describe('TM-7 management UI boundary', () => {
     expect(editor).toContain('Raw JSON')
     expect(editor).toContain('Preview')
     expect(editor).toContain('Delete Theme')
-    expect(editor).toContain('presentationEntries')
+    // Every section has its own editor; no tab falls back to a list of text fields.
+    for (const section of ['Colours', 'Typography', 'Scales', 'Shadows', 'Effects', 'Motion', 'Breakpoints']) expect(editor).toContain(`<ThemeManagerThemeEditor${section}`)
+    expect(editor).not.toContain('presentationEntries')
     expect(editor).not.toContain('until its specialised visual editor is introduced')
   })
 
