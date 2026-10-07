@@ -113,15 +113,23 @@
           <button type="button" class="mt-2 text-sm text-pen-primary-default" @click="formatRaw">Format JSON</button>
         </div>
 
-        <div v-else-if="activeTab !== 'assets'" class="space-y-4">
-          <article v-for="[path, value] in presentationEntries" :key="path" class="rounded-xl border border-edge-base-default bg-fill-base-default p-4">
-            <label class="block text-xs font-bold uppercase tracking-wide text-pen-muted-default">
-              {{ path }}
-              <input :value="value" class="mt-2 w-full rounded-lg border border-edge-input-default bg-fill-input-default px-3 py-2 font-mono text-sm text-pen-base-default" @input="setPresentationValue(path, ($event.target as HTMLInputElement).value)" />
-            </label>
-          </article>
-          <p v-if="presentationEntries.length === 0" class="rounded-xl border border-edge-base-default p-8 text-center text-pen-muted-default">No {{ activeTab }} values are present in this Theme.</p>
-        </div>
+        <ThemeManagerThemeEditorEffects
+          v-else-if="activeTab === 'effects'"
+          :theme="model"
+          :preview="preview"
+          :preview-modes="previewModes"
+          @set-value="draft.setPresentationValue"
+        />
+
+        <ThemeManagerThemeEditorMotion
+          v-else-if="activeTab === 'motion'"
+          :theme="model"
+          :preview="preview"
+          :preview-modes="previewModes"
+          @set-value="draft.setPresentationValue"
+        />
+
+        <ThemeManagerThemeEditorBreakpoints v-else-if="activeTab === 'responsive'" />
 
         <div v-else class="rounded-xl border border-edge-base-default bg-fill-base-default p-6">
           <p class="text-pen-muted-default">Semantic asset bindings are managed as asset references. Raw JSON remains available for bindings until an external asset provider is composed.</p>
@@ -157,36 +165,8 @@ const applyToApp = ref(false)
 
 const colourModes = computed(() => model.modes as Record<string, Record<string, Record<string, string>>>)
 
-// Tabs with their own editor; the rest still list their values as text fields.
-const SPECIAL_TABS = ['colours', 'typography', 'shadows', 'spacing', 'radii', 'borders', 'raw', 'assets'] as const
 const SCALE_TABS = ['spacing', 'radii', 'borders'] as const
-type PresentationTab = Exclude<typeof activeTab.value, (typeof SPECIAL_TABS)[number]>
-const isPresentationTab = (tab: typeof activeTab.value): tab is PresentationTab => !(SPECIAL_TABS as readonly string[]).includes(tab)
 const scaleTab = computed(() => (SCALE_TABS as readonly string[]).includes(activeTab.value) ? activeTab.value as (typeof SCALE_TABS)[number] : null)
-// The Shadows tab edits these effect groups; the Effects tab lists the rest.
-const SHADOW_GROUPS = ['shadow.', 'insetShadow.', 'dropShadow.', 'textShadow.']
-
-const presentationEntries = computed(() => {
-  if (!isPresentationTab(activeTab.value)) return []
-  const family = model.presentation[activeTab.value as keyof typeof model.presentation] as Record<string, unknown> | undefined
-  const entries = family ? flattenPresentation(family) : []
-  return activeTab.value === 'effects' ? entries.filter(([path]) => !SHADOW_GROUPS.some(group => path.startsWith(group))) : entries
-})
-
-function flattenPresentation(value: Record<string, unknown>, prefix = ''): Array<[string, string]> {
-  const result: Array<[string, string]> = []
-  for (const [key, entry] of Object.entries(value)) {
-    const path = prefix ? `${prefix}.${key}` : key
-    if (entry && typeof entry === 'object' && !Array.isArray(entry)) result.push(...flattenPresentation(entry as Record<string, unknown>, path))
-    else result.push([path, String(entry)])
-  }
-  return result
-}
-
-function setPresentationValue(path: string, value: string) {
-  if (!isPresentationTab(activeTab.value)) return
-  draft.setPresentationValue([activeTab.value, ...path.split('.')], value)
-}
 
 function setDescription(value: string) {
   // An empty description is no description: the definition rejects a blank string.
