@@ -80,18 +80,19 @@ The theme manager's engine (`createThemeApplication` in `shared/theme-runtime.ts
 
 ## Pipeline and mode handling
 
-Three CSS files carry every token from source to utility, and only the first is edited by hand.
+Three locked CSS files carry every token from source to utility; a fourth, generated from the first, lets a scoped element preview a theme on its own.
 
 | Step | File | Holds | Edited by |
 | --- | --- | --- | --- |
-| 1 | `assets/css/theme/theme-default.css` | Source values `--ui-*`, with `-light` / `-dark` suffixes where modes differ, in one `:root` block | Hand |
-| 2 | `assets/css/theme/theme-api.css` | Stable `--api-*` names: light in `:root`, dark in `html.dark`, mode-free in a second `:root`; sets `color-scheme` | Generator |
-| 3 | `assets/css/tailwindcss/tailwind-config.css` | `@theme inline` mapping Tailwind namespaces to `--api-*`; literal breakpoints; plain `@keyframes` after the block | Generator |
+| 1 | `assets/css/theme/theme-default.css` | Source values `--ui-*`, with `-light` / `-dark` suffixes where modes differ, in one `:root` block | Locked |
+| 2 | `assets/css/theme/theme-api.css` | Stable `--api-*` names: light in `:root`, dark in `html.dark`, mode-free in a second `:root`; sets `color-scheme` | Locked (verified by the generator) |
+| 3 | `assets/css/tailwindcss/tailwind-config.css` | `@theme inline` mapping Tailwind namespaces to `--api-*`; literal breakpoints; plain `@keyframes` after the block | Locked (verified by the generator) |
+| 4 | `assets/css/theme/theme-scope.css` | The step 2 mappings again on `[data-theme-scope="light" \| "dark"]`, so a scoped element (the editor preview) resolves `--api-*` from its own `--ui-*` values, in its own mode | Generator |
 
 | # | Rule |
 | --- | --- |
 | P1 | Hand-written CSS reads `--api-*` only, never `--ui-*`: `--ui-*` values have not been through mode selection. |
-| P2 | After any change to `theme-default.css`, run `node scripts/generate-theme-api.mjs`; `--check` fails CI when either generated file is stale. The generator keeps each file's hand-written header. |
+| P2 | Steps 1–3 are locked and finalised: `tests/presentation-lock.test.ts` holds their hashes, and `node scripts/generate-theme-api.mjs` verifies them on every run but never rewrites them. Changing one is a deliberate decision that updates the lock register in the same pull request. The generator writes step 4; `pnpm check` runs its `--check`. |
 | P3 | Token names are lowercase segments joined by single hyphens. Tailwind's partner properties (`--text-sm--line-height`, `--font-mono--font-feature-settings`) are written only in `tailwind-config.css`. |
 | P4 | `@keyframes` sit outside `@theme`: Tailwind drops theme keyframes it cannot see named in an `--animate-*` value, and ours are `var()` references. |
 | P5 | Tailwind's default theme, including its colour palette, stays available underneath (`main.css` imports `tailwindcss` first). Decided: the palette is kept. Components still use only the theme's tokens (principle P6). |
