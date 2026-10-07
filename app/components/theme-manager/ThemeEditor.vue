@@ -88,6 +88,14 @@
           @set-colour="draft.setColour"
         />
 
+        <ThemeManagerThemeEditorTypography
+          v-else-if="activeTab === 'typography'"
+          :typography="model.presentation.typography as never"
+          :preview="preview"
+          :preview-modes="previewModes"
+          @set-value="draft.setPresentationValue"
+        />
+
         <ThemeManagerThemeEditorScales
           v-else-if="scaleTab"
           :key="scaleTab"
@@ -150,7 +158,7 @@ const applyToApp = ref(false)
 const colourModes = computed(() => model.modes as Record<string, Record<string, Record<string, string>>>)
 
 // Tabs with their own editor; the rest still list their values as text fields.
-const SPECIAL_TABS = ['colours', 'shadows', 'spacing', 'radii', 'borders', 'raw', 'assets'] as const
+const SPECIAL_TABS = ['colours', 'typography', 'shadows', 'spacing', 'radii', 'borders', 'raw', 'assets'] as const
 const SCALE_TABS = ['spacing', 'radii', 'borders'] as const
 type PresentationTab = Exclude<typeof activeTab.value, (typeof SPECIAL_TABS)[number]>
 const isPresentationTab = (tab: typeof activeTab.value): tab is PresentationTab => !(SPECIAL_TABS as readonly string[]).includes(tab)
