@@ -15,6 +15,7 @@ describe('TM-7 management UI boundary', () => {
   const colours = read('app/components/theme-manager/ThemeEditorColours.vue')
   const colourField = read('app/components/theme-manager/ThemeColourField.vue')
   const contrastBadge = read('app/components/theme-manager/ThemeContrastBadge.vue')
+  const components = read('app/components/theme-manager/ThemePreviewComponents.vue')
   const runtimeComposable = read('app/composables/useThemeRuntime.ts')
   const runtimePlugin = read('app/plugins/theme-runtime.client.ts')
   const runtimeMiddleware = read('app/middleware/theme-runtime.global.ts')
@@ -79,6 +80,35 @@ describe('TM-7 management UI boundary', () => {
     // Specimens read --api-* (resolved inside the scope), never --ui-*.
     expect(colours).toContain('var(--api-${channel}-${activeRole.value}-${state})')
     expect(colours).not.toContain('var(--ui-')
+  })
+
+  it('drives every previewed component state from platform semantics, not styling-only classes', () => {
+    for (const semantic of [':aria-pressed="toggled"', 'aria-busy="true"', 'aria-disabled="true"', ':aria-selected="selectedTab === index"', 'role="listbox"', ':aria-selected="selectedOption === index"', 'aria-current="page"', 'aria-invalid="true"', 'disabled']) {
+      expect(components).toContain(semantic)
+    }
+    for (const variant of ['hover:', 'active:', 'focus-visible:', 'aria-pressed:', 'aria-busy:', 'aria-disabled:', 'aria-selected:', 'aria-[current=page]:', 'aria-[invalid=true]:', 'disabled:', 'visited:']) {
+      expect(components).toContain(variant)
+    }
+  })
+
+  it('keeps previewed components keyboard operable with unique ids in each preview copy', () => {
+    expect(components).toContain('const uid = useId()')
+    expect(components).toContain(':tabindex="selectedTab === index ? 0 : -1"')
+    expect(components).toContain('ArrowRight:')
+    expect(components).toContain(':aria-activedescendant=')
+    expect(components).toContain("@click=\"emit('editRole', card.role)\"")
+  })
+
+  it('never animates the focus ring, and stops transitions under reduced motion', () => {
+    // A plain `transition` also fades outline-color, so the ring would fade in.
+    expect(components).not.toMatch(/['" ]transition['" ]/)
+    expect(components).toContain('transition-[background-color,border-color,color]')
+    expect(components).toContain('motion-reduce:transition-none')
+  })
+
+  it('sizes the component grid by the preview width, not the window', () => {
+    expect(components).toContain('class="@container"')
+    expect(components).toContain('@2xl:grid-cols-2')
   })
 
   it('never states a contrast result by colour alone', () => {
