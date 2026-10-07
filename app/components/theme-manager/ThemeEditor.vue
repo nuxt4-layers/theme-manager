@@ -58,7 +58,7 @@
             class="overflow-hidden rounded-panel border border-edge-base-default"
           >
             <p class="px-step-md pt-step-sm text-caption capitalize">{{ mode }}</p>
-            <ThemeManagerThemePreviewSpecimen />
+            <ThemeManagerThemePreviewSpecimen @edit-role="editRole" />
           </ThemeManagerThemePreviewScope>
         </section>
 
@@ -68,6 +68,8 @@
 
         <ThemeManagerThemeEditorColours
           v-if="activeTab === 'colours'"
+          ref="coloursSection"
+          v-model:role="colourRole"
           :modes="colourModes"
           :editing-mode="editingMode"
           :preview="preview"
@@ -154,6 +156,17 @@ function setDescription(value: string) {
   // An empty description is no description: the definition rejects a blank string.
   if (value.trim()) model.description = value
   else delete model.description
+}
+
+// The Colours tab's selected role; a preview component's "colours" button opens it.
+const colourRole = ref('accent')
+const coloursSection = ref<{ focusMatrix: () => void } | null>(null)
+
+async function editRole(role: string) {
+  activeTab.value = 'colours'
+  colourRole.value = role
+  await nextTick()
+  coloursSection.value?.focusMatrix()
 }
 
 // The whole-app preview uses the common runtime engine through the page. It follows the

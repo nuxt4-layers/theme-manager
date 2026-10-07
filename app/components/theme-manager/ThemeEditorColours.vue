@@ -42,7 +42,7 @@
     </section>
 
     <div class="overflow-x-auto rounded-card border border-edge-base-default">
-      <table class="w-full table-fixed border-collapse text-left text-label">
+      <table ref="matrix" tabindex="-1" class="w-full table-fixed border-collapse text-left text-label focus-visible:outline-focus focus-visible:outline-edge-base-focus">
         <caption class="p-step-sm text-left text-pen-base-default">
           <span class="font-bold capitalize">{{ activeRole }}</span>, {{ editingMode }} mode: pen needs 4.5:1 and edge 3:1 on the state's own fill; the focus ring needs 3:1 on every page layer.
         </caption>
@@ -90,7 +90,16 @@ const emit = defineEmits<{ set: [mode: ColourMode, role: string, state: string, 
 
 const channels = ['fill', 'pen', 'edge'] as const
 const states = COLOUR_STATES.filter(state => state !== 'shadow')
-const activeRole = ref('accent')
+// The selected role is shared with the editor, so a preview component can open its colours.
+const activeRole = defineModel<string>('role', { default: 'accent' })
+const matrix = ref<HTMLTableElement | null>(null)
+
+/** Moves focus to the state matrix, e.g. after jumping here from a preview component. */
+function focusMatrix() {
+  matrix.value?.scrollIntoView({ block: 'nearest' })
+  matrix.value?.focus()
+}
+defineExpose({ focusMatrix })
 
 const roles = computed(() => rolesOf(props.modes, props.editingMode))
 // Custom roles (not in the guide's fourteen) appear in their own group.
