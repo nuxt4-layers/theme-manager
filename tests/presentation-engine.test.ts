@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { NON_TEXT_CONTRAST, TEXT_CONTRAST, themeContrast } from '../shared/contrast'
 
 const root = resolve(import.meta.dirname, '..')
 const read = (path: string) => readFileSync(resolve(root, path), 'utf8')
@@ -34,18 +35,8 @@ const defaultColour = (family: 'fill' | 'pen' | 'edge', roleState: string, mode:
     entry.family === family && entry.roleState === roleState && entry.mode === mode,
   )
 
-const relativeLuminance = (hex: string) => {
-  const channels = [1, 3, 5].map(index => Number.parseInt(hex.slice(index, index + 2), 16) / 255)
-    .map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4)
-  return (0.2126 * channels[0]!) + (0.7152 * channels[1]!) + (0.0722 * channels[2]!)
-}
-
-const contrastRatio = (first: string, second: string) => {
-  const firstLuminance = relativeLuminance(first)
-  const secondLuminance = relativeLuminance(second)
-  return (Math.max(firstLuminance, secondLuminance) + 0.05)
-    / (Math.min(firstLuminance, secondLuminance) + 0.05)
-}
+// Both colours are opaque wherever this is used, so the shared ratio is never null.
+const contrastRatio = (first: string, second: string) => themeContrast(first, second)!
 
 const stateOf = (roleState: string) => roleState.slice(roleState.lastIndexOf('-') + 1)
 
@@ -211,7 +202,7 @@ describe('TM-4 presentation engine', () => {
     const failures = applicable.flatMap(({ roleState, mode, value, alpha }) => {
       const result = requireOpaquePair('pen', roleState, mode, { value, alpha })
       if (result.error) return [result.error]
-      return result.ratio! < 4.5 ? [`${mode} ${roleState}: ${result.ratio!.toFixed(3)}:1`] : []
+      return result.ratio! < TEXT_CONTRAST ? [`${mode} ${roleState}: ${result.ratio!.toFixed(3)}:1`] : []
     })
 
     expect(failures).toEqual([])
@@ -227,7 +218,7 @@ describe('TM-4 presentation engine', () => {
     const failures = applicable.flatMap(({ roleState, mode, value, alpha }) => {
       const result = requireOpaquePair('edge', roleState, mode, { value, alpha })
       if (result.error) return [result.error]
-      return result.ratio! < 3 ? [`${mode} ${roleState}: ${result.ratio!.toFixed(3)}:1`] : []
+      return result.ratio! < NON_TEXT_CONTRAST ? [`${mode} ${roleState}: ${result.ratio!.toFixed(3)}:1`] : []
     })
 
     expect(failures).toEqual([])
@@ -243,7 +234,7 @@ describe('TM-4 presentation engine', () => {
         for (const layer of layers) {
           const surface = defaultColour('fill', `${layer}-default`, mode)!
           const ratio = contrastRatio(focus.value, surface.value)
-          if (ratio < 3) failures.push(`${mode} ${focus.roleState} on ${layer}: ${ratio.toFixed(3)}:1`)
+          if (ratio < NON_TEXT_CONTRAST) failures.push(`${mode} ${focus.roleState} on ${layer}: ${ratio.toFixed(3)}:1`)
         }
       }
     }
