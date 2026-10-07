@@ -259,7 +259,7 @@ function specimenStyle(step: ShadowSize, role: string) {
   const token = (prefix: string) => `var(--api-${prefix}-${step}-${role})`
   switch (type.value.id) {
     case 'text': return { textShadow: token('text-shadow') }
-    case 'drop': return { filter: `drop-shadow(${token('drop-shadow')})`, borderRadius: '0' }
+    case 'drop': return { filter: `drop-shadow(${token('drop-shadow')})` }
     case 'inset': return { boxShadow: token('inset-shadow') }
     default: return { boxShadow: token('shadow') }
   }
