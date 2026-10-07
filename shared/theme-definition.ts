@@ -120,6 +120,7 @@ export function summarizeTheme(theme: ThemeDefinition) {
     id: theme.id,
     name: theme.name,
     ...(theme.description === undefined ? {} : { description: theme.description }),
+    version: theme.version,
     ownership: theme.ownership,
     visibility: theme.visibility,
     lifecycle: theme.lifecycle,

@@ -21,7 +21,7 @@
         <div class="mb-step-sm flex items-start justify-between gap-step-xs">
           <div>
             <h2 class="text-heading font-bold text-pen-base-default">Default Theme</h2>
-            <p class="text-caption text-pen-muted-default">built in · read-only</p>
+            <p class="text-caption text-pen-muted-default">built in · Theme Manager {{ THEME_MANAGER_VERSION }} · read-only</p>
           </div>
           <span v-if="!selectedThemeId" :class="selectedClass">Selected</span>
         </div>
@@ -35,7 +35,7 @@
         <div class="mb-step-sm flex items-start justify-between gap-step-xs">
           <div>
             <h2 class="text-heading font-bold text-pen-base-default">{{ theme.name }}</h2>
-            <p class="text-caption text-pen-muted-default">{{ theme.visibility }} · {{ theme.lifecycle }}<template v-if="isSystem(theme)"> · read-only</template></p>
+            <p class="text-caption text-pen-muted-default">{{ theme.visibility }} · {{ theme.lifecycle }} · v{{ theme.version }}<template v-if="isSystem(theme)"> · read-only</template></p>
           </div>
           <span v-if="selectedThemeId === theme.id" :class="selectedClass">Selected</span>
         </div>
@@ -53,6 +53,7 @@
 
 <script setup lang="ts">
 import type { ThemeSummary } from '../../../contracts'
+import { THEME_MANAGER_VERSION } from '../../../shared/theme-release'
 
 defineProps<{
   themes: ThemeSummary[]

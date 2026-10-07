@@ -70,6 +70,8 @@ export interface ThemeSummary {
   id: string
   name: string
   description?: string
+  /** The Theme's own version; for a system Theme, the Theme Manager release it ships in. */
+  version: string
   ownership: ThemeOwnership
   visibility: ThemeVisibility
   lifecycle: ThemeLifecycle
