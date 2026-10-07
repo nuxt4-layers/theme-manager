@@ -1,0 +1,9 @@
+/**
+ * The Nuxt layer's stylesheet: the published presentation (main.css, also
+ * exported as ./presentation.css) plus Theme Manager's own management pages and
+ * components. Tailwind skips node_modules when it detects sources, so an
+ * installed layer must name its own files; main.css stays free of any source
+ * topology for consumers that import it directly.
+ */
+@import './main.css';
+@source '../../app';
