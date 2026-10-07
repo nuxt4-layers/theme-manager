@@ -66,35 +66,14 @@
           <button v-for="tab in tabs" :key="tab" type="button" role="tab" class="whitespace-nowrap border-b-2 px-3 py-2 capitalize" :aria-selected="activeTab === tab" :class="activeTab === tab ? 'border-edge-primary-default bg-fill-primary-default font-medium text-pen-primary-default' : 'border-transparent text-pen-muted-default'" @click="activeTab = tab">{{ tab }}</button>
         </div>
 
-        <div v-if="activeTab === 'colours'" class="space-y-5">
-          <div class="flex flex-wrap gap-2">
-            <button v-for="category in categories" :key="category.id" type="button" class="rounded-full border px-4 py-2 text-sm font-medium" :class="activeCategory === category.id ? 'border-edge-primary-default bg-fill-primary-default text-pen-primary-default' : 'border-edge-base-default text-pen-muted-default'" @click="activeCategory = category.id">{{ category.label }}</button>
-          </div>
-
-          <article v-for="[role, states] in visibleColourRoles" :key="role" class="overflow-hidden rounded-xl border border-edge-base-default bg-fill-base-default">
-            <header class="flex items-center justify-between border-b border-edge-base-default bg-fill-floor-default px-5 py-3">
-              <div class="flex items-center gap-3">
-                <span class="h-8 w-2 rounded bg-fill-primary-default" aria-hidden="true" />
-                <h2 class="font-mono font-bold text-pen-base-default">{{ roleLabel(role) }}</h2>
-              </div>
-              <code class="rounded border border-edge-base-default bg-fill-base-default px-2 py-1 text-xs text-pen-muted-default">{{ role }}</code>
-            </header>
-
-            <div class="grid gap-4 p-5 sm:grid-cols-2 xl:grid-cols-3">
-              <label v-for="[state, value] in orderedStates(states)" :key="state" class="text-xs font-bold uppercase tracking-wide text-pen-muted-default">
-                {{ state }}
-                <div class="mt-1.5 flex items-center gap-2 rounded-lg border border-edge-input-default bg-fill-input-default p-1.5 focus-within:ring-2 focus-within:ring-edge-primary-default">
-                  <div class="relative size-8 shrink-0 overflow-hidden rounded-md border border-edge-base-default">
-                    <input type="color" class="absolute left-1/2 top-1/2 size-12 -translate-x-1/2 -translate-y-1/2 cursor-pointer border-0 p-0" :value="colourInput(value)" @input="setColour(role, state, withAlpha(($event.target as HTMLInputElement).value, value))" />
-                  </div>
-                  <input :value="value" maxlength="32" class="min-w-0 flex-1 bg-transparent px-1 py-1 font-mono text-sm text-pen-base-default outline-none" @input="setColour(role, state, ($event.target as HTMLInputElement).value)" />
-                </div>
-              </label>
-            </div>
-          </article>
-
-          <p v-if="visibleColourRoles.length === 0" class="rounded-xl border border-edge-base-default p-8 text-center text-pen-muted-default">No {{ activeCategory }} colour roles are present in this Theme.</p>
-        </div>
+        <ThemeManagerThemeEditorColours
+          v-if="activeTab === 'colours'"
+          :modes="colourModes"
+          :editing-mode="editingMode"
+          :preview="preview"
+          :preview-modes="previewModes"
+          @set="draft.setColour"
+        />
 
         <div v-else-if="activeTab === 'raw'">
           <label class="sr-only" for="theme-raw-json">Theme Definition JSON</label>
@@ -132,12 +111,6 @@ const draft = useThemeDraft(props.theme)
 const { model, raw, rawError, validationError, preview, applyRaw, formatRaw } = draft
 const activeTab = ref<'colours' | 'typography' | 'spacing' | 'radii' | 'borders' | 'effects' | 'motion' | 'responsive' | 'assets' | 'raw'>('colours')
 const tabs = ['colours', 'typography', 'spacing', 'radii', 'borders', 'effects', 'motion', 'responsive', 'assets', 'raw'] as const
-const categories = [
-  { id: 'fill', label: 'Fill (Backgrounds)' },
-  { id: 'pen', label: 'Pen (Text & Icons)' },
-  { id: 'edge', label: 'Edge (Borders)' },
-] as const
-const activeCategory = ref<(typeof categories)[number]['id']>('fill')
 // Which mode's colours the Colours tab edits; the preview view is chosen separately.
 const editingMode = ref<'light' | 'dark'>('light')
 const previewViews = [
@@ -150,14 +123,8 @@ const previewModes = computed(() => (previewView.value === 'both' ? ['light', 'd
 // Off by default: the draft stays inside the preview, so the editor itself keeps the
 // active theme and a half-finished colour can never make it unreadable.
 const applyToApp = ref(false)
-const interactionOrder = ['default', 'hover', 'focus', 'pressed', 'active', 'selected', 'on', 'visited', 'disabled', 'error', 'loading', 'shadow'] as const
 
 const colourModes = computed(() => model.modes as Record<string, Record<string, Record<string, string>>>)
-const visibleColourRoles = computed(() =>
-  Object.entries(colourModes.value[editingMode.value] ?? {})
-    .filter(([role]) => role.startsWith(`${activeCategory.value}-`))
-    .sort(([left], [right]) => left.localeCompare(right)),
-)
 
 type PresentationTab = Exclude<typeof activeTab.value, 'colours' | 'raw' | 'assets'>
 const isPresentationTab = (tab: typeof activeTab.value): tab is PresentationTab => !['colours', 'raw', 'assets'].includes(tab)
@@ -187,36 +154,6 @@ function setDescription(value: string) {
   // An empty description is no description: the definition rejects a blank string.
   if (value.trim()) model.description = value
   else delete model.description
-}
-
-function roleLabel(role: string) {
-  return role.replace(`${activeCategory.value}-`, '').replaceAll('-', ' ')
-}
-
-function orderedStates(states: Record<string, string>) {
-  return Object.entries(states).sort(([left], [right]) => {
-    const leftIndex = interactionOrder.indexOf(left as (typeof interactionOrder)[number])
-    const rightIndex = interactionOrder.indexOf(right as (typeof interactionOrder)[number])
-    if (leftIndex === -1 && rightIndex === -1) return left.localeCompare(right)
-    if (leftIndex === -1) return 1
-    if (rightIndex === -1) return -1
-    return leftIndex - rightIndex
-  })
-}
-
-// The picker handles #rrggbb only; theme colours may carry alpha as #rrggbbaa.
-function colourInput(value: string) {
-  return /^#[0-9a-f]{6}(?:[0-9a-f]{2})?$/i.test(value) ? value.slice(0, 7) : '#000000'
-}
-
-// Keep the current alpha when a colour is picked, so translucent shadow colours stay translucent.
-function withAlpha(picked: string, current: string) {
-  const alpha = /^#[0-9a-f]{8}$/i.test(current) ? current.slice(7) : ''
-  return `${picked}${alpha}`
-}
-
-function setColour(role: string, state: string, value: string) {
-  draft.setColour(editingMode.value, role, state, value)
 }
 
 // The whole-app preview uses the common runtime engine through the page. It follows the
