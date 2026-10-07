@@ -2,7 +2,7 @@
   <!-- Columns follow the preview's own width (container query), not the window's:
        side by side, each preview is only half as wide. -->
   <div class="@container">
-  <div class="grid gap-step-sm @2xl:grid-cols-2">
+  <div class="grid gap-step-sm @min-[42rem]:grid-cols-2">
     <section v-for="card in cards" :key="card.id" class="rounded-card border border-edge-base-default bg-fill-base-default p-step-sm text-pen-base-default" :aria-labelledby="`${uid}-${card.id}`">
       <header class="mb-step-xs flex items-center justify-between gap-step-xs">
         <h3 :id="`${uid}-${card.id}`" class="text-label font-bold">{{ card.title }}</h3>

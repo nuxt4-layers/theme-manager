@@ -77,6 +77,17 @@
           @set="draft.setColour"
         />
 
+        <ThemeManagerThemeEditorShadows
+          v-else-if="activeTab === 'shadows'"
+          :effects="model.presentation.effects"
+          :modes="colourModes"
+          :editing-mode="editingMode"
+          :preview="preview"
+          :preview-modes="previewModes"
+          @set-value="draft.setPresentationValue"
+          @set-colour="draft.setColour"
+        />
+
         <div v-else-if="activeTab === 'raw'">
           <label class="sr-only" for="theme-raw-json">Theme Definition JSON</label>
           <textarea id="theme-raw-json" :value="raw" rows="30" spellcheck="false" class="w-full rounded-xl border border-edge-base-default bg-fill-base-default p-4 font-mono text-xs text-pen-base-default" @input="applyRaw(($event.target as HTMLTextAreaElement).value)" />
@@ -111,8 +122,8 @@ const emit = defineEmits<{ save: [theme: ThemeDefinition]; cancel: []; delete: [
 
 const draft = useThemeDraft(props.theme)
 const { model, raw, rawError, validationError, preview, applyRaw, formatRaw } = draft
-const activeTab = ref<'colours' | 'typography' | 'spacing' | 'radii' | 'borders' | 'effects' | 'motion' | 'responsive' | 'assets' | 'raw'>('colours')
-const tabs = ['colours', 'typography', 'spacing', 'radii', 'borders', 'effects', 'motion', 'responsive', 'assets', 'raw'] as const
+const activeTab = ref<'colours' | 'typography' | 'spacing' | 'radii' | 'borders' | 'shadows' | 'effects' | 'motion' | 'responsive' | 'assets' | 'raw'>('colours')
+const tabs = ['colours', 'typography', 'spacing', 'radii', 'borders', 'shadows', 'effects', 'motion', 'responsive', 'assets', 'raw'] as const
 // Which mode's colours the Colours tab edits; the preview view is chosen separately.
 const editingMode = ref<'light' | 'dark'>('light')
 const previewViews = [
@@ -128,13 +139,16 @@ const applyToApp = ref(false)
 
 const colourModes = computed(() => model.modes as Record<string, Record<string, Record<string, string>>>)
 
-type PresentationTab = Exclude<typeof activeTab.value, 'colours' | 'raw' | 'assets'>
-const isPresentationTab = (tab: typeof activeTab.value): tab is PresentationTab => !['colours', 'raw', 'assets'].includes(tab)
+type PresentationTab = Exclude<typeof activeTab.value, 'colours' | 'shadows' | 'raw' | 'assets'>
+const isPresentationTab = (tab: typeof activeTab.value): tab is PresentationTab => !['colours', 'shadows', 'raw', 'assets'].includes(tab)
+// The Shadows tab edits these effect groups; the Effects tab lists the rest.
+const SHADOW_GROUPS = ['shadow.', 'insetShadow.', 'dropShadow.', 'textShadow.']
 
 const presentationEntries = computed(() => {
   if (!isPresentationTab(activeTab.value)) return []
   const family = model.presentation[activeTab.value as keyof typeof model.presentation] as Record<string, unknown> | undefined
-  return family ? flattenPresentation(family) : []
+  const entries = family ? flattenPresentation(family) : []
+  return activeTab.value === 'effects' ? entries.filter(([path]) => !SHADOW_GROUPS.some(group => path.startsWith(group))) : entries
 })
 
 function flattenPresentation(value: Record<string, unknown>, prefix = ''): Array<[string, string]> {
