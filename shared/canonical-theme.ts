@@ -1,4 +1,5 @@
 import type { ThemeDefinition, ThemeOwnerType } from '../contracts'
+import { THEME_MANAGER_VERSION, THEME_VOCABULARY_VERSION } from './theme-release'
 
 // Generated from assets/css/theme/theme-default.css: every --ui-* token except the base
 // spacing unit (--ui-spacing), which is not settable by design.
@@ -2045,8 +2046,9 @@ export function createCanonicalThemeDefinition(options: { id?: string; name?: st
     id: options.id ?? 'theme-manager-default',
     name: options.name ?? 'Theme Manager Default',
     description: options.description ?? 'Canonical complete Theme Manager presentation vocabulary.',
-    version: '1.0.0',
-    schemaVersion: '1',
+    // A system Theme's version is the release it ships in; others start at 1.0.0.
+    version: ownerType === 'system' ? THEME_MANAGER_VERSION : '1.0.0',
+    schemaVersion: THEME_VOCABULARY_VERSION,
     ownership: { ownerType, ...(options.ownerId ? { ownerId: options.ownerId } : {}) },
     visibility: ownerType === 'system' ? 'system' : 'private',
     lifecycle: ownerType === 'system' ? 'published' : 'draft',

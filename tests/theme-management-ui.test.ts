@@ -231,7 +231,7 @@ describe('TM-7 management UI boundary', () => {
   })
 
   it('never offers editing for the built-in default or system themes', () => {
-    expect(library).toContain('built in · read-only')
+    expect(library).toContain('built in · Theme Manager {{ THEME_MANAGER_VERSION }} · read-only')
     expect(library).toContain('<button v-if="!isSystem(theme)"')
     expect(editorPage).toContain('System themes ship with a release')
   })

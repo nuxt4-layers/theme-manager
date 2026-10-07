@@ -1,5 +1,6 @@
 import type { ThemeActorContext, ThemeDefinition, ThemeOwnership, ThemeRepository, ThemeSummary } from '../../contracts'
 import { parsePersistedTheme, parseThemeDefinition, serializeThemeDefinition, summarizeTheme } from '../../shared/theme-definition'
+import { stampVocabulary, upgradeStoredTheme } from '../../shared/theme-version'
 import type { ThemeAccessIntegration } from './theme-access'
 import { ThemeAuthorizationError, themeResource } from './theme-access'
 
@@ -31,7 +32,7 @@ function assertMutableTheme(theme: ThemeDefinition): void {
 export function createThemeService(repository: ThemeRepository, access?: ThemeAccessIntegration): ThemeService {
   const rawFind = async (id: string) => {
     const persisted = await repository.findById(id)
-    return persisted === null ? null : parsePersistedTheme(persisted)
+    return persisted === null ? null : upgradeStoredTheme(parsePersistedTheme(persisted))
   }
 
   const find = async (id: string) => {
@@ -51,7 +52,7 @@ export function createThemeService(repository: ThemeRepository, access?: ThemeAc
   return {
     async list() {
       const persisted = await repository.list()
-      const themes = persisted.map(parsePersistedTheme)
+      const themes = persisted.map(value => upgradeStoredTheme(parsePersistedTheme(value)))
       if (!access) return themes.map(summarizeTheme)
 
       const visible: ThemeSummary[] = []
@@ -68,7 +69,8 @@ export function createThemeService(repository: ThemeRepository, access?: ThemeAc
     },
     find,
     async create(input) {
-      const theme = parseThemeDefinition(input)
+      // Saved complete in this release's vocabulary, and stamped with it.
+      const theme = stampVocabulary(parseThemeDefinition(input))
       assertMutableTheme(theme)
 
       if (access) {
@@ -90,7 +92,8 @@ export function createThemeService(repository: ThemeRepository, access?: ThemeAc
       assertMutableTheme(existing)
       if (access) await access.assert('theme.edit', themeResource(existing))
 
-      const theme = parseThemeDefinition(input)
+      // Saved complete in this release's vocabulary, and stamped with it.
+      const theme = stampVocabulary(parseThemeDefinition(input))
       assertMutableTheme(theme)
       if (theme.id !== id) throw new ThemeNotFoundError('Theme ID does not match the requested resource.')
       if (

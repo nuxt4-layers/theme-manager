@@ -31,6 +31,15 @@ The public contract establishes foundational types for:
 
 The concrete presentation grammar and runtime-validatable Theme Definition schema are implemented behind this public boundary. Consumers must use the declared contracts rather than infer contracts from internal implementation details.
 
+## Theme versions
+
+A Theme carries two versions:
+
+- `version` is the Theme's own version. A system Theme, the built-in default included, ships in the package, so its `version` is the Theme Manager release (`THEME_MANAGER_VERSION`). It changes only by upgrading the layer and is never editable through the management projection.
+- `schemaVersion` is the token vocabulary the Theme was built against (`THEME_VOCABULARY_VERSION`, currently `1`). A release raises it when it adds, renames or removes tokens.
+
+When a stored Theme is read, tokens it lacks take the default Theme's values, so stored Themes keep working after an upgrade; its own `version` and `schemaVersion` are kept until it is next saved. Saving writes the complete current vocabulary and stamps the current `schemaVersion`. A stored Theme whose `schemaVersion` is newer than this release (or unreadable) is refused as invalid, because this release cannot know its tokens. `ThemeSummary` includes `version`.
+
 ## Persistence port
 
 `ThemeRepository` is provider agnostic and crosses the persistence boundary using JSON-compatible values.
