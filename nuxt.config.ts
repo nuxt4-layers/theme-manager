@@ -1,11 +1,12 @@
 import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 
-const presentationCss = fileURLToPath(new URL('./assets/css/main.css', import.meta.url))
+// The presentation (main.css) plus the layer's own pages as Tailwind sources.
+const layerCss = fileURLToPath(new URL('./assets/css/layer.css', import.meta.url))
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
-  css: [presentationCss],
+  css: [layerCss],
   runtimeConfig: {
     public: {
       themeManager: {

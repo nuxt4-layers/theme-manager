@@ -32,6 +32,13 @@ describe('TM-9 presentation-consumer boundary', () => {
     expect(css.toLowerCase()).not.toContain('authentication')
   })
 
+  it('styles its own management pages when installed (Tailwind skips node_modules)', () => {
+    const layerCss = read('assets/css/layer.css')
+    expect(read('nuxt.config.ts')).toContain("new URL('./assets/css/layer.css', import.meta.url)")
+    expect(layerCss).toContain("@import './main.css';")
+    expect(layerCss).toContain("@source '../../app';")
+  })
+
   it('keeps component styling outside Theme Manager', () => {
     expect(css).not.toMatch(/components\//)
     expect(contract).toContain('no UI component CSS')
