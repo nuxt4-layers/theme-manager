@@ -12,6 +12,9 @@ describe('TM-7 management UI boundary', () => {
   const editorPage = read('app/pages/theme-manager/[id].vue')
   const draft = read('app/composables/useThemeDraft.ts')
   const previewScope = read('app/components/theme-manager/ThemePreviewScope.vue')
+  const colours = read('app/components/theme-manager/ThemeEditorColours.vue')
+  const colourField = read('app/components/theme-manager/ThemeColourField.vue')
+  const contrastBadge = read('app/components/theme-manager/ThemeContrastBadge.vue')
   const runtimeComposable = read('app/composables/useThemeRuntime.ts')
   const runtimePlugin = read('app/plugins/theme-runtime.client.ts')
   const runtimeMiddleware = read('app/middleware/theme-runtime.global.ts')
@@ -67,6 +70,27 @@ describe('TM-7 management UI boundary', () => {
     expect(editor).toContain('const applyToApp = ref(false)')
   })
 
+  it('edits colours as a state matrix with live contrast for each judged pair', () => {
+    expect(editor).toContain('<ThemeManagerThemeEditorColours')
+    expect(colours).toContain('roleContrast(props.modes, props.editingMode, activeRole.value)')
+    expect(colours).toContain(':verdict="row.pen" channel="Pen"')
+    expect(colours).toContain(':verdict="row.edge"')
+    expect(colours).toContain('<ThemeManagerThemePreviewScope')
+    // Specimens read --api-* (resolved inside the scope), never --ui-*.
+    expect(colours).toContain('var(--api-${channel}-${activeRole.value}-${state})')
+    expect(colours).not.toContain('var(--ui-')
+  })
+
+  it('never states a contrast result by colour alone', () => {
+    expect(contrastBadge).toContain("{ pass: '✓', fail: '✕', exempt: '–', unchecked: '–' }")
+    expect(contrastBadge).toContain('class="sr-only"')
+  })
+
+  it('gives the colour picker and the text field their own accessible names', () => {
+    expect(colourField).toContain(':aria-label="`${label}: colour picker`"')
+    expect(colourField).toContain(':aria-label="label"')
+  })
+
   it('shows invalid drafts instead of throwing from input handlers', () => {
     expect(editor).toContain('v-if="validationError" role="alert"')
     expect(editor).toContain(':disabled="saving || !!rawError || !!validationError"')
@@ -117,6 +141,6 @@ describe('TM-7 management UI boundary', () => {
     expect(indexPage).toContain('@select=')
     expect(editorPage).toContain('@save=')
     expect(editorPage).toContain('@delete=')
-    expect(editor).toContain('type="color"')
+    expect(colourField).toContain('type="color"')
   })
 })
