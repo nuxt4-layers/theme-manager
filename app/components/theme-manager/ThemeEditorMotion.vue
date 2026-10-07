@@ -54,8 +54,10 @@
             <div v-for="token in group.tokens" :key="token.variable" class="grid grid-cols-[minmax(0,1fr)_minmax(0,4fr)] items-center gap-step-xs">
               <span class="text-caption font-mono">{{ tokenKey(token) }}</span>
               <span v-if="group.id === 'ease'" class="flex items-center gap-step-xs">
-                <svg v-if="curve(token)" viewBox="-10 -40 120 180" class="block" :style="{ width: '2rem', height: '3rem', flex: 'none' }" aria-hidden="true">
-                  <path :d="curve(token)!" fill="none" stroke-width="6" :style="{ stroke: 'var(--api-pen-base-default)' }" />
+                <!-- The unit box (time across, progress up) with room above for overshoot. -->
+                <svg v-if="curve(token)" viewBox="-8 -30 116 146" class="block" :style="{ width: '4rem', height: '5rem', flex: 'none' }" aria-hidden="true">
+                  <rect x="0" y="0" width="100" height="100" fill="none" stroke-width="1.5" :style="{ stroke: 'var(--api-edge-muted-default)' }" />
+                  <path :d="curve(token)!" fill="none" stroke-width="4" stroke-linecap="round" :style="{ stroke: 'var(--api-pen-base-default)' }" />
                 </svg>
                 <span class="block" :style="trackStyle"><span class="block" :style="easeDotStyle(token)" /></span>
               </span>
@@ -137,7 +139,7 @@ const playing = ref(false)
 const playKey = ref(0)
 watch(playing, on => { if (on) playKey.value++ })
 
-const trackStyle = { position: 'relative', height: '0.75rem', borderRadius: 'var(--api-radius-xs)', backgroundColor: 'var(--api-fill-muted-default)' } as const
+const trackStyle = { position: 'relative', flex: '1 1 auto', height: '0.75rem', borderRadius: 'var(--api-radius-xs)', backgroundColor: 'var(--api-fill-muted-default)' } as const
 
 function easeDotStyle(token: ThemeToken) {
   return {

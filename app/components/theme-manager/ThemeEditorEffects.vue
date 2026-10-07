@@ -58,7 +58,7 @@ const fieldClass = 'w-full min-w-0 rounded-control border border-edge-input-defa
 type GroupId = 'blur' | 'perspective' | 'tilt' | 'aspect'
 const GROUPS: ReadonlyArray<{ id: GroupId; title: string; note: string }> = [
   { id: 'blur', title: 'Blur', note: 'blur-*, backdrop-blur-*: frost for panels and dialog backdrops.' },
-  { id: 'perspective', title: 'Perspective', note: 'perspective-*: shorter is stronger depth. Shown with the md tilt.' },
+  { id: 'perspective', title: 'Perspective', note: 'perspective-*: shorter is stronger depth. Shown with the lg tilt.' },
   { id: 'tilt', title: 'Tilt', note: 'rotate-x-tilt-*, rotate-y-tilt-*: angles for 3D turns. Shown at normal perspective.' },
   { id: 'aspect', title: 'Aspect ratios', note: 'aspect-*: width / height.' },
 ]
@@ -92,7 +92,9 @@ function specimenStyle(group: GroupId, token: ThemeToken) {
   switch (group) {
     case 'blur': return { ...card, display: 'grid', placeItems: 'center', fontSize: 'var(--api-text-xl)', fontWeight: 'var(--api-font-weight-bold)', color: 'var(--api-pen-primary-default)', filter: `blur(${api})` }
     // perspective() inside transform applies per element, so each specimen shows its own depth.
-    case 'perspective': return { ...card, transform: `perspective(${api}) rotateY(var(--api-tilt-md))` }
+    // A wide plane turned by the large tilt: at a near perspective its far edge visibly
+    // shrinks, at a distant one it stays almost rectangular.
+    case 'perspective': return { ...card, width: '6rem', transform: `perspective(${api}) rotateY(var(--api-tilt-lg))` }
     case 'tilt': return { ...card, transform: `rotateY(${api})` }
     case 'aspect': return { ...card, width: 'auto', height: '3rem', aspectRatio: api }
   }
