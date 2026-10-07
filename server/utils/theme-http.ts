@@ -2,6 +2,7 @@ import { createError, getHeader, readRawBody, type H3Event } from 'h3'
 import { ThemeValidationError } from '../../shared/theme-definition'
 import { ProtectedThemeError, ThemeConflictError, ThemeNotFoundError } from './theme-service'
 import { ThemeAuthorizationError } from './theme-access'
+import { ThemeStorageUnavailableError } from './theme-repository'
 
 const MAX_THEME_BODY_BYTES = 256 * 1024
 
@@ -27,6 +28,8 @@ export async function readThemeBody(event: H3Event): Promise<unknown> {
 
 export function themeHttpError(error: unknown): never {
   if (error && typeof error === 'object' && 'statusCode' in error) throw error
+  // Fails closed: no implicit in-memory store stands in for a missing repository.
+  if (error instanceof ThemeStorageUnavailableError) throw createError({ statusCode: 503, statusMessage: 'Theme storage is not configured.' })
   if (error instanceof ThemeNotFoundError) throw createError({ statusCode: 404, statusMessage: 'Theme not found.' })
   if (error instanceof ThemeConflictError) throw createError({ statusCode: 409, statusMessage: error.message })
   if (error instanceof ThemeAuthorizationError) throw createError({ statusCode: 403, statusMessage: 'Theme operation is not authorized.' })

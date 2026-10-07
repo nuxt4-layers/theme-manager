@@ -2,11 +2,13 @@
   <ThemeManagerThemeLibrary
     :themes="themes"
     :selected-theme-id="runtime.selectedThemeId.value"
+    :storage="storage"
     :loading="loading"
     :error="error"
     @create="navigateTo('/theme-manager/new')"
     @edit="id => navigateTo(`/theme-manager/${encodeURIComponent(id)}`)"
     @select="selectTheme"
+    @select-default="runtime.useDefault()"
   />
 </template>
 
@@ -16,11 +18,17 @@ import { themeDefinitionToRuntime } from '../../../shared/theme-runtime'
 
 const management = useThemeManagement()
 const runtime = useThemeRuntime()
+const { storage } = await useThemeCapabilities()
 const themes = ref<ThemeSummary[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
 
 async function refresh() {
+  // Without storage only the built-in default exists; there is nothing to list.
+  if (!storage.value) {
+    loading.value = false
+    return
+  }
   loading.value = true
   error.value = null
   try {
