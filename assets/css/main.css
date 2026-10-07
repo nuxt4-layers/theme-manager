@@ -15,6 +15,8 @@
 @import './theme/theme-default.css';
 @import './theme/theme-api.css';
 @import './tailwindcss/tailwind-config.css';
+/* Generated: the --api-* mappings again on [data-theme-scope], for scoped previews. */
+@import './theme/theme-scope.css';
 
 @utility scrollbar-hide {
   scrollbar-width: none;
