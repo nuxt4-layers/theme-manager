@@ -40,9 +40,9 @@ describe('TM-7 management UI boundary', () => {
   })
 
   it('pairs semantic fill, pen and edge roles consistently in management states', () => {
-    expect(editor).toContain('border-edge-primary-default bg-fill-primary-default px-4 py-2 font-bold text-pen-primary-default')
+    expect(editor).toContain('border-edge-primary-default bg-fill-primary-default font-bold text-pen-primary-default')
     expect(library).toContain('border-edge-primary-default bg-fill-primary-default px-4 py-2 font-medium text-pen-primary-default')
-    expect(editor).toContain('border-edge-error-default bg-fill-error-default p-4 text-pen-error-default')
+    expect(editor).toContain('border-edge-error-default bg-fill-error-default p-step-sm text-label text-pen-error-default')
     expect(library).toContain('border-edge-error-default bg-fill-error-default p-4 text-pen-error-default')
     expect(editorPage).toContain('border-edge-error-default bg-fill-error-default p-4 text-pen-error-default')
     expect(editor).not.toContain('bg-fill-primary-default px-4 py-2 font-bold text-pen-base-default')
@@ -190,5 +190,32 @@ describe('TM-7 management UI boundary', () => {
     expect(editorPage).toContain('@save=')
     expect(editorPage).toContain('@delete=')
     expect(colourField).toContain('type="color"')
+  })
+
+  it('confirms deletion and unsaved-change loss in an accessible dialog, not confirm()', () => {
+    const dialog = read('app/components/theme-manager/ThemeConfirmDialog.vue')
+    expect(dialog).toContain('showModal()')
+    expect(dialog).toContain('<form method="dialog"')
+    expect(dialog).toMatch(/value="cancel" autofocus/)
+    expect(editorPage).not.toMatch(/\bconfirm\(/)
+    expect(editorPage).toContain('<ThemeManagerThemeConfirmDialog')
+    expect(editorPage).toContain('onBeforeRouteLeave')
+    expect(editorPage).toContain("addEventListener('beforeunload'")
+    expect(editor).toContain('defineExpose({ dirty })')
+  })
+
+  it('follows the ARIA tabs pattern with one tab stop and arrow keys', () => {
+    expect(editor).toContain('role="tabpanel"')
+    expect(editor).toContain('aria-controls="theme-editor-panel"')
+    expect(editor).toContain(':tabindex="activeTab === tab ? 0 : -1"')
+    for (const key of ['ArrowRight', 'ArrowLeft', 'Home', 'End']) expect(editor).toContain(key)
+  })
+
+  it('styles the editor through the semantic scales only', () => {
+    for (const source of [editor, read('app/components/theme-manager/ThemeConfirmDialog.vue')]) {
+      expect(source).not.toMatch(/\b(?:p|px|py|m|mb|mt|gap|space-y)-\d/)
+      expect(source).not.toMatch(/\b(?:rounded-(?:lg|xl)|text-(?:xs|sm|2xl))\b/)
+      expect(source).not.toMatch(/(?<![\w-])transition(?![-\w])/)
+    }
   })
 })

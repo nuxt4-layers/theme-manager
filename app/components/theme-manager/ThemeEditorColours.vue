@@ -36,6 +36,7 @@
             :key="state"
             class="rounded-control border-md px-step-xs py-step-3xs text-label"
             :style="specimenStyle(state)"
+            :aria-disabled="state === 'disabled' || undefined"
           >{{ state }}</span>
         </div>
       </ThemeManagerThemePreviewScope>

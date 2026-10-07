@@ -93,6 +93,7 @@ Undocumented internal paths are private implementation details.
 Reference documentation:
 
 - [Public Contract](docs/contracts.md) — supported capability and TypeScript boundaries.
+- [Theme Editor](docs/theme-editor.md) — what each editor tab edits, the preview, unsaved changes and accessibility.
 - [Composition Contract](docs/composition-contract.md) — host responsibilities, adapters and failure boundaries.
 - [Theme Persistence Integration Guide](docs/persistence-integration-guide.md) — implementing provider-neutral persistence and composing a repository adapter.
 - [Semantic Presentation Consumer Contract](docs/semantic-presentation-consumer-contract.md) — presentation dependency direction and consumer obligations.

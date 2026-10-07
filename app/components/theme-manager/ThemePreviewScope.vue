@@ -11,6 +11,8 @@ import { createThemeApplication, type RuntimeTheme, type ThemeApplication } from
 // theme's --ui-* values on this element, and theme-scope.css re-declares the --api-*
 // mappings on [data-theme-scope], so everything inside resolves them here, in `mode`.
 const props = defineProps<{ theme: RuntimeTheme | null; mode: 'light' | 'dark' }>()
+// Lets content name itself by mode, so the light and dark copies stay distinct landmarks.
+provide('themePreviewMode', toRef(props, 'mode'))
 
 const element = ref<HTMLElement | null>(null)
 let application: ThemeApplication | null = null
