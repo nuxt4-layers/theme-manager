@@ -3,7 +3,7 @@
        side by side, each preview is only half as wide. -->
   <div class="@container">
   <div class="grid gap-step-sm @min-[42rem]:grid-cols-2">
-    <section v-for="card in cards" :key="card.id" class="rounded-card border border-edge-base-default bg-fill-base-default p-step-sm text-pen-base-default" :aria-labelledby="`${uid}-${card.id}`">
+    <article v-for="card in cards" :key="card.id" class="rounded-card border border-edge-base-default bg-fill-base-default p-step-sm text-pen-base-default" :aria-labelledby="`${uid}-${card.id}`">
       <header class="mb-step-xs flex items-center justify-between gap-step-xs">
         <h3 :id="`${uid}-${card.id}`" class="text-label font-bold">{{ card.title }}</h3>
         <button
@@ -25,7 +25,7 @@
 
       <!-- Tabs: aria-selected on the chosen tab; arrow keys move between tabs (roving tabindex). -->
       <div v-else-if="card.id === 'tabs'">
-        <div role="tablist" :aria-label="`${card.title} example`" class="flex flex-wrap gap-step-3xs border-b border-edge-primary-default" @keydown="moveTab">
+        <div role="tablist" :aria-label="`${card.title} example${mode ? `, ${mode}` : ''}`" class="flex flex-wrap gap-step-3xs border-b border-edge-primary-default" @keydown="moveTab">
           <button
             v-for="(tab, index) in tabs"
             :id="`${uid}-tab-${index}`"
@@ -47,7 +47,7 @@
       <ul
         v-else-if="card.id === 'options'"
         role="listbox"
-        :aria-label="`${card.title} example`"
+        :aria-label="`${card.title} example${mode ? `, ${mode}` : ''}`"
         :aria-activedescendant="`${uid}-option-${activeOption}`"
         tabindex="0"
         class="space-y-step-3xs rounded-control outline-none"
@@ -67,7 +67,7 @@
       </ul>
 
       <!-- Links: the current page carries aria-current; a followed link turns :visited. -->
-      <nav v-else-if="card.id === 'links'" :aria-label="`${card.title} example`" class="flex flex-wrap gap-step-2xs">
+      <nav v-else-if="card.id === 'links'" :aria-label="`${card.title} example${mode ? `, ${mode}` : ''}`" class="flex flex-wrap gap-step-2xs">
         <a href="#theme-preview" aria-current="page" :class="linkClass">Current page</a>
         <a :href="`#${uid}-elsewhere`" :class="linkClass">Another page</a>
         <a :href="`#${uid}-followed`" :class="linkClass">Follow me (then visited)</a>
@@ -93,7 +93,7 @@
           <span aria-hidden="true">{{ status.icon }}</span>{{ status.label }}
         </li>
       </ul>
-    </section>
+    </article>
   </div>
   </div>
 </template>
@@ -105,6 +105,7 @@
 // names are written out in full so Tailwind can generate them.
 const emit = defineEmits<{ editRole: [role: string] }>()
 const uid = useId()
+const mode = inject<Ref<'light' | 'dark'> | null>('themePreviewMode', null)
 
 const cards = [
   { id: 'buttons', title: 'Buttons', role: 'accent' },
