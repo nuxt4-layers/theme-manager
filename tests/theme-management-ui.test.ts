@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
@@ -108,7 +108,17 @@ describe('TM-7 management UI boundary', () => {
 
   it('sizes the component grid by the preview width, not the window', () => {
     expect(components).toContain('class="@container"')
-    expect(components).toContain('@2xl:grid-cols-2')
+    expect(components).toContain('@min-[42rem]:grid-cols-2')
+  })
+
+  it('uses only literal container query sizes', () => {
+    // Named container sizes (@sm:, @2xl:) read --container-*, which this pipeline maps to
+    // var(--api-*); container queries cannot read var(), so Tailwind emits no rule at all.
+    const componentDir = resolve(root, 'app/components/theme-manager')
+    for (const file of readdirSync(componentDir).filter(name => name.endsWith('.vue'))) {
+      const source = readFileSync(resolve(componentDir, file), 'utf8')
+      expect(source, file).not.toMatch(/(?:^|[\s"'`])@(?:3xs|2xs|xs|sm|md|lg|xl|[2-7]xl):/m)
+    }
   })
 
   it('never states a contrast result by colour alone', () => {
