@@ -10,6 +10,8 @@ describe('TM-7 management UI boundary', () => {
   const editor = read('app/components/theme-manager/ThemeEditor.vue')
   const indexPage = read('app/pages/theme-manager/index.vue')
   const editorPage = read('app/pages/theme-manager/[id].vue')
+  const draft = read('app/composables/useThemeDraft.ts')
+  const previewScope = read('app/components/theme-manager/ThemePreviewScope.vue')
   const runtimeComposable = read('app/composables/useThemeRuntime.ts')
   const runtimePlugin = read('app/plugins/theme-runtime.client.ts')
   const runtimeMiddleware = read('app/middleware/theme-runtime.global.ts')
@@ -42,14 +44,33 @@ describe('TM-7 management UI boundary', () => {
   })
 
   it('unwraps reactive Theme props before cloning editor state', () => {
-    expect(editor).toContain('structuredClone(toRaw(props.theme))')
-    expect(editor).not.toContain('structuredClone(props.theme)')
+    expect(editor).toContain('useThemeDraft(props.theme)')
+    expect(draft).toContain('structuredClone(toRaw(initial))')
+    expect(draft).not.toContain('structuredClone(initial)')
   })
 
   it('uses the common TM-5 preview engine rather than direct CSS mutation', () => {
     expect(editor).not.toContain('style.setProperty')
+    expect(previewScope).not.toContain('style.setProperty')
+    expect(previewScope).toContain('createThemeApplication(element.value!.style)')
     expect(editor).toContain("emit('preview'")
     expect(editorPage).toContain('@preview="management.previewTheme"')
+  })
+
+  it('previews the draft in scoped containers and never changes <html>', () => {
+    expect(editor).toContain('<ThemeManagerThemePreviewScope')
+    expect(previewScope).toContain(':data-theme-scope="mode"')
+    for (const source of [editor, previewScope, draft]) {
+      expect(source).not.toContain('document.documentElement')
+      expect(source).not.toContain("classList.toggle('dark'")
+    }
+    expect(editor).toContain('const applyToApp = ref(false)')
+  })
+
+  it('shows invalid drafts instead of throwing from input handlers', () => {
+    expect(editor).toContain('v-if="validationError" role="alert"')
+    expect(editor).toContain(':disabled="saving || !!rawError || !!validationError"')
+    expect(editor).not.toContain('parseThemeDefinition')
   })
 
   it('applies the complete Theme Definition when a Theme is selected', () => {

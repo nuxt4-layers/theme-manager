@@ -7,11 +7,14 @@
       </div>
       <div class="flex gap-2">
         <button type="button" class="rounded-lg border border-edge-base-default px-4 py-2 text-pen-base-default" @click="$emit('cancel')">Cancel</button>
-        <button type="button" class="rounded-lg border border-edge-primary-default bg-fill-primary-default px-4 py-2 font-bold text-pen-primary-default disabled:opacity-50" :disabled="saving || !!rawError" @click="save">Save</button>
+        <button type="button" class="rounded-lg border border-edge-primary-default bg-fill-primary-default px-4 py-2 font-bold text-pen-primary-default disabled:opacity-50" :disabled="saving || !!rawError || !!validationError" @click="save">Save</button>
       </div>
     </header>
 
     <div v-if="error" role="alert" class="mb-5 rounded-lg border border-edge-error-default bg-fill-error-default p-4 text-pen-error-default">{{ error }}</div>
+    <div v-if="validationError" role="alert" class="mb-5 rounded-card border border-edge-error-default bg-fill-error-default p-step-sm text-label text-pen-error-default">
+      This draft cannot be saved yet: {{ validationError }} The preview shows the last valid version.
+    </div>
 
     <div class="grid gap-6 lg:grid-cols-3">
       <aside class="space-y-5">
@@ -21,22 +24,44 @@
             <input v-model="model.name" class="mt-1 w-full rounded-lg border border-edge-input-default bg-fill-input-default px-3 py-2 text-pen-base-default" />
           </label>
           <label class="block text-sm text-pen-muted-default">Description
-            <textarea v-model="model.description" rows="3" class="mt-1 w-full rounded-lg border border-edge-input-default bg-fill-input-default px-3 py-2 text-pen-base-default" />
+            <textarea :value="model.description ?? ''" rows="3" @input="setDescription(($event.target as HTMLTextAreaElement).value)" class="mt-1 w-full rounded-lg border border-edge-input-default bg-fill-input-default px-3 py-2 text-pen-base-default" />
           </label>
         </fieldset>
 
         <fieldset class="rounded-xl border border-edge-base-default bg-fill-base-default p-5">
           <legend class="px-1 font-bold text-pen-base-default">Preview</legend>
-          <p class="mb-3 text-xs text-pen-muted-default">Edit and preview the complete semantic colour vocabulary in either presentation mode.</p>
-          <div class="flex gap-2">
-            <button v-for="mode in ['light', 'dark'] as const" :key="mode" type="button" class="flex-1 rounded-lg border px-3 py-2 capitalize" :class="previewMode === mode ? 'border-edge-primary-default bg-fill-primary-default text-pen-primary-default' : 'border-edge-base-default text-pen-muted-default'" @click="setMode(mode)">{{ mode }}</button>
+          <p class="mb-3 text-xs text-pen-muted-default">The preview shows this draft; the rest of the page keeps the active theme.</p>
+          <p id="preview-view-label" class="text-label text-pen-muted-default">View</p>
+          <div class="mt-step-2xs flex gap-step-2xs" role="group" aria-labelledby="preview-view-label">
+            <button v-for="view in previewViews" :key="view.id" type="button" class="flex-1 rounded-control border px-step-xs py-step-2xs text-label" :aria-pressed="previewView === view.id" :class="previewView === view.id ? 'border-edge-primary-selected bg-fill-primary-selected text-pen-primary-selected' : 'border-edge-base-default bg-fill-base-default text-pen-base-default'" @click="previewView = view.id">{{ view.label }}</button>
           </div>
+          <p id="editing-mode-label" class="mt-step-sm text-label text-pen-muted-default">Colours being edited</p>
+          <div class="mt-step-2xs flex gap-step-2xs" role="group" aria-labelledby="editing-mode-label">
+            <button v-for="mode in ['light', 'dark'] as const" :key="mode" type="button" class="flex-1 rounded-control border px-step-xs py-step-2xs text-label capitalize" :aria-pressed="editingMode === mode" :class="editingMode === mode ? 'border-edge-primary-selected bg-fill-primary-selected text-pen-primary-selected' : 'border-edge-base-default bg-fill-base-default text-pen-base-default'" @click="editingMode = mode">{{ mode }}</button>
+          </div>
+          <label class="mt-step-sm flex items-start gap-step-xs text-label text-pen-base-default">
+            <input v-model="applyToApp" type="checkbox" class="mt-step-3xs">
+            <span>Apply to the whole app while editing</span>
+          </label>
         </fieldset>
 
         <button v-if="!isNew && model.ownership.ownerType !== 'system'" type="button" class="w-full rounded-lg border border-edge-error-default bg-fill-error-default px-4 py-2 text-pen-error-default" @click="$emit('delete')">Delete Theme</button>
       </aside>
 
       <main class="lg:col-span-2">
+        <section class="mb-step-md grid gap-step-sm" :class="previewView === 'both' ? 'xl:grid-cols-2' : ''" aria-label="Draft preview">
+          <ThemeManagerThemePreviewScope
+            v-for="mode in previewModes"
+            :key="mode"
+            :theme="preview"
+            :mode="mode"
+            class="overflow-hidden rounded-panel border border-edge-base-default"
+          >
+            <p class="px-step-md pt-step-sm text-caption capitalize">{{ mode }}</p>
+            <ThemeManagerThemePreviewSpecimen />
+          </ThemeManagerThemePreviewScope>
+        </section>
+
         <div class="mb-4 flex gap-2 overflow-x-auto border-b border-edge-base-default" role="tablist" aria-label="Theme editor sections">
           <button v-for="tab in tabs" :key="tab" type="button" role="tab" class="whitespace-nowrap border-b-2 px-3 py-2 capitalize" :aria-selected="activeTab === tab" :class="activeTab === tab ? 'border-edge-primary-default bg-fill-primary-default font-medium text-pen-primary-default' : 'border-transparent text-pen-muted-default'" @click="activeTab = tab">{{ tab }}</button>
         </div>
@@ -73,7 +98,7 @@
 
         <div v-else-if="activeTab === 'raw'">
           <label class="sr-only" for="theme-raw-json">Theme Definition JSON</label>
-          <textarea id="theme-raw-json" v-model="raw" rows="30" spellcheck="false" class="w-full rounded-xl border border-edge-base-default bg-fill-base-default p-4 font-mono text-xs text-pen-base-default" @input="applyRaw" />
+          <textarea id="theme-raw-json" :value="raw" rows="30" spellcheck="false" class="w-full rounded-xl border border-edge-base-default bg-fill-base-default p-4 font-mono text-xs text-pen-base-default" @input="applyRaw(($event.target as HTMLTextAreaElement).value)" />
           <p v-if="rawError" role="alert" class="mt-2 rounded border border-edge-error-default bg-fill-error-default p-2 text-sm text-pen-error-default">{{ rawError }}</p>
           <button type="button" class="mt-2 text-sm text-pen-primary-default" @click="formatRaw">Format JSON</button>
         </div>
@@ -98,12 +123,13 @@
 
 <script setup lang="ts">
 import type { ThemeDefinition } from '../../../contracts'
-import { parseThemeDefinition } from '../../../shared/theme-definition'
+import { useThemeDraft } from '../../composables/useThemeDraft'
 
 const props = defineProps<{ theme: ThemeDefinition; isNew?: boolean; saving?: boolean; error?: string | null }>()
 const emit = defineEmits<{ save: [theme: ThemeDefinition]; cancel: []; delete: []; preview: [theme: ThemeDefinition]; stopPreview: [] }>()
 
-const model = reactive(structuredClone(toRaw(props.theme)))
+const draft = useThemeDraft(props.theme)
+const { model, raw, rawError, validationError, preview, applyRaw, formatRaw } = draft
 const activeTab = ref<'colours' | 'typography' | 'spacing' | 'radii' | 'borders' | 'effects' | 'motion' | 'responsive' | 'assets' | 'raw'>('colours')
 const tabs = ['colours', 'typography', 'spacing', 'radii', 'borders', 'effects', 'motion', 'responsive', 'assets', 'raw'] as const
 const categories = [
@@ -112,22 +138,33 @@ const categories = [
   { id: 'edge', label: 'Edge (Borders)' },
 ] as const
 const activeCategory = ref<(typeof categories)[number]['id']>('fill')
-const previewMode = ref<'light' | 'dark'>('light')
-const raw = ref(JSON.stringify(model, null, 2))
-const rawError = ref<string | null>(null)
-const interactionOrder = ['default', 'hover', 'active', 'selected', 'visited', 'disabled'] as const
+// Which mode's colours the Colours tab edits; the preview view is chosen separately.
+const editingMode = ref<'light' | 'dark'>('light')
+const previewViews = [
+  { id: 'both', label: 'Side by side' },
+  { id: 'light', label: 'Light' },
+  { id: 'dark', label: 'Dark' },
+] as const
+const previewView = ref<(typeof previewViews)[number]['id']>('both')
+const previewModes = computed(() => (previewView.value === 'both' ? ['light', 'dark'] as const : [previewView.value]))
+// Off by default: the draft stays inside the preview, so the editor itself keeps the
+// active theme and a half-finished colour can never make it unreadable.
+const applyToApp = ref(false)
+const interactionOrder = ['default', 'hover', 'focus', 'pressed', 'active', 'selected', 'on', 'visited', 'disabled', 'error', 'loading', 'shadow'] as const
 
 const colourModes = computed(() => model.modes as Record<string, Record<string, Record<string, string>>>)
 const visibleColourRoles = computed(() =>
-  Object.entries(colourModes.value[previewMode.value] ?? {})
+  Object.entries(colourModes.value[editingMode.value] ?? {})
     .filter(([role]) => role.startsWith(`${activeCategory.value}-`))
     .sort(([left], [right]) => left.localeCompare(right)),
 )
 
+type PresentationTab = Exclude<typeof activeTab.value, 'colours' | 'raw' | 'assets'>
+const isPresentationTab = (tab: typeof activeTab.value): tab is PresentationTab => !['colours', 'raw', 'assets'].includes(tab)
+
 const presentationEntries = computed(() => {
-  if (activeTab.value === 'colours' || activeTab.value === 'raw' || activeTab.value === 'assets') return []
-  const familyKey = activeTab.value as Exclude<typeof activeTab.value, 'colours' | 'raw' | 'assets'>
-  const family = model.presentation[familyKey] as Record<string, unknown> | undefined
+  if (!isPresentationTab(activeTab.value)) return []
+  const family = model.presentation[activeTab.value as keyof typeof model.presentation] as Record<string, unknown> | undefined
   return family ? flattenPresentation(family) : []
 })
 
@@ -142,15 +179,14 @@ function flattenPresentation(value: Record<string, unknown>, prefix = ''): Array
 }
 
 function setPresentationValue(path: string, value: string) {
-  if (activeTab.value === 'colours' || activeTab.value === 'raw' || activeTab.value === 'assets') return
-  const familyKey = activeTab.value as Exclude<typeof activeTab.value, 'colours' | 'raw' | 'assets'>
-  let target = model.presentation[familyKey] as Record<string, unknown>
-  const parts = path.split('.')
-  const leaf = parts.pop()!
-  for (const part of parts) target = target[part] as Record<string, unknown>
-  target[leaf] = value
-  syncRaw()
-  preview()
+  if (!isPresentationTab(activeTab.value)) return
+  draft.setPresentationValue([activeTab.value, ...path.split('.')], value)
+}
+
+function setDescription(value: string) {
+  // An empty description is no description: the definition rejects a blank string.
+  if (value.trim()) model.description = value
+  else delete model.description
 }
 
 function roleLabel(role: string) {
@@ -179,52 +215,20 @@ function withAlpha(picked: string, current: string) {
   return `${picked}${alpha}`
 }
 
-function syncRaw() {
-  raw.value = JSON.stringify(model, null, 2)
-}
-
-function preview() {
-  emit('preview', parseThemeDefinition(toRaw(model)))
-}
-
 function setColour(role: string, state: string, value: string) {
-  const roleStates = colourModes.value[previewMode.value]?.[role]
-  if (!roleStates) return
-  roleStates[state] = value
-  syncRaw()
-  preview()
+  draft.setColour(editingMode.value, role, state, value)
 }
 
-function setMode(mode: 'light' | 'dark') {
-  previewMode.value = mode
-  if (import.meta.client) document.documentElement.classList.toggle('dark', mode === 'dark')
-  preview()
-}
-
-function applyRaw() {
-  try {
-    const next = parseThemeDefinition(JSON.parse(raw.value))
-    Object.assign(model, structuredClone(next))
-    rawError.value = null
-    emit('preview', next)
-  }
-  catch (error) {
-    rawError.value = error instanceof Error ? error.message : 'Invalid Theme Definition.'
-  }
-}
-
-function formatRaw() {
-  applyRaw()
-  if (!rawError.value) syncRaw()
-}
+// The whole-app preview uses the common runtime engine through the page. It follows the
+// last valid definition, so it never re-validates (and never re-triggers itself).
+watch([applyToApp, draft.definition], ([apply, definition]) => {
+  if (apply && definition) emit('preview', definition)
+  else if (!apply) emit('stopPreview')
+})
 
 function save() {
-  try {
-    emit('save', parseThemeDefinition(toRaw(model)))
-  }
-  catch (error) {
-    rawError.value = error instanceof Error ? error.message : 'Invalid Theme Definition.'
-  }
+  const definition = draft.result()
+  if (definition) emit('save', definition)
 }
 
 onBeforeUnmount(() => emit('stopPreview'))
