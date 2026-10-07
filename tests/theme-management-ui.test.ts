@@ -111,6 +111,12 @@ describe('TM-7 management UI boundary', () => {
     expect(components).toContain('@min-[42rem]:grid-cols-2')
   })
 
+  it('styles scale specimens only inline, since utilities are !important and would win', () => {
+    const scales = read('app/components/theme-manager/ThemeEditorScales.vue')
+    expect(read('assets/css/main.css')).toContain("@import 'tailwindcss' important;")
+    expect(scales).toContain("const specimenClass = 'block'")
+  })
+
   it('uses only literal container query sizes', () => {
     // Named container sizes (@sm:, @2xl:) read --container-*, which this pipeline maps to
     // var(--api-*); container queries cannot read var(), so Tailwind emits no rule at all.

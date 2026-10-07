@@ -88,6 +88,16 @@
           @set-colour="draft.setColour"
         />
 
+        <ThemeManagerThemeEditorScales
+          v-else-if="scaleTab"
+          :key="scaleTab"
+          :theme="model"
+          :section="scaleTab"
+          :preview="preview"
+          :preview-modes="previewModes"
+          @set-value="draft.setPresentationValue"
+        />
+
         <div v-else-if="activeTab === 'raw'">
           <label class="sr-only" for="theme-raw-json">Theme Definition JSON</label>
           <textarea id="theme-raw-json" :value="raw" rows="30" spellcheck="false" class="w-full rounded-xl border border-edge-base-default bg-fill-base-default p-4 font-mono text-xs text-pen-base-default" @input="applyRaw(($event.target as HTMLTextAreaElement).value)" />
@@ -139,8 +149,12 @@ const applyToApp = ref(false)
 
 const colourModes = computed(() => model.modes as Record<string, Record<string, Record<string, string>>>)
 
-type PresentationTab = Exclude<typeof activeTab.value, 'colours' | 'shadows' | 'raw' | 'assets'>
-const isPresentationTab = (tab: typeof activeTab.value): tab is PresentationTab => !['colours', 'shadows', 'raw', 'assets'].includes(tab)
+// Tabs with their own editor; the rest still list their values as text fields.
+const SPECIAL_TABS = ['colours', 'shadows', 'spacing', 'radii', 'borders', 'raw', 'assets'] as const
+const SCALE_TABS = ['spacing', 'radii', 'borders'] as const
+type PresentationTab = Exclude<typeof activeTab.value, (typeof SPECIAL_TABS)[number]>
+const isPresentationTab = (tab: typeof activeTab.value): tab is PresentationTab => !(SPECIAL_TABS as readonly string[]).includes(tab)
+const scaleTab = computed(() => (SCALE_TABS as readonly string[]).includes(activeTab.value) ? activeTab.value as (typeof SCALE_TABS)[number] : null)
 // The Shadows tab edits these effect groups; the Effects tab lists the rest.
 const SHADOW_GROUPS = ['shadow.', 'insetShadow.', 'dropShadow.', 'textShadow.']
 
