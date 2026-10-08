@@ -2,9 +2,9 @@
 
 Notable changes to Theme Manager are recorded here. GitHub source tags are distinct from npm publication; the package remains `private: true`.
 
-## [0.2.0] — Unreleased (release preparation)
+## [0.2.0] — 2026-10-08 (GitHub pre-release)
 
-This is a proposed pre-1.0 release. The version below is prepared in this branch but is **not** a published release or an existing Git tag. The baseline is the changes since [v0.1.0](https://github.com/nuxt4-layers/theme-manager/releases/tag/v0.1.0).
+[v0.2.0](https://github.com/nuxt4-layers/theme-manager/releases/tag/v0.2.0) is the published, accepted canonical pre-1.0 GitHub source release. The baseline is the changes since [v0.1.0](https://github.com/nuxt4-layers/theme-manager/releases/tag/v0.1.0).
 
 ### Added
 
@@ -21,7 +21,7 @@ This is a proposed pre-1.0 release. The version below is prepared in this branch
 - Theme management now uses a more complete editor and preview workflow; protected system Themes remain read-only.
 - The runtime applies validated `--ui-*` values; selection is restored from `active-theme-id`, and invalid or unavailable selections fall back to the bundled default.
 - Persistence is explicitly optional: without a host repository the default Theme remains available, but persistence-backed HTTP operations fail with 503 rather than using an implicit store.
-- Package release version is prepared as `0.2.0`. The token vocabulary version is prepared as `2`, because the vocabulary changed since the original release.
+- Package release version is `0.2.0`. The token vocabulary version is `2`, because the vocabulary changed since the original release.
 
 ### Breaking changes and integration considerations
 
@@ -34,9 +34,9 @@ This is a proposed pre-1.0 release. The version below is prepared in this branch
 
 See [the v0.1.0 → v0.2.0 upgrade guide](docs/upgrading-to-v0.2.0.md) for the practical migration sequence.
 
-### Release verification still required
+### Release verification
 
-Before tagging: run `pnpm install --frozen-lockfile`, `pnpm check`, and independent platform-test-harness integration; inspect release diff and CI, verify the final SHA, and approve the immutable tag. This changelog does not claim those checks have passed.
+The release-preparation PR passed `pnpm install --frozen-lockfile`, `pnpm check` and GitHub security analysis before the `v0.2.0` tag was published. Independent platform-test-harness integration and persisted-Theme rollback verification were not completed at publication; consumers must validate their composed applications before deployment.
 
 ## [0.1.0]
 
