@@ -2,9 +2,9 @@
 
 ## Project status
 
-Theme Manager remains in pre-1.0 development. **`v0.2.0` is the current accepted canonical GitHub source release**, published as a pre-release. It supersedes `v0.1.0` as the reference release, but does not establish stable API compatibility or a general-availability support commitment. Changes on `master` after the `v0.2.0` tag are unreleased until a subsequent release is published.
+Theme Manager remains in pre-1.0 development. **`v0.2.1` is the proposed next canonical GitHub source release**, pending approval, tagging and publication. The `v0.2.0` GitHub Release was withdrawn, although its historical Git tag remains; it is not the current canonical release. Neither the candidate nor the older `v0.1.0` tag establishes stable API compatibility or a general-availability support commitment.
 
-Security fixes are developed against the maintained development line. Security reports affecting `v0.2.0` are in scope for assessment and remediation; however, this policy does not promise automatic backports or maintenance releases for any particular version. The older `v0.1.0` tag is not the canonical supported baseline. Maintainers will determine affected versions, mitigations, and any backport or patch-release decisions case by case.
+Security fixes are developed against the maintained development line. Security reports affecting the `v0.2.1` candidate or the withdrawn `v0.2.0` revision are in scope for assessment and remediation; however, this policy does not promise automatic backports or maintenance releases for any particular version. The older `v0.1.0` tag is not the canonical supported baseline. Maintainers will determine affected versions, mitigations, and any backport or patch-release decisions case by case.
 
 ## Reporting a vulnerability
 
