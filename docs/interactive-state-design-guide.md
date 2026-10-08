@@ -2,6 +2,10 @@
 
 Oct 5, 2026 · @Steve Lewis
 
+## Implementation status (current `master`)
+
+This document records the extended twelve-state **design vocabulary**, not an assurance that every proposed runtime or mode-management behaviour is implemented. `shared/theme-runtime.ts` currently requires six base states (`default`, `hover`, `active`, `selected`, `visited`, `disabled`) for each provided role; other valid state keys may be supplied and applied. The bundled CSS contains additional design-state tokens. The layer currently stores the selected Theme identifier in `active-theme-id` and applies Theme variables in a client plugin. It does **not** implement the light/dark/system mode cookie, server-side dark-class plugin, or pre-paint system-mode script described below. Those are proposed design requirements, not integration guarantees. The host must provide mode-class management where needed.
+
 ## Purpose and scope
 
 Every interactive component uses one shared set of twelve states, styled through four channels: Fill, Pen, Edge and Shadow. This guide defines those states, how each one looks, which wins when several apply, and the procedures for building and reviewing components against them.
@@ -99,13 +103,13 @@ Three locked CSS files carry every token from source to utility; a fourth, gener
 
 ### Light, dark and system
 
-Dark mode is on exactly when `<html>` has the `dark` class. The Theme Manager layer owns that class and, being standalone, contributes everything itself at build time; a host only extends the layer.
+Dark CSS mappings are selected when `<html>` has the `dark` class. **The mode-controller architecture in the following table is a design proposal, not current layer functionality.** The current layer does not own the class; a host must supply mode selection and any pre-paint synchronisation it requires.
 
 | Piece | Where | Does |
 | --- | --- | --- |
-| Mode cookie | Layer runtime, beside `active-theme-id` | Stores `light`, `dark` or `system` (default `system`) |
-| Server render | Layer server plugin | Renders `<html class="dark">` for `dark`, no class for `light`, so the first paint is right |
-| Head script | Layer `app.head`, inline, before first paint | For `system`: reads `prefers-color-scheme`, sets the class, follows device changes |
+| Mode cookie (proposed) | Proposed layer runtime, beside `active-theme-id` | Would store `light`, `dark` or `system` (default `system`); not currently implemented |
+| Server render (proposed) | Proposed layer server plugin | Would render `<html class="dark">` for `dark`, no class for `light`; not currently implemented |
+| Head script (proposed) | Proposed layer `app.head` | Would read `prefers-color-scheme` and update the class; not currently implemented |
 | `color-scheme` | `theme-api.css` | Browser controls (scrollbars, inputs, pickers) match the mode |
 | Editor preview | Theme editor | Toggles a scoped container, never `<html>` |
 
