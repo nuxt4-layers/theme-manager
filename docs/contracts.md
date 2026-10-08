@@ -64,13 +64,14 @@ The package foundation exposes:
 @nuxt4-layers/theme-manager
 @nuxt4-layers/theme-manager/contracts
 @nuxt4-layers/theme-manager/capability
+@nuxt4-layers/theme-manager/presentation.css
 ```
 
-The root entry is the Nuxt Layer. `/contracts` is the supported TypeScript contract entry point. `/capability` exposes machine-readable capability metadata.
+The root entry is the Nuxt Layer. `/contracts` is the supported TypeScript contract entry point. `/capability` exposes machine-readable capability metadata. `/presentation.css` is the public semantic presentation stylesheet. Nuxt-layer composition uses an internal layer stylesheet to include its own management UI in Tailwind source discovery; this internal file is not a public export.
 
 ## Compatibility
 
-Until a stable public release is declared, consumers should treat the package as pre-1.0. Breaking public-contract changes must still be documented.
+The existing `v0.1.0` source tag is pre-1.0; later `master` changes are not yet released. A proposed `v0.2.0` is not a published release. `package.json` is `private: true`, so do not infer npm availability from the package name. Until a stable public release is declared, consumers should treat the package as pre-1.0. Breaking public-contract changes must still be documented.
 
 Production composition applications must pin the exact integrated dependency set and test it before deployment.
 

@@ -2,9 +2,9 @@
 
 ## Project status
 
-Theme Manager is currently in active pre-release development. No stable public release is declared.
+Theme Manager remains in pre-1.0 development. A `v0.1.0` GitHub source tag exists, but it is not a declaration of stable API compatibility. Subsequent changes on `master` are unreleased; a proposed `v0.2.0` has not yet been tagged.
 
-Supported versions will be listed here when public releases begin. Until then, security fixes are made against the current development line.
+Security fixes are currently developed against the maintained development line. Do not infer a commitment to backport fixes to the older `v0.1.0` tag. A version-specific support policy should be declared when a new release is approved.
 
 ## Reporting a vulnerability
 
