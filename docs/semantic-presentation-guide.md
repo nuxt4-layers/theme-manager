@@ -61,7 +61,7 @@ Using `text-pen-base-default` merely because it appears legible changes the sema
 
 ### States
 
-Colour roles expose `default`, `hover`, `active`, `selected`, `visited`, and `disabled` states.
+The runtime validator requires six base states for each provided colour role: `default`, `hover`, `active`, `selected`, `visited`, and `disabled`. The current CSS palette and design guide also describe additional states such as `focus`, `pressed`, `on`, `error`, `loading`, and `shadow`. These additional state keys are accepted by the runtime when valid but are not part of its six required-state list. The [Interactive State Design Guide](interactive-state-design-guide.md) describes their intended semantics; its implementation-status note identifies areas not yet delivered.
 
 State should describe the actual component state. Where a component changes state, its participating semantic families should normally advance coherently rather than mixing unrelated states without a specific semantic reason.
 
