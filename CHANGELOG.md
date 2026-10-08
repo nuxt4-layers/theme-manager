@@ -2,9 +2,9 @@
 
 Notable changes to Theme Manager are recorded here. GitHub source tags are distinct from npm publication; the package remains `private: true`.
 
-## [0.2.0] — 2026-10-08 (GitHub pre-release)
+## [0.2.1] — Unreleased (final release candidate)
 
-[v0.2.0](https://github.com/nuxt4-layers/theme-manager/releases/tag/v0.2.0) is the published, accepted canonical pre-1.0 GitHub source release. The baseline is the changes since [v0.1.0](https://github.com/nuxt4-layers/theme-manager/releases/tag/v0.1.0).
+`v0.2.1` is the proposed next canonical GitHub source release; it is not yet tagged or published. It supersedes the withdrawn `v0.2.0` GitHub Release (the historical `v0.2.0` Git tag still exists). The functional change baseline remains [v0.1.0](https://github.com/nuxt4-layers/theme-manager/releases/tag/v0.1.0).
 
 ### Added
 
@@ -21,7 +21,7 @@ Notable changes to Theme Manager are recorded here. GitHub source tags are disti
 - Theme management now uses a more complete editor and preview workflow; protected system Themes remain read-only.
 - The runtime applies validated `--ui-*` values; selection is restored from `active-theme-id`, and invalid or unavailable selections fall back to the bundled default.
 - Persistence is explicitly optional: without a host repository the default Theme remains available, but persistence-backed HTTP operations fail with 503 rather than using an implicit store.
-- Package release version is `0.2.0`. The token vocabulary version is `2`, because the vocabulary changed since the original release.
+- Package release version is prepared as `0.2.1`. The token vocabulary version is `2`, because the vocabulary changed since the original release.
 
 ### Breaking changes and integration considerations
 
@@ -32,11 +32,15 @@ Notable changes to Theme Manager are recorded here. GitHub source tags are disti
 - **Mode ownership:** the current layer does not supply a light/dark/system preference controller or pre-paint mode script. Hosts requiring mode switching must manage `html.dark` and first-paint behaviour themselves.
 - **Version pinning:** update consumer Git SHA/tag pins and lockfiles only after verifying the final release tag and running composed-system tests.
 
-See [the v0.1.0 → v0.2.0 upgrade guide](docs/upgrading-to-v0.2.0.md) for the practical migration sequence.
+See [the v0.1.0 → v0.2.1 upgrade guide](docs/upgrading-to-v0.2.1.md) for the practical migration sequence.
 
 ### Release verification
 
-The release-preparation PR passed `pnpm install --frozen-lockfile`, `pnpm check` and GitHub security analysis before the `v0.2.0` tag was published. Independent platform-test-harness integration and persisted-Theme rollback verification were not completed at publication; consumers must validate their composed applications before deployment.
+The withdrawn `v0.2.0` candidate passed repository frozen-lockfile checks, `pnpm check` and GitHub security analysis before its tag was created. Those historical results do not constitute acceptance of `v0.2.1`. Before publishing `v0.2.1`, verify its final SHA, frozen-lockfile install, repository quality/security checks, independent platform-test-harness integration, and persisted-Theme rollback behaviour. No `v0.2.1` tag or release should be created until these gates are accepted.
+
+## [0.2.0] — 2026-10-08 (withdrawn GitHub pre-release)
+
+The `v0.2.0` GitHub Release was published and subsequently deleted. Its original Git tag remains as historical provenance and must not be repointed or reused. Its changes are carried forward into the `v0.2.1` candidate above.
 
 ## [0.1.0]
 
