@@ -4,7 +4,7 @@ Theme Manager is a Nuxt 4 Layer for defining, validating, applying and managing 
 
 It provides one Theme authority between Theme Definitions and consuming UI. Applications consume semantic presentation meaning through Tailwind CSS rather than hard-coded colour, typography, spacing, radius or effect values.
 
-> **Release status:** `v0.1.0` is the existing pre-1.0 GitHub release, but `master` has substantial unreleased changes, including presentation-vocabulary and editor changes. `v0.2.0` is proposed, not yet tagged or published. The repository package is marked `private`; a GitHub source release does not imply npm publication or a stable public API.
+> **Release status:** `v0.1.0` is the existing pre-1.0 GitHub release, but `master` has substantial unreleased changes, including presentation-vocabulary and editor changes. `v0.2.0` is being prepared in a release PR, but has not yet been tagged or published. The repository package is marked `private`; a GitHub source release does not imply npm publication or a stable public API.
 
 ## What it provides
 
@@ -96,6 +96,9 @@ Undocumented internal paths are private implementation details.
 
 Reference documentation:
 
+- [Changelog](CHANGELOG.md) — changes since `v0.1.0` and release preparation status.
+- [Upgrade guide for v0.2.0](docs/upgrading-to-v0.2.0.md) — breaking changes, stored-Theme vocabulary and consumer migration checklist.
+
 - [Public Contract](docs/contracts.md) — supported capability and TypeScript boundaries.
 - [Theme Editor](docs/theme-editor.md) — what each editor tab edits, the preview, unsaved changes and accessibility.
 - [Composition Contract](docs/composition-contract.md) — host responsibilities, adapters and failure boundaries.
@@ -135,4 +138,4 @@ Please report suspected vulnerabilities according to [SECURITY.md](SECURITY.md),
 
 Theme Manager is licensed under the [MIT License](LICENSE).
 
-The project remains pre-1.0. Its existing `v0.1.0` tag is not a declaration of stable API compatibility, and the current `master` changes are not a new release until an explicitly verified tag is created. See [SECURITY.md](SECURITY.md) for reporting and support expectations.
+The project remains pre-1.0. Its existing `v0.1.0` tag is not a declaration of stable API compatibility; the proposed `v0.2.0` remains unreleased until an explicitly verified tag is created. See [SECURITY.md](SECURITY.md) for reporting and support expectations.
