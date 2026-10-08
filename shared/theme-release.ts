@@ -1,7 +1,7 @@
 // Release constants, kept free of imports so any module may read them.
 
 /** This Theme Manager release (package.json `version`; a test keeps them equal). */
-export const THEME_MANAGER_VERSION = '0.2.0'
+export const THEME_MANAGER_VERSION = '0.2.1'
 
 /**
  * The token vocabulary this release reads and writes. Raise it when a release adds,
