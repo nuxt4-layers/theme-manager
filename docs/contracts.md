@@ -40,7 +40,7 @@ A Theme carries two versions:
 
 When a stored Theme is read, tokens it lacks take the default Theme's values, so stored Themes keep working after an upgrade; its own `version` and `schemaVersion` are kept until it is next saved. Saving writes the complete current vocabulary and stamps the current `schemaVersion`. A stored Theme whose `schemaVersion` is newer than this release (or unreadable) is refused as invalid, because this release cannot know its tokens. `ThemeSummary` includes `version`.
 
-The published `v0.2.0` release raises the vocabulary from `1` to `2`. Earlier numeric schema versions are completed from the current bundled default on read; once saved at vocabulary `2`, a Theme cannot be assumed readable by `v0.1.0`. See [upgrade guidance](upgrading-to-v0.2.0.md).
+The `v0.2.1` release candidate carries forward the vocabulary increase from `1` to `2` introduced in the withdrawn `v0.2.0` revision. Earlier numeric schema versions are completed from the current bundled default on read; once saved at vocabulary `2`, a Theme cannot be assumed readable by `v0.1.0`. See [upgrade guidance](upgrading-to-v0.2.1.md).
 
 ## Persistence port
 
@@ -73,7 +73,7 @@ The root entry is the Nuxt Layer. `/contracts` is the supported TypeScript contr
 
 ## Compatibility
 
-The published `v0.2.0` pre-release is the current accepted canonical GitHub source release, superseding `v0.1.0`. Changes on `master` after its tag are unreleased. `package.json` is `private: true`, so do not infer npm availability from the package name. Until a stable public release is declared, consumers should treat the package as pre-1.0. Breaking public-contract changes must still be documented.
+The `v0.2.1` candidate is being prepared as the next canonical GitHub source release; it has not yet been tagged or published. The `v0.2.0` GitHub Release was withdrawn, while its historical tag remains. The older `v0.1.0` tag is not a stable API baseline. `package.json` is `private: true`, so do not infer npm availability from the package name. Until a stable public release is declared, consumers should treat the package as pre-1.0. Breaking public-contract changes must still be documented.
 
 Production composition applications must pin the exact integrated dependency set and test it before deployment.
 
