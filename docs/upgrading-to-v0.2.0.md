@@ -1,13 +1,13 @@
 # Upgrading Theme Manager from v0.1.0 to v0.2.0
 
-**Status:** Release-preparation guidance for the proposed `v0.2.0`; no `v0.2.0` tag exists until the release is approved. Review the [changelog](../CHANGELOG.md) and [compare the revisions](https://github.com/nuxt4-layers/theme-manager/compare/v0.1.0...master) before migrating.
+**Status:** Upgrade guidance for the published canonical [v0.2.0 GitHub pre-release](https://github.com/nuxt4-layers/theme-manager/releases/tag/v0.2.0). Review the [changelog](../CHANGELOG.md) and [compare the release tags](https://github.com/nuxt4-layers/theme-manager/compare/v0.1.0...v0.2.0) before migrating.
 
 ## Before upgrading
 
 1. Record the exact currently deployed Theme Manager commit and consumer lockfile; retain a rollback path.
 2. Back up persisted Theme JSON and record its `schemaVersion` and owner metadata.
 3. Identify all presentation token usages, private-path imports, CSS overrides, Theme repository adapters and management routes in the consuming application.
-4. Use a dedicated consumer branch and pin the candidate Theme Manager commit SHA. Do not adopt an unverified moving `master` reference.
+4. Use a dedicated consumer branch and pin the immutable `v0.2.0` release tag (or its verified commit SHA). Do not adopt a moving `master` reference.
 
 ## Presentation and CSS
 
@@ -19,7 +19,7 @@ The locked default/API/Tailwind pipeline and generated scoped preview CSS must b
 
 ## Stored Themes and vocabulary version
 
-The candidate changes the layer's `THEME_MANAGER_VERSION` to `0.2.0` and the token `THEME_VOCABULARY_VERSION` to `2`.
+The `v0.2.0` release sets `THEME_MANAGER_VERSION` to `0.2.0` and `THEME_VOCABULARY_VERSION` to `2`.
 
 A stored Theme's own `version` is not the layer release version. `schemaVersion` identifies its token vocabulary. The loader accepts older numeric vocabulary versions and fills missing tokens with current defaults while preserving stored version fields on read. Saving writes the current complete vocabulary and stamps `schemaVersion: '2'`.
 
@@ -37,7 +37,7 @@ Theme Manager provides `:root` and `html.dark` CSS mappings and scoped editor pr
 
 ## Acceptance checklist
 
-- [ ] Candidate commit SHA is pinned and consumer lockfile is reproducible.
+- [ ] The immutable `v0.2.0` tag or its verified commit SHA is pinned and the consumer lockfile is reproducible.
 - [ ] All consumer semantic class names and custom-property references resolve correctly.
 - [ ] Both light and dark presentation and focus/contrast behaviour are visually checked.
 - [ ] Representative older persisted Themes load, preserve intended values and can be saved safely.
