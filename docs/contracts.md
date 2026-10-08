@@ -36,9 +36,11 @@ The concrete presentation grammar and runtime-validatable Theme Definition schem
 A Theme carries two versions:
 
 - `version` is the Theme's own version. A system Theme, the built-in default included, ships in the package, so its `version` is the Theme Manager release (`THEME_MANAGER_VERSION`). It changes only by upgrading the layer and is never editable through the management projection.
-- `schemaVersion` is the token vocabulary the Theme was built against (`THEME_VOCABULARY_VERSION`, currently `1`). A release raises it when it adds, renames or removes tokens.
+- `schemaVersion` is the token vocabulary the Theme was built against (`THEME_VOCABULARY_VERSION`, currently `2`). A release raises it when it adds, renames or removes tokens.
 
 When a stored Theme is read, tokens it lacks take the default Theme's values, so stored Themes keep working after an upgrade; its own `version` and `schemaVersion` are kept until it is next saved. Saving writes the complete current vocabulary and stamps the current `schemaVersion`. A stored Theme whose `schemaVersion` is newer than this release (or unreadable) is refused as invalid, because this release cannot know its tokens. `ThemeSummary` includes `version`.
+
+The `v0.2.0` candidate raises the vocabulary from `1` to `2`. Earlier numeric schema versions are completed from the current bundled default on read; once saved at vocabulary `2`, a Theme cannot be assumed readable by `v0.1.0`. See [upgrade guidance](upgrading-to-v0.2.0.md).
 
 ## Persistence port
 
@@ -71,7 +73,7 @@ The root entry is the Nuxt Layer. `/contracts` is the supported TypeScript contr
 
 ## Compatibility
 
-The existing `v0.1.0` source tag is pre-1.0; later `master` changes are not yet released. A proposed `v0.2.0` is not a published release. `package.json` is `private: true`, so do not infer npm availability from the package name. Until a stable public release is declared, consumers should treat the package as pre-1.0. Breaking public-contract changes must still be documented.
+The existing `v0.1.0` source tag is pre-1.0; later `master` changes are not yet released. The `v0.2.0` candidate is being prepared but has not been tagged or published. `package.json` is `private: true`, so do not infer npm availability from the package name. Until a stable public release is declared, consumers should treat the package as pre-1.0. Breaking public-contract changes must still be documented.
 
 Production composition applications must pin the exact integrated dependency set and test it before deployment.
 
