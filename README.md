@@ -4,7 +4,7 @@ Theme Manager is a Nuxt 4 Layer for defining, validating, applying and managing 
 
 It provides one Theme authority between Theme Definitions and consuming UI. Applications consume semantic presentation meaning through Tailwind CSS rather than hard-coded colour, typography, spacing, radius or effect values.
 
-> **Release status:** `v0.2.0` is the current accepted canonical GitHub source release, published as a pre-release. It supersedes `v0.1.0` and includes the revised presentation vocabulary and editor. The repository package is marked `private`; a GitHub source release does not imply npm publication or a stable public API.
+> **Release status:** `v0.2.1` is the proposed next canonical GitHub source release, pending release acceptance and publication. The previous `v0.2.0` GitHub Release was withdrawn; its historical tag remains. The `v0.2.1` candidate carries forward the revised presentation vocabulary and editor. The repository package is marked `private`; a GitHub source release does not imply npm publication or a stable public API.
 
 ## What it provides
 
@@ -96,8 +96,8 @@ Undocumented internal paths are private implementation details.
 
 Reference documentation:
 
-- [Changelog](CHANGELOG.md) — changes delivered in `v0.2.0` and release history.
-- [Upgrade guide for v0.2.0](docs/upgrading-to-v0.2.0.md) — breaking changes, stored-Theme vocabulary and consumer migration checklist.
+- [Changelog](CHANGELOG.md) — changes planned for `v0.2.1` and release history.
+- [Upgrade guide for v0.2.1](docs/upgrading-to-v0.2.1.md) — breaking changes, stored-Theme vocabulary and consumer migration checklist.
 
 - [Public Contract](docs/contracts.md) — supported capability and TypeScript boundaries.
 - [Theme Editor](docs/theme-editor.md) — what each editor tab edits, the preview, unsaved changes and accessibility.
@@ -138,4 +138,4 @@ Please report suspected vulnerabilities according to [SECURITY.md](SECURITY.md),
 
 Theme Manager is licensed under the [MIT License](LICENSE).
 
-The project remains pre-1.0. The current canonical source release is `v0.2.0` (pre-release); neither it nor the older `v0.1.0` tag declares stable API compatibility. See [SECURITY.md](SECURITY.md) for reporting and support expectations.
+The project remains pre-1.0. `v0.2.1` is the next proposed canonical source release and has not yet been tagged or published. The withdrawn `v0.2.0` release and older `v0.1.0` tag do not establish stable API compatibility. See [SECURITY.md](SECURITY.md) for reporting and support expectations.
