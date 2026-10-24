@@ -40,7 +40,9 @@ The package identity is:
 
 This repository currently uses pre-1.0 source releases rather than a published npm package (`package.json` has `private: true`). Consumers may install an exact Git commit or immutable release tag. Do not follow a mutable default branch in an integration or deployment baseline; verify the selected revision in the consumer lockfile.
 
-Compose the installed package root using Nuxt `extends`. The host application remains the composition root and is responsible for selecting and integration-testing the complete dependency set. The package requires Node.js 22 or later and declares pnpm 10.17.1 for development.
+Compose the installed package root using Nuxt `extends`. The host application remains the composition root and is responsible for selecting and integration-testing the complete dependency set. The package requires Node.js 22 or later and declares pnpm 12.5.1 for development.
+
+Installing the layer runs no install scripts (no `prepare` or `postinstall`), so a host does not need an `allowBuilds` entry for it. Hosts that added one for `v0.2.1` or earlier can remove it.
 
 ## Using the presentation vocabulary
 
