@@ -73,7 +73,7 @@ The root entry is the Nuxt Layer. `/contracts` is the supported TypeScript contr
 
 ## Compatibility
 
-The `v0.2.1` candidate is being prepared as the next canonical GitHub source release; it has not yet been tagged or published. The `v0.2.0` GitHub Release was withdrawn, while its historical tag remains. The older `v0.1.0` tag is not a stable API baseline. `package.json` is `private: true`, so do not infer npm availability from the package name. Until a stable public release is declared, consumers should treat the package as pre-1.0. Breaking public-contract changes must still be documented.
+`v0.2.2` is the current canonical GitHub source release; it has the same public contract as `v0.2.1`. The `v0.2.0` GitHub Release was withdrawn, while its historical tag remains. The older `v0.1.0` tag is not a stable API baseline. `package.json` is `private: true`, so do not infer npm availability from the package name. Until a stable public release is declared, consumers should treat the package as pre-1.0. Breaking public-contract changes must still be documented.
 
 Production composition applications must pin the exact integrated dependency set and test it before deployment.
 

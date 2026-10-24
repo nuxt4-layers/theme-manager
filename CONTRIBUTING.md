@@ -26,10 +26,11 @@ Install and verify with:
 
 ```sh
 pnpm install
+pnpm dev:prepare
 pnpm check
 ```
 
-`pnpm check` runs the repository typecheck and test suite and is the minimum local quality gate before submitting a pull request.
+`pnpm dev:prepare` generates the Nuxt types that `pnpm check` needs. `pnpm check` runs the repository typecheck and test suite and is the minimum local quality gate before submitting a pull request.
 
 ## Contribution workflow
 

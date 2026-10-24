@@ -15,7 +15,7 @@ Theme Manager is a Nuxt 4 Layer for defining, validating, applying and managing 
 
 It provides one Theme authority between Theme Definitions and consuming UI. Applications consume semantic presentation meaning through Tailwind CSS rather than hard-coded colour, typography, spacing, radius or effect values.
 
-> **Release status:** `v0.2.1` is the proposed next canonical GitHub source release, pending release acceptance and publication. The previous `v0.2.0` GitHub Release was withdrawn; its historical tag remains. The `v0.2.1` candidate carries forward the revised presentation vocabulary and editor. The repository package is marked `private`; a GitHub source release does not imply npm publication or a stable public API.
+> **Release status:** `v0.2.2` is the current canonical GitHub source release, a patch to `v0.2.1` with no contract change. The previous `v0.2.0` GitHub Release was withdrawn; its historical tag remains. `v0.2.1` carried forward the revised presentation vocabulary and editor. The repository package is marked `private`; a GitHub source release does not imply npm publication or a stable public API.
 
 ## What it provides
 
@@ -107,7 +107,7 @@ Undocumented internal paths are private implementation details.
 
 Reference documentation:
 
-- [Changelog](CHANGELOG.md) — changes planned for `v0.2.1` and release history.
+- [Changelog](CHANGELOG.md) — release history.
 - [Upgrade guide for v0.2.1](docs/upgrading-to-v0.2.1.md) — breaking changes, stored-Theme vocabulary and consumer migration checklist.
 
 - [Public Contract](docs/contracts.md) — supported capability and TypeScript boundaries.
@@ -124,10 +124,13 @@ The repository uses pnpm:
 
 ```sh
 pnpm install --frozen-lockfile
+pnpm dev:prepare
 pnpm typecheck
 pnpm test
 pnpm check
 ```
+
+`pnpm dev:prepare` generates the Nuxt types in `.nuxt/`; run it after installing and whenever Nuxt configuration changes. It is deliberately not a `prepare` or `postinstall` script: hosts install the layer from GitHub, and such a script would run during their install for no benefit, because `.nuxt/` is not part of the package.
 
 `pnpm check` is the complete repository quality gate and is also run by GitHub Actions.
 
@@ -149,4 +152,4 @@ Please report suspected vulnerabilities according to [SECURITY.md](SECURITY.md),
 
 Theme Manager is licensed under the [MIT License](LICENSE).
 
-The project remains pre-1.0. `v0.2.1` is the next proposed canonical source release and has not yet been tagged or published. The withdrawn `v0.2.0` release and older `v0.1.0` tag do not establish stable API compatibility. See [SECURITY.md](SECURITY.md) for reporting and support expectations.
+The project remains pre-1.0. `v0.2.2` is the current canonical source release. The withdrawn `v0.2.0` release and older `v0.1.0` tag do not establish stable API compatibility. See [SECURITY.md](SECURITY.md) for reporting and support expectations.
