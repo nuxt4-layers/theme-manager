@@ -40,7 +40,7 @@ A Theme carries two versions:
 
 When a stored Theme is read, tokens it lacks take the default Theme's values, so stored Themes keep working after an upgrade; its own `version` and `schemaVersion` are kept until it is next saved. Saving writes the complete current vocabulary and stamps the current `schemaVersion`. A stored Theme whose `schemaVersion` is newer than this release (or unreadable) is refused as invalid, because this release cannot know its tokens. `ThemeSummary` includes `version`.
 
-The `v0.2.1` release candidate carries forward the vocabulary increase from `1` to `2` introduced in the withdrawn `v0.2.0` revision. Earlier numeric schema versions are completed from the current bundled default on read; once saved at vocabulary `2`, a Theme cannot be assumed readable by `v0.1.0`. See [upgrade guidance](upgrading-to-v0.2.1.md).
+`v0.2.1` and later carry forward the vocabulary increase from `1` to `2` introduced in the withdrawn `v0.2.0` revision. Earlier numeric schema versions are completed from the current bundled default on read; once saved at vocabulary `2`, a Theme cannot be assumed readable by `v0.1.0`. See [upgrade guidance](upgrading-to-v0.2.1.md).
 
 ## Persistence port
 
