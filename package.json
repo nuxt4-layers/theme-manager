@@ -29,7 +29,7 @@
     "generate:theme": "node scripts/generate-theme-api.mjs"
   },
   "devDependencies": {
-    "@types/node": "^26.6.4",
+    "@types/node": "^26.6.5",
     "nuxt": "^4.6.0",
     "typescript": "^5.9.2",
     "vitest": "^5.0.3",
