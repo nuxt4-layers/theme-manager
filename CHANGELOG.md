@@ -2,9 +2,18 @@
 
 Notable changes to Theme Manager are recorded here. GitHub source tags are distinct from npm publication; the package remains `private: true`.
 
-## [0.2.1] — Unreleased (final release candidate)
+## [0.2.2] — 2026-10-24
 
-`v0.2.1` is the proposed next canonical GitHub source release; it is not yet tagged or published. It supersedes the withdrawn `v0.2.0` GitHub Release (the historical `v0.2.0` Git tag still exists). The functional change baseline remains [v0.1.0](https://github.com/nuxt4-layers/theme-manager/releases/tag/v0.1.0).
+A patch release with no contract change: the public exports, capability metadata, token vocabulary (version `2`) and stored Theme format are unchanged from `v0.2.1`.
+
+### Changed
+
+- Installing the layer from GitHub no longer runs any script. The `prepare` script (`nuxt prepare`) is renamed `dev:prepare`, so hosts no longer need to allow it in `allowBuilds`; its output (`.nuxt/`) was never part of the package. Contributors run `pnpm dev:prepare` after `pnpm install`.
+- The repository uses pnpm 12.5.1 (`packageManager`, CI and `pnpm-lock.yaml`), with `minimumReleaseAge: 1440` stated in `pnpm-workspace.yaml`.
+
+## [0.2.1] — 2026-10-08
+
+`v0.2.1` supersedes the withdrawn `v0.2.0` GitHub Release (the historical `v0.2.0` Git tag still exists). The functional change baseline remains [v0.1.0](https://github.com/nuxt4-layers/theme-manager/releases/tag/v0.1.0).
 
 ### Added
 
@@ -40,7 +49,7 @@ The withdrawn `v0.2.0` candidate passed repository frozen-lockfile checks, `pnpm
 
 ## [0.2.0] — 2026-10-08 (withdrawn GitHub pre-release)
 
-The `v0.2.0` GitHub Release was published and subsequently deleted. Its original Git tag remains as historical provenance and must not be repointed or reused. Its changes are carried forward into the `v0.2.1` candidate above.
+The `v0.2.0` GitHub Release was published and subsequently deleted. Its original Git tag remains as historical provenance and must not be repointed or reused. Its changes are carried forward into `v0.2.1` above.
 
 ## [0.1.0]
 
