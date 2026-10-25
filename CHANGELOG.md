@@ -1,6 +1,6 @@
 # Changelog
 
-Notable changes to Theme Manager are recorded here. GitHub source tags are distinct from npm publication; the package remains `private: true`.
+Notable changes to Theme Manager are recorded here. GitHub source tags are distinct from npm publication; the package remains `private: true`. What a host needs to compose the current release is in the [host contract](CONTRACT.md).
 
 ## [0.2.2] — 2026-10-24
 

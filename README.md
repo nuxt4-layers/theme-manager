@@ -109,6 +109,7 @@ Undocumented internal paths are private implementation details.
 
 Reference documentation:
 
+- [Host contract](CONTRACT.md) — the one page a host needs to compose Theme Manager.
 - [Changelog](CHANGELOG.md) — release history.
 - [Upgrade guide for v0.2.1](docs/upgrading-to-v0.2.1.md) — breaking changes, stored-Theme vocabulary and consumer migration checklist.
 
